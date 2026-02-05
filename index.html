@@ -1179,18 +1179,7 @@ function startNewAdventure(){
   currentStep = 0;
   previousAnswer = 0;
 
-  // Mensaje de bienvenida a nueva aventura
-  const welcomeMsgs = [
-    `¡Nueva aventura, ${PLAYER.name}! Vamos a ayudar a ${currentStory.character}.`,
-    `¡${PLAYER.nickname}, tenemos una nueva misión! ${currentStory.title}.`,
-    `¡Listo ${PLAYER.name}? ¡Vamos con ${currentStory.character}!`
-  ];
-
-  // Decir bienvenida ocasionalmente (no siempre para no ser repetitivo)
-  if(Math.random() > 0.3){
-    speakText(welcomeMsgs[Math.floor(Math.random() * welcomeMsgs.length)], null, { rate: 0.88, pitch: 1.0 });
-  }
-
+  // Cargar el paso PRIMERO para que los datos estén listos
   loadCurrentStep();
 }
 
@@ -1295,7 +1284,7 @@ function showStoryModal(){
         </div>
         <div class="quiz-feedback" id="quizFeedback"></div>
         <div class="quiz-cooldown" id="quizCooldown" style="display:none">
-          ⏱️ Lee la ayuda... Podrás intentar en <span class="timer" id="cooldownTimer">5</span>s
+          ⏱️ Lee la ayuda... Podrás intentar en <span class="timer" id="cooldownTimer">3</span>s
         </div>
       </div>
     </div>
@@ -1381,10 +1370,8 @@ function checkOperationQuiz(selectedOp){
     const feedback = document.getElementById('quizFeedback');
     feedback.className = 'quiz-feedback wrong show';
 
-    // Determinar cooldown basado en intentos
-    let cooldownTime = 8;
-    if(quizWrongAttempts === 2) cooldownTime = 10;
-    if(quizWrongAttempts >= 3) cooldownTime = 12;
+    // Cooldown fijo de 3 segundos (la voz ya explica suficiente)
+    let cooldownTime = 3;
 
     // Mostrar pista específica del error y de la operación correcta
     const wrongTip = OPERATION_TIPS[selectedOp];
