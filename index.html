@@ -416,6 +416,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .trivia-continue-btn.show{display:inline-block;animation:bounceIn .4s ease}
 @keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 
+/* Trivia Progress Dots */
+.trivia-progress{display:flex;justify-content:center;gap:12px;margin-bottom:16px}
+.trivia-dot{font-size:1.2rem;color:var(--text-dim);transition:all .3s ease}
+.trivia-dot.done{color:var(--green);transform:scale(1.1)}
+.trivia-dot.current{color:var(--yellow);animation:currentDotPulse 1s ease infinite;transform:scale(1.2)}
+@keyframes currentDotPulse{0%,100%{opacity:1;transform:scale(1.2)}50%{opacity:.7;transform:scale(1.4)}}
+
+/* Trivia Summary */
+.trivia-summary{text-align:center;padding:20px}
+.trivia-summary h3{font-size:1.4rem;font-weight:900;color:var(--yellow);margin-bottom:8px}
+.trivia-summary .summary-score{font-size:1.1rem;color:var(--text);margin-bottom:16px}
+.trivia-summary .summary-score b{color:var(--cyan)}
+.trivia-summary .summary-stars{font-size:2.5rem;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(255,212,59,.4))}
+.trivia-summary .summary-message{font-size:.95rem;color:var(--text-dim);margin-bottom:20px;line-height:1.5}
+
 .confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000;overflow:hidden}
 .confetti-piece{position:absolute;width:8px;height:8px;top:-20px;animation:confettiFall linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
@@ -838,151 +853,133 @@ const ENCOURAGEMENTS = [
 
 // ========== STORIES ==========
 const STORIES = [
-  // === HISTORIAS MIXTAS BALANCEADAS (todas las operaciones) ===
+  // === HISTORIAS BALANCEADAS (suma, resta, multi, divi) ===
   {
     title: "La Granja de Lucas", avatar: "🧑‍🌾", character: "Lucas",
     steps: [
-      { op: 'suma', template: '{char} tiene {a} gallinas en el corral. Llegan {b} gallinas más del campo.', question: '¿Cuántas gallinas tiene ahora en total?', successMsg: '¡{ans} gallinas en total!', emoji: '🐔', emojiB: '🐔' },
-      { op: 'multi', template: '{char} tiene {a} gallinas. Cada gallina pone {b} huevos.', question: '¿Cuántos huevos hay en total?', successMsg: '¡{ans} huevos frescos!', emoji: '🥚', groupEmoji: '🐔' },
-      { op: 'resta', template: '{char} tenía {a} huevos. Vendió {b} huevos en el mercado.', question: '¿Cuántos huevos le quedan ahora?', successMsg: '¡Le quedan {ans} huevos!', emoji: '🥚', emojiB: '🥚' },
-      { op: 'divi', template: '{char} tiene {a} zanahorias para repartir entre {b} conejos. Quiere darle la misma cantidad a cada conejo.', question: '¿Cuántas zanahorias recibe cada conejo?', successMsg: '¡{ans} zanahorias para cada conejo!', emoji: '🥕', groupEmoji: '🐰' }
+      { op: 'suma', template: '{char} tiene {a} gallinas y llegan {b} más.', question: '¿Cuántas gallinas tiene ahora?', successMsg: '¡{ans} gallinas!', emoji: '🐔', emojiB: '🐔' },
+      { op: 'multi', template: '{char} tiene {a} gallinas. Cada una pone {b} huevos.', question: '¿Cuántos huevos hay?', successMsg: '¡{ans} huevos!', emoji: '🥚', groupEmoji: '🐔' },
+      { op: 'resta', template: '{char} tenía {a} huevos. Vendió {b}.', question: '¿Cuántos le quedan?', successMsg: '¡{ans} huevos!', emoji: '🥚', emojiB: '🥚' }
     ]
   },
   {
     title: "La Pastelería Mágica", avatar: "👨‍🍳", character: "Chef María",
     steps: [
-      { op: 'suma', template: '{char} horneó {a} cupcakes de chocolate y {b} cupcakes de fresa.', question: '¿Cuántos cupcakes horneó en total?', successMsg: '¡{ans} cupcakes deliciosos!', emoji: '🧁', emojiB: '🧁' },
-      { op: 'divi', template: '{char} tiene {a} galletas para repartir entre {b} cajas.', question: '¿Cuántas galletas van en cada caja?', successMsg: '¡{ans} galletas por caja!', emoji: '🍪', groupEmoji: '📦' },
-      { op: 'resta', template: '{char} tenía {a} donas. Vendió {b} donas esta mañana.', question: '¿Cuántas donas le quedan?', successMsg: '¡Le quedan {ans} donas!', emoji: '🍩', emojiB: '🍩' },
-      { op: 'divi', template: '{char} tiene {a} fresas para decorar {b} pasteles.', question: '¿Cuántas fresas pondrá en cada pastel?', successMsg: '¡{ans} fresas en cada pastel!', emoji: '🍓', groupEmoji: '🎂' }
+      { op: 'suma', template: '{char} horneó {a} cupcakes de chocolate y {b} de fresa.', question: '¿Cuántos cupcakes hay?', successMsg: '¡{ans} cupcakes!', emoji: '🧁', emojiB: '🧁' },
+      { op: 'resta', template: '{char} tenía {a} donas. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} donas!', emoji: '🍩', emojiB: '🍩' },
+      { op: 'divi', template: '{char} tiene {a} galletas para {b} cajas.', question: '¿Cuántas van en cada caja?', successMsg: '¡{ans} por caja!', emoji: '🍪', groupEmoji: '📦' }
     ]
   },
   {
     title: "El Tesoro Pirata", avatar: "🏴‍☠️", character: "Capitán Pedro",
     steps: [
-      { op: 'suma', template: '{char} encontró {a} monedas de oro en una isla y {b} más en otra isla.', question: '¿Cuántas monedas tiene ahora?', successMsg: '¡{ans} monedas de oro!', emoji: '🪙', emojiB: '🪙' },
-      { op: 'divi', template: 'Ahora {char} reparte las {a} monedas entre {b} piratas.', question: '¿Cuántas monedas recibe cada pirata?', successMsg: '¡{ans} monedas cada uno!', emoji: '🪙', groupEmoji: '🏴‍☠️', usePrevAnswer: true },
-      { op: 'multi', template: '{char} tiene {a} cofres. Cada cofre tiene {b} diamantes.', question: '¿Cuántos diamantes hay en total?', successMsg: '¡{ans} diamantes brillantes!', emoji: '💎', groupEmoji: '📦' },
-      { op: 'divi', template: '{char} tiene {a} joyas para repartir entre {b} marineros.', question: '¿Cuántas joyas recibe cada marinero?', successMsg: '¡{ans} joyas para cada uno!', emoji: '💎', groupEmoji: '⚓' }
+      { op: 'suma', template: '{char} encontró {a} monedas y luego {b} más.', question: '¿Cuántas monedas tiene?', successMsg: '¡{ans} monedas!', emoji: '🪙', emojiB: '🪙' },
+      { op: 'multi', template: '{char} tiene {a} cofres con {b} diamantes cada uno.', question: '¿Cuántos diamantes hay?', successMsg: '¡{ans} diamantes!', emoji: '💎', groupEmoji: '📦' },
+      { op: 'resta', template: '{char} tenía {a} joyas. Regaló {b}.', question: '¿Cuántas le quedan?', successMsg: '¡{ans} joyas!', emoji: '💎', emojiB: '💎' }
     ]
   },
   {
     title: "La Fiesta de Cumpleaños", avatar: "🎂", character: "Carlos",
     steps: [
-      { op: 'suma', template: '{char} infló {a} globos rojos y {b} globos azules.', question: '¿Cuántos globos infló en total?', successMsg: '¡{ans} globos coloridos!', emoji: '🎈', emojiB: '🎈' },
-      { op: 'divi', template: 'Los {a} globos son para decorar {b} mesas.', question: '¿Cuántos globos van en cada mesa?', successMsg: '¡{ans} globos por mesa!', emoji: '🎈', groupEmoji: '🪑', usePrevAnswer: true },
-      { op: 'divi', template: '{char} tiene {a} dulces para repartir entre {b} amigos.', question: '¿Cuántos dulces recibe cada amigo?', successMsg: '¡{ans} dulces cada uno!', emoji: '🍬', groupEmoji: '👦' },
-      { op: 'resta', template: '{char} tenía {a} rebanadas de pastel. Se comieron {b}.', question: '¿Cuántas rebanadas quedan?', successMsg: '¡Quedan {ans} rebanadas!', emoji: '🍰', emojiB: '🍰' }
+      { op: 'suma', template: '{char} infló {a} globos rojos y {b} azules.', question: '¿Cuántos globos hay?', successMsg: '¡{ans} globos!', emoji: '🎈', emojiB: '🎈' },
+      { op: 'divi', template: '{char} tiene {a} dulces para {b} amigos.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} dulces cada uno!', emoji: '🍬', groupEmoji: '👦' },
+      { op: 'resta', template: '{char} tenía {a} rebanadas de pastel. Se comieron {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} rebanadas!', emoji: '🍰', emojiB: '🍰' }
     ]
   },
   {
     title: "El Espacio Sideral", avatar: "🚀", character: "Astronauta Ana",
     steps: [
-      { op: 'multi', template: '{char} visitó {a} planetas. En cada planeta encontró {b} meteoritos.', question: '¿Cuántos meteoritos encontró en total?', successMsg: '¡{ans} meteoritos!', emoji: '☄️', groupEmoji: '🪐' },
-      { op: 'divi', template: 'Ahora reparte los {a} meteoritos en {b} cajas espaciales.', question: '¿Cuántos meteoritos van en cada caja?', successMsg: '¡{ans} por caja!', emoji: '☄️', groupEmoji: '📦', usePrevAnswer: true },
-      { op: 'suma', template: '{char} descubrió {a} estrellas y luego encontró {b} más.', question: '¿Cuántas estrellas descubrió en total?', successMsg: '¡{ans} estrellas!', emoji: '⭐', emojiB: '⭐' },
-      { op: 'divi', template: '{char} tiene {a} cristales lunares para {b} museos espaciales.', question: '¿Cuántos cristales van a cada museo?', successMsg: '¡{ans} cristales por museo!', emoji: '💎', groupEmoji: '🏛️' }
+      { op: 'multi', template: '{char} visitó {a} planetas con {b} meteoritos cada uno.', question: '¿Cuántos meteoritos encontró?', successMsg: '¡{ans} meteoritos!', emoji: '☄️', groupEmoji: '🪐' },
+      { op: 'suma', template: '{char} descubrió {a} estrellas y luego {b} más.', question: '¿Cuántas estrellas hay?', successMsg: '¡{ans} estrellas!', emoji: '⭐', emojiB: '⭐' },
+      { op: 'resta', template: '{char} tenía {a} cristales. Perdió {b}.', question: '¿Cuántos le quedan?', successMsg: '¡{ans} cristales!', emoji: '💎', emojiB: '💎' }
     ]
   },
-
-  // === HISTORIAS CON ÉNFASIS EN DIVISIÓN Y GRUPOS VARIADOS ===
   {
     title: "El Gran Reparto de Pizza", avatar: "🍕", character: "Pizzero Tony",
     steps: [
-      { op: 'suma', template: '{char} horneó {a} pizzas en la mañana y {b} pizzas en la tarde.', question: '¿Cuántas pizzas horneó en total?', successMsg: '¡{ans} pizzas deliciosas!', emoji: '🍕', emojiB: '🍕' },
-      { op: 'divi', template: 'Las {a} pizzas son para {b} mesas del restaurante.', question: '¿Cuántas pizzas van en cada mesa?', successMsg: '¡{ans} pizzas por mesa!', emoji: '🍕', groupEmoji: '🪑', usePrevAnswer: true },
-      { op: 'divi', template: '{char} tiene {a} refrescos para repartir entre {b} niños.', question: '¿Cuántos refrescos recibe cada niño?', successMsg: '¡{ans} refrescos cada uno!', emoji: '🥤', groupEmoji: '👦' },
-      { op: 'divi', template: 'Para el postre, tiene {a} helados para {b} clientes.', question: '¿Cuántos helados recibe cada cliente?', successMsg: '¡{ans} helados cada uno!', emoji: '🍦', groupEmoji: '😊' }
+      { op: 'suma', template: '{char} horneó {a} pizzas en la mañana y {b} en la tarde.', question: '¿Cuántas pizzas hay?', successMsg: '¡{ans} pizzas!', emoji: '🍕', emojiB: '🍕' },
+      { op: 'multi', template: '{char} tiene {a} mesas con {b} clientes cada una.', question: '¿Cuántos clientes hay?', successMsg: '¡{ans} clientes!', emoji: '😊', groupEmoji: '🪑' },
+      { op: 'divi', template: '{char} tiene {a} refrescos para {b} niños.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} refrescos!', emoji: '🥤', groupEmoji: '👦' }
     ]
   },
   {
     title: "El Zoológico Feliz", avatar: "🦁", character: "Cuidador Max",
     steps: [
-      { op: 'divi', template: '{char} tiene {a} pescados para alimentar a {b} focas hambrientas.', question: '¿Cuántos pescados come cada foca?', successMsg: '¡{ans} pescados por foca!', emoji: '🐟', groupEmoji: '🦭' },
-      { op: 'divi', template: 'Luego reparte {a} plátanos entre {b} monos juguetones.', question: '¿Cuántos plátanos recibe cada mono?', successMsg: '¡{ans} plátanos cada uno!', emoji: '🍌', groupEmoji: '🐒' },
-      { op: 'suma', template: 'Llegaron {a} conejos nuevos y ya había {b} en el zoológico.', question: '¿Cuántos conejos hay ahora?', successMsg: '¡{ans} conejos!', emoji: '🐰', emojiB: '🐰' },
-      { op: 'divi', template: '{char} tiene {a} zanahorias para los {b} conejos.', question: '¿Cuántas zanahorias come cada conejo?', successMsg: '¡{ans} zanahorias cada uno!', emoji: '🥕', groupEmoji: '🐰' }
+      { op: 'divi', template: '{char} tiene {a} pescados para {b} focas.', question: '¿Cuántos come cada foca?', successMsg: '¡{ans} pescados!', emoji: '🐟', groupEmoji: '🦭' },
+      { op: 'suma', template: 'Llegaron {a} conejos nuevos y ya había {b}.', question: '¿Cuántos conejos hay?', successMsg: '¡{ans} conejos!', emoji: '🐰', emojiB: '🐰' },
+      { op: 'multi', template: '{char} tiene {a} jaulas con {b} pájaros cada una.', question: '¿Cuántos pájaros hay?', successMsg: '¡{ans} pájaros!', emoji: '🐦', groupEmoji: '🏠' }
     ]
   },
   {
     title: "La Escuelita de Arte", avatar: "🎨", character: "Maestra Luna",
     steps: [
-      { op: 'multi', template: '{char} tiene {a} mesas. Cada mesa necesita {b} crayones.', question: '¿Cuántos crayones necesita en total?', successMsg: '¡{ans} crayones!', emoji: '🖍️', groupEmoji: '🪑' },
-      { op: 'divi', template: 'Reparte los {a} crayones entre {b} estudiantes.', question: '¿Cuántos crayones recibe cada estudiante?', successMsg: '¡{ans} crayones cada uno!', emoji: '🖍️', groupEmoji: '👧', usePrevAnswer: true },
-      { op: 'divi', template: '{char} tiene {a} pinceles para {b} equipos de pintura.', question: '¿Cuántos pinceles recibe cada equipo?', successMsg: '¡{ans} pinceles por equipo!', emoji: '🖌️', groupEmoji: '👨‍👩‍👧' },
-      { op: 'divi', template: 'Al final, reparte {a} stickers entre {b} artistas.', question: '¿Cuántos stickers recibe cada artista?', successMsg: '¡{ans} stickers cada uno!', emoji: '⭐', groupEmoji: '🧑‍🎨' }
+      { op: 'multi', template: '{char} tiene {a} mesas con {b} crayones cada una.', question: '¿Cuántos crayones necesita?', successMsg: '¡{ans} crayones!', emoji: '🖍️', groupEmoji: '🪑' },
+      { op: 'resta', template: '{char} tenía {a} pinceles. Se dañaron {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} pinceles!', emoji: '🖌️', emojiB: '🖌️' },
+      { op: 'divi', template: '{char} tiene {a} stickers para {b} estudiantes.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} stickers!', emoji: '⭐', groupEmoji: '👧' }
     ]
   },
   {
     title: "El Huerto Mágico", avatar: "🌻", character: "Jardinera Lily",
     steps: [
-      { op: 'suma', template: '{char} cosechó {a} tomates rojos y {b} tomates verdes.', question: '¿Cuántos tomates cosechó en total?', successMsg: '¡{ans} tomates!', emoji: '🍅', emojiB: '🍅' },
-      { op: 'divi', template: 'Reparte los {a} tomates en {b} canastas.', question: '¿Cuántos tomates van en cada canasta?', successMsg: '¡{ans} tomates por canasta!', emoji: '🍅', groupEmoji: '🧺', usePrevAnswer: true },
-      { op: 'divi', template: '{char} tiene {a} fresas para repartir entre {b} vecinos.', question: '¿Cuántas fresas recibe cada vecino?', successMsg: '¡{ans} fresas cada uno!', emoji: '🍓', groupEmoji: '🏠' },
-      { op: 'divi', template: 'Empaca {a} zanahorias en {b} bolsas para el mercado.', question: '¿Cuántas zanahorias van en cada bolsa?', successMsg: '¡{ans} zanahorias por bolsa!', emoji: '🥕', groupEmoji: '🛍️' }
+      { op: 'suma', template: '{char} cosechó {a} tomates rojos y {b} verdes.', question: '¿Cuántos tomates hay?', successMsg: '¡{ans} tomates!', emoji: '🍅', emojiB: '🍅' },
+      { op: 'resta', template: '{char} tenía {a} zanahorias. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} zanahorias!', emoji: '🥕', emojiB: '🥕' },
+      { op: 'multi', template: '{char} tiene {a} surcos con {b} lechugas cada uno.', question: '¿Cuántas lechugas hay?', successMsg: '¡{ans} lechugas!', emoji: '🥬', groupEmoji: '🌱' }
     ]
   },
   {
     title: "La Tienda de Mascotas", avatar: "🐾", character: "Veterinaria Ana",
     steps: [
-      { op: 'divi', template: '{char} tiene {a} premios para repartir entre {b} perritos.', question: '¿Cuántos premios recibe cada perrito?', successMsg: '¡{ans} premios cada uno!', emoji: '🦴', groupEmoji: '🐕' },
-      { op: 'divi', template: 'También tiene {a} pescaditos para {b} gatitos.', question: '¿Cuántos pescaditos come cada gatito?', successMsg: '¡{ans} pescaditos cada uno!', emoji: '🐟', groupEmoji: '🐱' },
-      { op: 'suma', template: 'Llegaron {a} hámsters nuevos y ya tenía {b}.', question: '¿Cuántos hámsters hay ahora?', successMsg: '¡{ans} hámsters!', emoji: '🐹', emojiB: '🐹' },
-      { op: 'divi', template: '{char} tiene {a} lechugas para {b} conejitos.', question: '¿Cuántas lechugas come cada conejito?', successMsg: '¡{ans} lechugas cada uno!', emoji: '🥬', groupEmoji: '🐰' }
+      { op: 'divi', template: '{char} tiene {a} premios para {b} perritos.', question: '¿Cuántos recibe cada perrito?', successMsg: '¡{ans} premios!', emoji: '🦴', groupEmoji: '🐕' },
+      { op: 'suma', template: 'Llegaron {a} gatitos nuevos y ya había {b}.', question: '¿Cuántos gatitos hay?', successMsg: '¡{ans} gatitos!', emoji: '🐱', emojiB: '🐱' },
+      { op: 'resta', template: '{char} tenía {a} hámsters. Vendió {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} hámsters!', emoji: '🐹', emojiB: '🐹' }
     ]
   },
   {
     title: "El Mercado de Frutas", avatar: "🍊", character: "Don Frutero",
     steps: [
-      { op: 'divi', template: '{char} tiene {a} naranjas para poner en {b} cajas.', question: '¿Cuántas naranjas van en cada caja?', successMsg: '¡{ans} naranjas por caja!', emoji: '🍊', groupEmoji: '📦' },
-      { op: 'divi', template: 'Reparte {a} manzanas entre {b} clientes.', question: '¿Cuántas manzanas recibe cada cliente?', successMsg: '¡{ans} manzanas cada uno!', emoji: '🍎', groupEmoji: '🧑' },
-      { op: 'resta', template: '{char} tenía {a} sandías pero vendió {b}.', question: '¿Cuántas sandías le quedan?', successMsg: '¡Le quedan {ans} sandías!', emoji: '🍉', emojiB: '🍉' },
-      { op: 'divi', template: 'Tiene {a} plátanos para {b} escuelas.', question: '¿Cuántos plátanos van a cada escuela?', successMsg: '¡{ans} plátanos por escuela!', emoji: '🍌', groupEmoji: '🏫' }
+      { op: 'suma', template: '{char} tiene {a} naranjas y compró {b} más.', question: '¿Cuántas naranjas hay?', successMsg: '¡{ans} naranjas!', emoji: '🍊', emojiB: '🍊' },
+      { op: 'resta', template: '{char} tenía {a} manzanas. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} manzanas!', emoji: '🍎', emojiB: '🍎' },
+      { op: 'divi', template: '{char} tiene {a} plátanos para {b} clientes.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} plátanos!', emoji: '🍌', groupEmoji: '🧑' }
     ]
   },
   {
     title: "La Fábrica de Juguetes", avatar: "🏭", character: "Jefe de Elfos",
     steps: [
-      { op: 'multi', template: 'Los elfos fabricaron {a} cajas. Cada caja tiene {b} muñecos.', question: '¿Cuántos muñecos fabricaron?', successMsg: '¡{ans} muñecos!', emoji: '🧸', groupEmoji: '📦' },
-      { op: 'divi', template: 'Reparten los {a} muñecos entre {b} tiendas.', question: '¿Cuántos muñecos van a cada tienda?', successMsg: '¡{ans} por tienda!', emoji: '🧸', groupEmoji: '🏪', usePrevAnswer: true },
-      { op: 'divi', template: 'Tienen {a} pelotas para {b} centros deportivos.', question: '¿Cuántas pelotas van a cada centro?', successMsg: '¡{ans} pelotas por centro!', emoji: '⚽', groupEmoji: '🏟️' },
-      { op: 'divi', template: 'Los {a} rompecabezas van a {b} bibliotecas.', question: '¿Cuántos rompecabezas por biblioteca?', successMsg: '¡{ans} por biblioteca!', emoji: '🧩', groupEmoji: '📚' }
+      { op: 'multi', template: 'Los elfos hicieron {a} cajas con {b} muñecos cada una.', question: '¿Cuántos muñecos hay?', successMsg: '¡{ans} muñecos!', emoji: '🧸', groupEmoji: '📦' },
+      { op: 'resta', template: 'Había {a} pelotas. Se vendieron {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} pelotas!', emoji: '⚽', emojiB: '⚽' },
+      { op: 'divi', template: 'Hay {a} rompecabezas para {b} tiendas.', question: '¿Cuántos van a cada tienda?', successMsg: '¡{ans} rompecabezas!', emoji: '🧩', groupEmoji: '🏪' }
     ]
   },
   {
     title: "El Campamento Aventura", avatar: "⛺", character: "Guía Tomás",
     steps: [
-      { op: 'suma', template: '{char} tiene {a} linternas grandes y {b} linternas pequeñas.', question: '¿Cuántas linternas tiene en total?', successMsg: '¡{ans} linternas!', emoji: '🔦', emojiB: '🔦' },
-      { op: 'divi', template: 'Reparte las {a} linternas entre {b} carpas.', question: '¿Cuántas linternas van en cada carpa?', successMsg: '¡{ans} linternas por carpa!', emoji: '🔦', groupEmoji: '⛺', usePrevAnswer: true },
-      { op: 'divi', template: 'Prepara {a} malvaviscos para {b} exploradores.', question: '¿Cuántos malvaviscos recibe cada explorador?', successMsg: '¡{ans} malvaviscos cada uno!', emoji: '🍡', groupEmoji: '🧑‍🤝‍🧑' },
-      { op: 'divi', template: 'Tiene {a} mapas para {b} equipos de aventura.', question: '¿Cuántos mapas recibe cada equipo?', successMsg: '¡{ans} mapas por equipo!', emoji: '🗺️', groupEmoji: '👨‍👩‍👧' }
+      { op: 'suma', template: '{char} tiene {a} linternas y encontró {b} más.', question: '¿Cuántas linternas hay?', successMsg: '¡{ans} linternas!', emoji: '🔦', emojiB: '🔦' },
+      { op: 'multi', template: '{char} tiene {a} carpas con {b} exploradores cada una.', question: '¿Cuántos exploradores hay?', successMsg: '¡{ans} exploradores!', emoji: '🧑‍🤝‍🧑', groupEmoji: '⛺' },
+      { op: 'divi', template: '{char} tiene {a} malvaviscos para {b} niños.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} malvaviscos!', emoji: '🍡', groupEmoji: '👦' }
     ]
   },
   {
     title: "La Panadería del Pueblo", avatar: "🥖", character: "Panadero Juan",
     steps: [
-      { op: 'multi', template: '{char} hornea {a} tandas de pan. Cada tanda tiene {b} panes.', question: '¿Cuántos panes horneó?', successMsg: '¡{ans} panes frescos!', emoji: '🍞', groupEmoji: '🔥' },
-      { op: 'divi', template: 'Reparte los {a} panes entre {b} familias.', question: '¿Cuántos panes recibe cada familia?', successMsg: '¡{ans} panes por familia!', emoji: '🍞', groupEmoji: '👨‍👩‍👧', usePrevAnswer: true },
-      { op: 'divi', template: 'Tiene {a} donas para {b} tiendas cercanas.', question: '¿Cuántas donas van a cada tienda?', successMsg: '¡{ans} donas por tienda!', emoji: '🍩', groupEmoji: '🏪' },
-      { op: 'resta', template: '{char} tenía {a} croissants. Vendió {b}.', question: '¿Cuántos croissants le quedan?', successMsg: '¡Le quedan {ans} croissants!', emoji: '🥐', emojiB: '🥐' }
+      { op: 'multi', template: '{char} hornea {a} tandas con {b} panes cada una.', question: '¿Cuántos panes hay?', successMsg: '¡{ans} panes!', emoji: '🍞', groupEmoji: '🔥' },
+      { op: 'resta', template: '{char} tenía {a} donas. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} donas!', emoji: '🍩', emojiB: '🍩' },
+      { op: 'suma', template: '{char} hizo {a} croissants y luego {b} más.', question: '¿Cuántos croissants hay?', successMsg: '¡{ans} croissants!', emoji: '🥐', emojiB: '🥐' }
     ]
   },
   {
     title: "El Día de Campo", avatar: "🧺", character: "Familia García",
     steps: [
-      { op: 'suma', template: '{char} preparó {a} sándwiches de jamón y {b} de queso.', question: '¿Cuántos sándwiches prepararon?', successMsg: '¡{ans} sándwiches!', emoji: '🥪', emojiB: '🥪' },
-      { op: 'divi', template: 'Los {a} sándwiches son para {b} personas.', question: '¿Cuántos sándwiches le tocan a cada uno?', successMsg: '¡{ans} sándwiches cada uno!', emoji: '🥪', groupEmoji: '👦', usePrevAnswer: true },
-      { op: 'divi', template: 'Trajeron {a} frutas para {b} canastas.', question: '¿Cuántas frutas van en cada canasta?', successMsg: '¡{ans} frutas por canasta!', emoji: '🍎', groupEmoji: '🧺' },
-      { op: 'divi', template: 'Para el postre, tienen {a} galletas para {b} niños.', question: '¿Cuántas galletas recibe cada niño?', successMsg: '¡{ans} galletas cada uno!', emoji: '🍪', groupEmoji: '👧' }
+      { op: 'suma', template: '{char} preparó {a} sándwiches de jamón y {b} de queso.', question: '¿Cuántos sándwiches hay?', successMsg: '¡{ans} sándwiches!', emoji: '🥪', emojiB: '🥪' },
+      { op: 'resta', template: 'Había {a} jugos. Se tomaron {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} jugos!', emoji: '🧃', emojiB: '🧃' },
+      { op: 'divi', template: 'Hay {a} galletas para {b} niños.', question: '¿Cuántas le tocan a cada uno?', successMsg: '¡{ans} galletas!', emoji: '🍪', groupEmoji: '👧' }
     ]
   },
   {
     title: "La Biblioteca Mágica", avatar: "📚", character: "Bibliotecaria Sara",
     steps: [
-      { op: 'suma', template: '{char} recibió {a} libros nuevos y {b} libros donados.', question: '¿Cuántos libros tiene ahora?', successMsg: '¡{ans} libros!', emoji: '📕', emojiB: '📕' },
-      { op: 'divi', template: 'Coloca los {a} libros en {b} estantes.', question: '¿Cuántos libros van en cada estante?', successMsg: '¡{ans} libros por estante!', emoji: '📕', groupEmoji: '📚', usePrevAnswer: true },
-      { op: 'divi', template: 'Reparte {a} marcapáginas entre {b} lectores.', question: '¿Cuántos marcapáginas recibe cada lector?', successMsg: '¡{ans} marcapáginas cada uno!', emoji: '🔖', groupEmoji: '👧' },
-      { op: 'divi', template: 'Guarda {a} lápices en {b} cajones.', question: '¿Cuántos lápices van en cada cajón?', successMsg: '¡{ans} lápices por cajón!', emoji: '✏️', groupEmoji: '🗄️' }
+      { op: 'suma', template: '{char} recibió {a} libros nuevos y {b} donados.', question: '¿Cuántos libros hay?', successMsg: '¡{ans} libros!', emoji: '📕', emojiB: '📕' },
+      { op: 'multi', template: '{char} tiene {a} estantes con {b} libros cada uno.', question: '¿Cuántos libros hay en total?', successMsg: '¡{ans} libros!', emoji: '📕', groupEmoji: '📚' },
+      { op: 'resta', template: '{char} tenía {a} lápices. Prestó {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} lápices!', emoji: '✏️', emojiB: '✏️' }
     ]
   },
   {
@@ -3964,36 +3961,58 @@ const TRIVIA_CATEGORIES = {
 let currentTriviaCategory = null;
 let currentTriviaQuestion = null;
 let triviaCallback = null;
+let triviaQuestions = [];
+let triviaCurrentIndex = 0;
+let triviaCorrectCount = 0;
+const TRIVIA_TOTAL_QUESTIONS = 3;
 
 function showTriviaGame(onComplete){
   triviaCallback = onComplete;
+  triviaQuestions = [];
+  triviaCurrentIndex = 0;
+  triviaCorrectCount = 0;
 
-  // Seleccionar categoría aleatoria
+  // Seleccionar 3 preguntas de categorías aleatorias (pueden ser diferentes)
   const categories = Object.keys(TRIVIA_CATEGORIES);
-  const randomCat = categories[Math.floor(Math.random() * categories.length)];
-  currentTriviaCategory = TRIVIA_CATEGORIES[randomCat];
+  for(let i = 0; i < TRIVIA_TOTAL_QUESTIONS; i++){
+    const randomCat = categories[Math.floor(Math.random() * categories.length)];
+    const cat = TRIVIA_CATEGORIES[randomCat];
+    const q = cat.questions[Math.floor(Math.random() * cat.questions.length)];
+    triviaQuestions.push({ ...q, category: cat });
+  }
 
-  // Seleccionar pregunta aleatoria de esa categoría
-  const questions = currentTriviaCategory.questions;
-  currentTriviaQuestion = questions[Math.floor(Math.random() * questions.length)];
+  // Mostrar primera pregunta
+  showTriviaQuestion();
+}
 
-  // Mezclar opciones
+function showTriviaQuestion(){
+  currentTriviaCategory = triviaQuestions[triviaCurrentIndex].category;
+  currentTriviaQuestion = triviaQuestions[triviaCurrentIndex];
+
   const shuffledOptions = shuffleArray([...currentTriviaQuestion.options]);
 
   const optionsHTML = shuffledOptions.map(opt => `
     <button class="trivia-option" onclick="checkTriviaAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</button>
   `).join('');
 
+  // Progreso visual
+  const progressDots = Array.from({length: TRIVIA_TOTAL_QUESTIONS}, (_, i) => {
+    if(i < triviaCurrentIndex) return '<span class="trivia-dot done">✓</span>';
+    if(i === triviaCurrentIndex) return '<span class="trivia-dot current">●</span>';
+    return '<span class="trivia-dot">○</span>';
+  }).join('');
+
   document.getElementById('triviaModal').style.display = 'flex';
   document.getElementById('triviaModal').innerHTML = `
     <div class="trivia-content">
       <div class="trivia-header">
+        <div class="trivia-progress">${progressDots}</div>
         <div class="trivia-category">
           <span class="trivia-category-icon">${currentTriviaCategory.icon}</span>
           ${currentTriviaCategory.name}
         </div>
-        <div class="trivia-title">🎁 ¡Pregunta Premio!</div>
-        <div class="trivia-subtitle">Responde correctamente para ganar una estrella extra</div>
+        <div class="trivia-title">🎁 Pregunta ${triviaCurrentIndex + 1} de ${TRIVIA_TOTAL_QUESTIONS}</div>
+        <div class="trivia-subtitle">⭐ ${triviaCorrectCount} estrellas ganadas</div>
       </div>
 
       <div class="trivia-question-box">
@@ -4004,31 +4023,26 @@ function showTriviaGame(onComplete){
       <div class="trivia-options">${optionsHTML}</div>
 
       <div class="trivia-feedback" id="triviaFeedback"></div>
-      <button class="trivia-continue-btn" id="triviaContinueBtn" onclick="closeTriviaGame()">Continuar ➜</button>
+      <button class="trivia-continue-btn" id="triviaContinueBtn" onclick="nextTriviaQuestion()">Siguiente ➜</button>
     </div>
   `;
 
   // Deshabilitar botones mientras habla
   document.querySelectorAll('.trivia-option').forEach(b => b.classList.add('disabled'));
 
-  // Anunciar la pregunta con voz
-  const introMsgs = [
-    `¡${PLAYER.nickname}, pregunta premio de ${currentTriviaCategory.name}!`,
-    `¡Hora del premio ${PLAYER.nickname}! Una pregunta de ${currentTriviaCategory.name}.`,
-    `¡${PLAYER.fullName} ganó una pregunta premio! Es de ${currentTriviaCategory.name}.`
-  ];
-  const intro = introMsgs[Math.floor(Math.random() * introMsgs.length)];
+  // Anunciar pregunta
+  const intro = triviaCurrentIndex === 0
+    ? `¡${PLAYER.nickname}, tienes ${TRIVIA_TOTAL_QUESTIONS} preguntas premio! Primera pregunta, de ${currentTriviaCategory.name}.`
+    : `Pregunta ${triviaCurrentIndex + 1}, de ${currentTriviaCategory.name}.`;
 
-  // Leer las opciones en orden
   const optionsText = shuffledOptions.map((opt, i) => {
     const letters = ['A', 'B', 'C', 'D'];
     return `${letters[i]}: ${opt}`;
   }).join('. . ');
 
-  const fullQuestion = `${intro} . . ${currentTriviaQuestion.q} . . Las opciones son: . ${optionsText}. . ¿Cuál es tu respuesta ${PLAYER.nickname}?`;
+  const fullQuestion = `${intro} . . ${currentTriviaQuestion.q} . . Las opciones son: . ${optionsText}. . ¿Cuál es tu respuesta?`;
 
   speakText(fullQuestion, () => {
-    // Habilitar botones cuando termine de hablar
     document.querySelectorAll('.trivia-option').forEach(b => b.classList.remove('disabled'));
   }, { rate: 0.88, pitch: 1.0 });
 }
@@ -4038,63 +4052,83 @@ function checkTriviaAnswer(selected){
   const feedback = document.getElementById('triviaFeedback');
   const correct = currentTriviaQuestion.a;
 
-  // Deshabilitar todos los botones
   btns.forEach(btn => {
     btn.classList.add('disabled');
-    if(btn.textContent === correct){
-      btn.classList.add('correct');
-    }
+    if(btn.textContent === correct) btn.classList.add('correct');
   });
 
   const selectedBtn = Array.from(btns).find(b => b.textContent === selected);
 
   if(selected === correct){
-    // ¡Correcto!
     sndCorrect();
-    spawnConfetti(20);
+    spawnConfetti(15);
+    triviaCorrectCount++;
     score.stars++;
     renderScoreBar();
 
     feedback.className = 'trivia-feedback success show';
     feedback.innerHTML = `🎉 ¡Correcto! +1 ⭐`;
 
-    const correctMsgs = [
-      `¡Excelente ${PLAYER.nickname}! ¡Sabías la respuesta!`,
-      `¡${PLAYER.fullName} es un genio! ¡Ganaste una estrella!`,
-      `¡Muy bien ${PLAYER.nickname}! ¡Eso es correcto!`,
-      `¡Increíble ${PLAYER.nickname}! ¡Sabes mucho de ${currentTriviaCategory.name}!`,
-      `¡${PLAYER.fullName} lo sabe todo!`
-    ];
-
-    speakText(correctMsgs[Math.floor(Math.random() * correctMsgs.length)], () => {
+    const msgs = [`¡Bien ${PLAYER.nickname}!`, `¡Correcto!`, `¡Eso es!`, `¡Muy bien!`];
+    speakText(msgs[Math.floor(Math.random() * msgs.length)], () => {
       document.getElementById('triviaContinueBtn').classList.add('show');
     }, { rate: 0.88, pitch: 1.0 });
 
   } else {
-    // Incorrecto
     sndWrong();
     if(selectedBtn) selectedBtn.classList.add('wrong');
 
     feedback.className = 'trivia-feedback error show';
-    feedback.innerHTML = `La respuesta era: <b>${correct}</b>`;
+    feedback.innerHTML = `Era: <b>${correct}</b>`;
 
-    const wrongMsgs = [
-      `No ${PLAYER.name}, la respuesta era ${correct}. . ¡La próxima lo logras!`,
-      `Casi ${PLAYER.name}. . Era ${correct}. . ¡Sigue intentando!`,
-      `${PLAYER.name}, no era esa. . La correcta es ${correct}. . ¡Aprenderás para la próxima!`
-    ];
-
-    speakText(wrongMsgs[Math.floor(Math.random() * wrongMsgs.length)], () => {
+    speakText(`No ${PLAYER.name}, era ${correct}.`, () => {
       document.getElementById('triviaContinueBtn').classList.add('show');
     }, { rate: 0.88, pitch: 1.0 });
   }
+}
+
+function nextTriviaQuestion(){
+  triviaCurrentIndex++;
+
+  if(triviaCurrentIndex < TRIVIA_TOTAL_QUESTIONS){
+    showTriviaQuestion();
+  } else {
+    // Mostrar resumen final
+    showTriviaSummary();
+  }
+}
+
+function showTriviaSummary(){
+  const stars = '⭐'.repeat(triviaCorrectCount);
+  const message = triviaCorrectCount === 3
+    ? `¡${PLAYER.fullName} es un genio! ¡Perfecto!`
+    : triviaCorrectCount === 2
+    ? `¡Muy bien ${PLAYER.nickname}! ¡2 de 3!`
+    : triviaCorrectCount === 1
+    ? `¡Bien ${PLAYER.nickname}! ¡1 de 3!`
+    : `¡Sigue practicando ${PLAYER.name}!`;
+
+  document.getElementById('triviaModal').innerHTML = `
+    <div class="trivia-content">
+      <div class="trivia-header">
+        <div class="trivia-title" style="font-size:2rem">🏆</div>
+        <div class="trivia-title">¡Ronda Completada!</div>
+        <div class="trivia-subtitle">${message}</div>
+      </div>
+      <div style="font-size:3rem;margin:20px 0">${stars || '😅'}</div>
+      <div style="font-size:1.2rem;color:var(--cyan);font-weight:700">${triviaCorrectCount} de ${TRIVIA_TOTAL_QUESTIONS} correctas</div>
+      <button class="trivia-continue-btn show" onclick="closeTriviaGame()">¡Continuar! ➜</button>
+    </div>
+  `;
+
+  if(triviaCorrectCount > 0) spawnConfetti(triviaCorrectCount * 15);
+  speakText(message, null, { rate: 0.88, pitch: 1.0 });
 }
 
 function closeTriviaGame(){
   stopSpeaking();
   document.getElementById('triviaModal').style.display = 'none';
 
-  // Ejecutar callback si existe
   if(triviaCallback){
     triviaCallback();
     triviaCallback = null;
