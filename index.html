@@ -1651,10 +1651,19 @@ function showMathReviewModal(){
   document.getElementById('mathReviewModal').style.display = 'flex';
 
   // Leer explicación del modal - habilitar botón cuando termine
+  // Para suma, decir "primer sumando" y "segundo sumando" para que no suene repetitivo
+  let termExplanation;
+  if(currentOp === 'suma'){
+    termExplanation = `El primer sumando es ${numA}. El segundo sumando es ${numB}. ` +
+      `Y el resultado, que se llama ${terms.terms[2].name}, es ${answer}.`;
+  } else {
+    termExplanation = `El ${terms.terms[0].name} es ${numA}. El ${terms.terms[1].name} es ${numB}. ` +
+      `Y el resultado, que se llama ${terms.terms[2].name}, es ${answer}.`;
+  }
+
   const mathReviewIntro = `¡Muy bien ${PLAYER.name}! Ahora aprendamos los nombres de los números. ` +
     `Esto fue una ${terms.opName}. ` +
-    `El ${terms.terms[0].name} es ${numA}. El ${terms.terms[1].name} es ${numB}. ` +
-    `Y el resultado, que se llama ${terms.terms[2].name}, es ${answer}. ` +
+    termExplanation + ` ` +
     `Memoriza estos nombres, ${PLAYER.nickname}, porque luego te voy a preguntar.`;
 
   setTimeout(() => {
@@ -2087,6 +2096,9 @@ function showMathQuizComplete(){
 }
 
 function closeMathReviewAndContinue(){
+  // Detener voz para evitar que se trabe
+  stopSpeaking();
+
   document.getElementById('mathReviewModal').style.display = 'none';
 
   // Mostrar juego de trivia como premio después de cada módulo
@@ -2446,6 +2458,7 @@ function updateSourceDisplay(){
       elA.innerHTML = groupA.map(item => `
         <span class="source-emoji ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
               draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
               onclick="tapSourceItem(${item.id},'${item.emoji}')"
               ondragstart="dragSourceItem(event, ${item.id})"
               ontouchstart="handleTouchStart(event, ${item.id}, true, '${item.emoji}')"
@@ -2458,6 +2471,7 @@ function updateSourceDisplay(){
       elB.innerHTML = groupB.map(item => `
         <span class="source-emoji ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
               draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
               onclick="tapSourceItem(${item.id},'${item.emoji}')"
               ondragstart="dragSourceItem(event, ${item.id})"
               ontouchstart="handleTouchStart(event, ${item.id}, true, '${item.emoji}')"
@@ -2473,6 +2487,7 @@ function updateSourceDisplay(){
       el.innerHTML = items.map(item => `
         <span class="source-emoji ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
               draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
               onclick="tapSourceItem(${item.id},'${item.emoji}')"
               ondragstart="dragSourceItem(event, ${item.id})"
               ontouchstart="handleTouchStart(event, ${item.id}, true, '${item.emoji}')"
@@ -2499,6 +2514,7 @@ function updateZoneDisplays(){
     el.innerHTML = items.map(item => `
       <span class="placed-emoji ${selectedItemId === item.id && !selectedFromSource ? 'selected' : ''}"
             draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+            onmousedown="handleMouseDown()"
             onclick="tapPlacedItem(${item.id})"
             ondragstart="dragPlacedItem(event, ${item.id})"
             ontouchstart="handleTouchStart(event, ${item.id}, false, '${item.emoji}')"
@@ -2553,7 +2569,7 @@ function renderCounters(){
 
 function renderActions(){
   document.getElementById('actions').innerHTML = `
-    <button class="btn btn-check" onclick="checkAnswer()">✅ Verificar</button>
+    <button class="btn btn-check" id="verifyBtn" onclick="checkAnswer()">✅ Verificar</button>
   `;
 }
 
@@ -2731,6 +2747,7 @@ document.addEventListener('touchmove', (e) => {
 // ===== DESKTOP DRAG =====
 function dragSourceItem(e, id){
   e.stopPropagation();
+  isDragging = true;
   draggedItemId = id;
   draggedFromSource = true;
   e.target.classList.add('dragging');
@@ -2754,6 +2771,7 @@ function dragSourceItem(e, id){
 
 function dragPlacedItem(e, id){
   e.stopPropagation();
+  isDragging = true;
   draggedItemId = id;
   draggedFromSource = false;
   e.target.classList.add('dragging');
@@ -2774,8 +2792,16 @@ function dragPlacedItem(e, id){
   sndClick();
 }
 
-// TAP como fallback (doble propósito)
+// TAP como fallback (doble propósito) - solo si no se inició drag
+let mouseDownTime = 0;
+let isDragging = false;
+
 function tapSourceItem(id, emoji){
+  // Si el mouse estuvo presionado más de 150ms, fue un drag, no click
+  if(isDragging || (Date.now() - mouseDownTime > 150 && mouseDownTime > 0)) {
+    isDragging = false;
+    return;
+  }
   if(selectedItemId === id && selectedFromSource){
     selectedItemId = null;
     selectedFromSource = false;
@@ -2788,6 +2814,11 @@ function tapSourceItem(id, emoji){
 }
 
 function tapPlacedItem(id){
+  // Si el mouse estuvo presionado más de 150ms, fue un drag, no click
+  if(isDragging || (Date.now() - mouseDownTime > 150 && mouseDownTime > 0)) {
+    isDragging = false;
+    return;
+  }
   if(selectedItemId === id && !selectedFromSource){
     selectedItemId = null;
     selectedFromSource = false;
@@ -2797,6 +2828,12 @@ function tapPlacedItem(id){
     sndClick();
   }
   updateAllDisplays();
+}
+
+// Detectar inicio de posible drag
+function handleMouseDown(){
+  mouseDownTime = Date.now();
+  isDragging = false;
 }
 
 function tapZone(zone){
@@ -3088,6 +3125,13 @@ function checkAnswer(){
 
   if(correct){
     hasChecked = true;
+    // Bloquear botón verificar
+    const verifyBtn = document.getElementById('verifyBtn');
+    if(verifyBtn){
+      verifyBtn.disabled = true;
+      verifyBtn.style.opacity = '0.5';
+      verifyBtn.style.pointerEvents = 'none';
+    }
     sndCorrect();
 
     // Guardar respuesta para posible uso en siguiente paso
