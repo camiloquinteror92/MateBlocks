@@ -320,7 +320,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .fraction-top .value{font-size:1.8rem;font-weight:900;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,214,143,.15);border:2px solid var(--green);color:var(--green)}
 .fraction-bottom .value{font-size:1.8rem;font-weight:900;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(56,189,248,.15);border:2px solid var(--blue);color:var(--blue)}
 .fraction-top .label,.fraction-bottom .label{font-size:.55rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:.3px;line-height:1.1}
-.fraction-line{width:70px;height:4px;background:var(--orange);border-radius:2px;margin:6px 0}
+.fraction-line-container{display:flex;align-items:center;gap:8px;margin:6px 0}
+.fraction-line{width:70px;height:4px;background:var(--orange);border-radius:2px}
+.fraction-symbol-label{font-size:.5rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
 
 /* Tabla de términos - rediseñada */
 .terms-table{background:rgba(0,0,0,.25);border-radius:12px;padding:12px;margin-top:12px}
@@ -1575,7 +1577,10 @@ function showMathReviewModal(){
             <div class="value num-a">${numA}</div>
             <div class="label highlight term-label" data-term="a">${terms.terms[0].name}</div>
           </div>
-          <div class="fraction-line"></div>
+          <div class="fraction-line-container">
+            <div class="fraction-line"></div>
+            <div class="fraction-symbol-label term-label" data-term="sym">${terms.symbolName}</div>
+          </div>
           <div class="fraction-bottom">
             <div class="value num-b">${numB}</div>
             <div class="label highlight term-label" data-term="b">${terms.terms[1].name}</div>
