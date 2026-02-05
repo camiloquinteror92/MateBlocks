@@ -1,0 +1,4035 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>🧩 MateBlocks — Aventura Matemática</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.app,.center-panel,.left-panel,.right-panel{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+:root{
+  --bg:#1a1a2e;--board:#16213e;--cell:#0f3460;--cell-hover:#1a4a7a;
+  --green:#00d68f;--blue:#38bdf8;--orange:#ff9f43;--pink:#ff6b9d;
+  --red:#ff4757;--purple:#a78bfa;--yellow:#ffd43b;--cyan:#22d3ee;
+  --text:#e2e8f0;--text-dim:#64748b;--panel:#1e293b;--card:#0f172a;
+  --glow-green:rgba(0,214,143,.3);--glow-blue:rgba(56,189,248,.3);
+}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;-webkit-overflow-scrolling:touch}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;overscroll-behavior-y:contain}
+
+/* Elemento fantasma para drag táctil */
+.drag-ghost{position:fixed;pointer-events:none;z-index:9999;font-size:3rem;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));transform:translate(-50%,-50%);transition:none}
+
+.header{text-align:center;padding:6px 12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.header h1{font-weight:900;font-size:1.2rem;background:linear-gradient(135deg,var(--green),var(--blue),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-bar{display:flex;gap:16px;align-items:center}
+.score-item{text-align:center;padding:4px 12px;background:var(--panel);border-radius:8px}
+.score-item .val{font-weight:900;font-size:1rem}
+.score-item .lbl{font-size:.6rem;font-weight:700;color:var(--text-dim);text-transform:uppercase}
+.score-item.adventures .val{color:var(--purple)}
+.score-item.streak .val{color:var(--yellow)}
+.score-item.stars .val{color:var(--cyan)}
+
+.app{flex:1;display:grid;grid-template-columns:280px 1fr 260px;gap:10px;padding:8px 12px;min-height:0;overflow:hidden}
+
+.left-panel{display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.story-panel{background:linear-gradient(135deg, var(--card), var(--panel));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.story-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.story-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.story-meta{flex:1}
+.story-title{font-weight:900;font-size:.85rem;color:var(--yellow)}
+.story-chapter{font-size:.65rem;color:var(--text-dim);font-weight:700}
+.story-text{background:rgba(0,0,0,.2);border-radius:8px;padding:10px;font-size:.8rem;line-height:1.5;border-left:3px solid var(--purple)}
+.story-text .highlight{color:var(--yellow);font-weight:800}
+.story-text .number{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:6px;font-weight:900;font-size:.85rem;padding:0 4px;background:rgba(0,214,143,.2);color:var(--green);border:1px solid var(--green)}
+.progress-bar{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08)}
+.progress-step{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.1)}
+.progress-step.done{background:var(--green)}
+.progress-step.current{background:rgba(255,212,59,.3);border:1px solid var(--yellow)}
+.progress-label{font-size:.6rem;font-weight:800;color:var(--text-dim)}
+
+.challenge-card{background:var(--panel);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.challenge-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.challenge-title{font-size:.75rem;font-weight:800;color:var(--cyan)}
+.challenge-op{padding:3px 10px;border-radius:12px;font-size:.65rem;font-weight:800;text-transform:uppercase}
+.challenge-op.suma{background:rgba(0,214,143,.15);color:var(--green)}
+.challenge-op.resta{background:rgba(255,159,67,.15);color:var(--orange)}
+.challenge-op.multi{background:rgba(56,189,248,.15);color:var(--blue)}
+.challenge-op.divi{background:rgba(255,107,157,.15);color:var(--pink)}
+.challenge-equation{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;background:rgba(0,0,0,.2);border-radius:10px}
+.challenge-equation .num{min-width:32px;height:32px;border-radius:10px;font-weight:900;font-size:1.1rem;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.challenge-equation .num.a{background:rgba(0,214,143,.15);color:var(--green)}
+.challenge-equation .num.b{background:rgba(56,189,248,.15);color:var(--blue)}
+.challenge-equation .op-sym{font-size:1.3rem;color:var(--text-dim);font-weight:800}
+.challenge-equation .eq{font-size:1.2rem;color:var(--yellow);font-weight:800}
+.challenge-equation .result-box{background:rgba(255,212,59,.1);color:var(--yellow);border:2px dashed var(--yellow);min-width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem}
+
+.hint-panel{background:var(--card);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.06);flex:1;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.hint-panel h4{font-size:.7rem;font-weight:800;color:var(--cyan);display:flex;align-items:center;gap:6px}
+.hint-level{padding:8px;border-radius:8px;font-size:.72rem;line-height:1.4;display:none}
+.hint-level.active{display:block}
+.hint-level.hint-1{background:rgba(167,139,250,.1);border-left:3px solid var(--purple);color:var(--text)}
+.hint-level.hint-2{background:rgba(255,212,59,.1);border-left:3px solid var(--yellow);color:var(--text)}
+.hint-level.hint-3{background:rgba(0,214,143,.1);border-left:3px solid var(--green);color:var(--text)}
+.hint-level b{color:var(--yellow)}
+
+.center-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:0}
+
+/* Source area - where objects come from */
+.source-area{background:linear-gradient(135deg, var(--panel), var(--card));border-radius:16px;padding:16px;border:2px solid rgba(255,255,255,.1);margin-bottom:12px;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+.source-title{font-size:.75rem;font-weight:800;color:var(--text-dim);text-align:center;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+.source-title .icon{font-size:1rem}
+.tap-hint{font-size:.6rem;color:var(--cyan);text-align:center;margin-top:6px;opacity:.8}
+.source-groups{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.source-group{background:rgba(0,0,0,.2);border-radius:12px;padding:10px;min-width:80px;border:2px dashed rgba(255,255,255,.15)}
+.source-group.empty{opacity:.5;border-style:dotted}
+.source-group-label{font-size:.65rem;font-weight:700;color:var(--text-dim);text-align:center;margin-bottom:6px}
+.source-items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:40px;align-items:center}
+.source-emoji{font-size:1.8rem;cursor:grab;transition:all .15s;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-drag:element;animation:emojiPop .3s ease}
+.source-emoji:active{cursor:grabbing}
+.source-emoji:hover{transform:scale(1.15)}
+.source-emoji:active{transform:scale(.95)}
+.source-emoji.dragging{opacity:.4;transform:scale(.8)}
+.source-emoji.selected{transform:scale(1.2);filter:drop-shadow(0 0 8px var(--yellow));animation:selectedPulse 1s ease infinite}
+
+/* Trash bin */
+.trash-row{display:flex;justify-content:center;margin-top:10px}
+.trash-bin{width:50px;height:50px;border-radius:12px;background:rgba(255,71,87,.1);border:2px dashed var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:all .2s;opacity:.6;cursor:pointer}
+.trash-bin:hover{opacity:1;transform:scale(1.05)}
+.trash-bin.drag-over{opacity:1;transform:scale(1.15);background:rgba(255,71,87,.25);border-style:solid;box-shadow:0 0 20px rgba(255,71,87,.4)}
+.trash-bin.waiting{opacity:1;border-color:var(--cyan);animation:zonePulse 1.5s ease infinite}
+
+/* Workspace area */
+.workspace{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;max-width:600px;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+.workspace-title{font-size:.85rem;font-weight:700;color:var(--cyan);text-align:center;background:rgba(56,189,248,.1);padding:8px 16px;border-radius:20px;border:1px solid rgba(56,189,248,.2)}
+
+/* Drop zones for operations */
+.drop-zones{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.drop-zone{background:var(--card);border-radius:16px;padding:12px;border:3px dashed rgba(255,255,255,.15);min-width:120px;min-height:100px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .2s}
+.drop-zone:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.03)}
+.drop-zone.highlight{border-color:var(--yellow);background:rgba(255,212,59,.05);transform:scale(1.02)}
+.drop-zone.waiting{border-color:var(--cyan);animation:zonePulse 1.5s ease infinite}
+.drop-zone-label{font-size:.7rem;font-weight:800;color:var(--text-dim);display:flex;align-items:center;gap:4px}
+.drop-zone-label .zone-emoji{font-size:1.2rem}
+.drop-zone-items{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;align-items:center}
+.placed-emoji{font-size:2rem;cursor:grab;transition:all .15s;animation:emojiPop .3s cubic-bezier(.34,1.56,.64,1);user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-user-drag:element}
+.placed-emoji:active{cursor:grabbing}
+.placed-emoji:hover{transform:scale(1.2)}
+.placed-emoji:active{transform:scale(.95)}
+.placed-emoji.selected{transform:scale(1.2);filter:drop-shadow(0 0 8px var(--yellow));animation:selectedPulse 1s ease infinite}
+.placed-emoji.removing{animation:emojiRemove .2s ease-out forwards}
+.placed-emoji.shake{animation:emojiShake .35s ease}
+.placed-emoji.glow{animation:emojiGlow .5s ease}
+.placed-emoji.dragging{opacity:0.5;transform:scale(0.8)}
+.placed-emoji.bounce{animation:emojiBounce .4s ease}
+.placed-emoji.wiggle{animation:emojiWiggle .3s ease}
+
+/* Zone effects */
+.drop-zone.pulse{animation:zonePulse 1s ease infinite}
+.drop-zone.success{animation:successBurst .4s ease;border-color:var(--green);background:rgba(0,214,143,.1)}
+
+/* Stars effect */
+.star-earned{animation:starSparkle .5s ease;display:inline-block}
+
+/* Feedback animations */
+.feedback.correct{animation:successBurst .5s ease}
+.feedback.wrong .big-emoji{animation:emojiShake .5s ease}
+
+/* Single zone for suma/multi */
+.single-zone{min-width:200px;min-height:140px}
+.single-zone .drop-zone-items{gap:8px}
+
+/* Two zones for resta */
+.resta-zones .drop-zone{flex:1;max-width:180px}
+.resta-zones .drop-zone.zone-keep{border-color:var(--green);background:rgba(0,214,143,.05)}
+.resta-zones .drop-zone.zone-remove{border-color:var(--orange);background:rgba(255,159,67,.05)}
+
+/* Multiple zones for multi */
+.multi-zones{gap:12px}
+.multi-zones .drop-zone{flex:1;min-width:90px;max-width:130px;min-height:90px}
+.multi-group{position:relative}
+.multi-group::before{content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:20px;height:6px;background:rgba(255,255,255,.2);border-radius:0 0 4px 4px}
+
+/* Multiple zones for divi */
+.divi-zones .drop-zone{flex:1;min-width:100px;max-width:140px}
+
+@keyframes emojiPop{0%{transform:scale(0) rotate(-10deg)}50%{transform:scale(1.3) rotate(5deg)}100%{transform:scale(1) rotate(0deg)}}
+@keyframes emojiRemove{0%{transform:scale(1) rotate(0deg)}100%{transform:scale(0) rotate(30deg);opacity:0}}
+@keyframes emojiShake{0%,100%{transform:translateX(0) rotate(0deg)}20%{transform:translateX(-5px) rotate(-5deg)}40%{transform:translateX(5px) rotate(5deg)}60%{transform:translateX(-3px) rotate(-3deg)}80%{transform:translateX(3px) rotate(3deg)}}
+@keyframes emojiGlow{0%,100%{filter:drop-shadow(0 0 0 transparent);transform:scale(1)}50%{filter:drop-shadow(0 0 15px var(--yellow));transform:scale(1.1)}}
+@keyframes emojiBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes emojiWiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+@keyframes selectedPulse{0%,100%{filter:drop-shadow(0 0 8px var(--yellow))}50%{filter:drop-shadow(0 0 15px var(--yellow))}}
+@keyframes zonePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,212,59,0)}50%{box-shadow:0 0 20px 5px rgba(255,212,59,.3)}}
+@keyframes starSparkle{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.2);opacity:.8}}
+@keyframes successBurst{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes countFloat{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-100%) scale(1.3)}}
+
+.board-counters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.counter-chip{padding:4px 10px;border-radius:6px;font-weight:800;font-size:.7rem;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.counter-dot{width:10px;height:10px;border-radius:3px}
+
+.right-panel{display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.actions{display:flex;flex-direction:column;gap:6px}
+.btn{border:none;padding:12px 18px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .2s;text-align:center}
+.btn:hover{transform:scale(1.03)}
+.btn-check{background:linear-gradient(135deg, var(--green), #00b377);color:#fff;box-shadow:0 4px 15px var(--glow-green)}
+.btn-new{background:var(--purple);color:#fff}
+
+.result-card{background:var(--panel);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,.05);flex:1;overflow:auto}
+.result-card h3{font-size:.75rem;font-weight:800;color:var(--text-dim);margin-bottom:8px}
+.feedback{padding:12px;border-radius:10px;text-align:center;font-weight:700;font-size:.85rem}
+.feedback.correct{background:rgba(0,214,143,.1);border:2px solid var(--green);color:var(--green)}
+.feedback.wrong{background:rgba(255,71,87,.1);border:2px solid var(--red);color:var(--red)}
+.feedback.info{background:rgba(56,189,248,.08);border:2px solid rgba(56,189,248,.3);color:var(--blue)}
+.feedback.thinking{background:rgba(167,139,250,.1);border:2px solid var(--purple);color:var(--purple)}
+.feedback .big-emoji{font-size:1.8rem;display:block;margin-bottom:6px}
+.feedback .detail{font-size:.72rem;color:var(--text-dim);margin-top:6px;line-height:1.4}
+
+.encouragement{background:rgba(255,212,59,.1);border-radius:8px;padding:8px 10px;font-size:.7rem;color:var(--yellow);text-align:center;font-weight:700;margin-top:8px}
+.attempts-indicator{display:flex;gap:4px;justify-content:center;margin-top:8px}
+.attempt-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15)}
+.attempt-dot.used{background:var(--orange)}
+.attempt-dot.success{background:var(--green)}
+
+.sound-toggle{position:fixed;top:8px;right:10px;z-index:100;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 8px;cursor:pointer;font-size:1rem;transition:all .2s}
+.sound-toggle:hover{transform:scale(1.1)}
+
+.celebration{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999}
+.celebration-content{background:linear-gradient(135deg,var(--panel),var(--card));border-radius:16px;padding:24px 32px;text-align:center;max-width:360px;border:2px solid var(--yellow);box-shadow:0 0 30px rgba(255,212,59,.3)}
+.celebration h2{font-weight:900;font-size:1.4rem;color:var(--yellow);margin-bottom:8px}
+.celebration p{color:var(--text);font-size:.9rem;margin-bottom:16px;line-height:1.5}
+.celebration .stars{font-size:2rem;margin-bottom:12px}
+.celebration .btn{padding:10px 24px}
+
+/* Modal de Historia con Quiz de Operación */
+.story-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:998;padding:20px;overflow:auto}
+.story-modal-content{background:linear-gradient(135deg,var(--panel),var(--card));border-radius:20px;padding:28px 32px;text-align:center;max-width:480px;width:100%;border:2px solid var(--purple);box-shadow:0 0 40px rgba(167,139,250,.3);animation:modalAppear .4s ease}
+@keyframes modalAppear{0%{opacity:0;transform:scale(.9) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.story-modal-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 16px;box-shadow:0 4px 20px rgba(167,139,250,.4)}
+.story-modal-title{font-weight:900;font-size:1.4rem;color:var(--yellow);margin-bottom:4px}
+.story-modal-chapter{font-size:.8rem;color:var(--text-dim);margin-bottom:16px;font-weight:700}
+.story-modal-text{background:rgba(0,0,0,.3);border-radius:12px;padding:16px 20px;font-size:1rem;line-height:1.6;color:var(--text);border-left:4px solid var(--purple);text-align:left;margin-bottom:20px}
+.story-modal-text .highlight{color:var(--yellow);font-weight:800}
+.story-modal-text .number{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:8px;font-weight:900;font-size:.95rem;padding:0 6px;background:rgba(0,214,143,.2);color:var(--green);border:1px solid var(--green)}
+.story-modal-question{font-size:1.1rem;font-weight:800;color:var(--cyan);margin-bottom:16px}
+.quiz-section{margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}
+.quiz-label{font-size:.85rem;font-weight:700;color:var(--text-dim);margin-bottom:12px}
+.operation-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.op-btn{flex:1;min-width:100px;padding:14px 12px;border-radius:14px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--text);font-weight:800;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.op-btn:hover{border-color:rgba(255,255,255,.3);transform:scale(1.03)}
+.op-btn:active{transform:scale(.97)}
+.op-btn.suma{border-color:var(--green);background:rgba(0,214,143,.1)}
+.op-btn.suma:hover{background:rgba(0,214,143,.2);box-shadow:0 0 15px rgba(0,214,143,.3)}
+.op-btn.resta{border-color:var(--orange);background:rgba(255,159,67,.1)}
+.op-btn.resta:hover{background:rgba(255,159,67,.2);box-shadow:0 0 15px rgba(255,159,67,.3)}
+.op-btn.multi{border-color:var(--blue);background:rgba(56,189,248,.1)}
+.op-btn.multi:hover{background:rgba(56,189,248,.2);box-shadow:0 0 15px rgba(56,189,248,.3)}
+.op-btn.divi{border-color:var(--pink);background:rgba(255,107,157,.1)}
+.op-btn.divi:hover{background:rgba(255,107,157,.2);box-shadow:0 0 15px rgba(255,107,157,.3)}
+.op-btn .op-sym{font-size:1.4rem;font-weight:900}
+.op-btn .op-name{font-size:.7rem;text-transform:uppercase;letter-spacing:1px}
+.op-btn.disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
+.op-btn.correct{animation:correctPulse .5s ease;border-color:var(--green)!important;background:rgba(0,214,143,.3)!important}
+.op-btn.wrong{animation:wrongShake .5s ease;border-color:var(--red)!important;background:rgba(255,71,87,.2)!important}
+@keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.quiz-feedback{margin-top:16px;padding:14px;border-radius:12px;font-size:.9rem;line-height:1.5;display:none}
+.quiz-feedback.show{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:translateY(0)}}
+.quiz-feedback.wrong{background:rgba(255,71,87,.15);border:2px solid var(--red);color:var(--text)}
+.quiz-feedback.wrong .feedback-title{color:var(--red);font-weight:800;display:block;margin-bottom:8px}
+.quiz-feedback .tip-box{background:rgba(0,0,0,.2);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:.82rem;text-align:left}
+.quiz-feedback .tip-box b{color:var(--yellow)}
+.quiz-cooldown{margin-top:12px;font-size:.8rem;color:var(--text-dim);font-weight:700}
+.quiz-cooldown .timer{color:var(--yellow);font-weight:900;font-size:1rem}
+
+/* Lectura en voz alta */
+.voice-reading-indicator{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;background:rgba(167,139,250,.15);border-radius:12px;margin-bottom:16px;border:2px solid var(--purple)}
+.voice-reading-indicator .voice-icon{font-size:1.5rem;animation:voicePulse 1s ease infinite}
+.voice-reading-indicator .voice-text{font-size:.85rem;font-weight:700;color:var(--purple)}
+.voice-reading-indicator .voice-dots{display:flex;gap:4px}
+.voice-reading-indicator .voice-dots span{width:8px;height:8px;border-radius:50%;background:var(--purple);animation:voiceDot 1.4s ease infinite}
+.voice-reading-indicator .voice-dots span:nth-child(2){animation-delay:.2s}
+.voice-reading-indicator .voice-dots span:nth-child(3){animation-delay:.4s}
+@keyframes voicePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes voiceDot{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1.2)}}
+.story-modal-text.reading{border-color:var(--yellow);background:rgba(255,212,59,.1);animation:readingGlow 2s ease infinite}
+.story-modal-question.reading{color:var(--yellow);animation:readingGlow 2s ease infinite}
+@keyframes readingGlow{0%,100%{box-shadow:0 0 5px rgba(255,212,59,.2)}50%{box-shadow:0 0 20px rgba(255,212,59,.4)}}
+.quiz-section.hidden{opacity:.3;pointer-events:none}
+.quiz-section.hidden .quiz-label::after{content:' (Escucha primero...)';color:var(--yellow);font-style:italic}
+.voice-btn{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:2px solid var(--purple);background:rgba(167,139,250,.2);color:var(--purple);font-size:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.voice-btn:hover{background:rgba(167,139,250,.4);transform:scale(1.1)}
+.voice-btn.speaking{background:var(--purple);color:white;animation:speakingPulse 1s ease infinite}
+@keyframes speakingPulse{0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,.5)}50%{box-shadow:0 0 0 10px rgba(167,139,250,0)}}
+.story-modal-content{position:relative}
+
+/* Botón de escuchar prominente */
+.listen-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px 24px;margin-bottom:20px;border-radius:16px;border:3px solid var(--purple);background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(255,107,157,.2));color:var(--text);font-size:1.1rem;font-weight:800;cursor:pointer;transition:all .3s;animation:listenPulse 2s ease infinite}
+.listen-btn:hover{transform:scale(1.03);background:linear-gradient(135deg,rgba(167,139,250,.4),rgba(255,107,157,.4));box-shadow:0 0 25px rgba(167,139,250,.4)}
+.listen-btn:active{transform:scale(.98)}
+.listen-btn .listen-icon{font-size:1.8rem;animation:speakerBounce 1s ease infinite}
+@keyframes listenPulse{0%,100%{box-shadow:0 0 10px rgba(167,139,250,.3)}50%{box-shadow:0 0 25px rgba(167,139,250,.5)}}
+@keyframes speakerBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+/* Mobile adjustments for modal */
+@media(max-width:900px){
+  .story-modal{padding:15px}
+  .story-modal-content{padding:20px;border-radius:16px}
+  .story-modal-avatar{width:70px;height:70px;font-size:2rem;margin-bottom:12px}
+  .story-modal-title{font-size:1.2rem}
+  .story-modal-text{padding:14px 16px;font-size:.95rem}
+  .story-modal-question{font-size:1rem}
+  .operation-btns{gap:8px}
+  .op-btn{min-width:80px;padding:12px 10px;font-size:.85rem}
+  .op-btn .op-sym{font-size:1.2rem}
+  .quiz-feedback{padding:12px;font-size:.85rem}
+}
+
+/* Modal de Repaso Matemático */
+.math-review-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:997;padding:20px;overflow:auto}
+.math-review-content{background:linear-gradient(135deg,var(--panel),var(--card));border-radius:20px;padding:24px 28px;text-align:center;max-width:540px;width:100%;border:2px solid var(--cyan);box-shadow:0 0 40px rgba(56,189,248,.3);animation:modalAppear .4s ease;max-height:90vh;overflow-y:auto}
+.math-review-header{margin-bottom:16px}
+.math-review-header h2{font-size:1.2rem;font-weight:900;color:var(--yellow);margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.math-review-header p{font-size:.85rem;color:var(--text-dim)}
+.math-review-header p b{color:var(--cyan)}
+
+/* Operación formal con etiquetas */
+.formal-operation{background:rgba(0,0,0,.3);border-radius:16px;padding:16px 12px;margin-bottom:16px}
+.formal-operation-title{font-size:.7rem;font-weight:700;color:var(--cyan);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+
+/* Display de la operación - diseño mejorado */
+.operation-display{display:flex;align-items:flex-start;justify-content:center;gap:6px;margin-bottom:12px}
+.math-element{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:60px}
+.math-element .value{font-size:1.8rem;font-weight:900;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15)}
+.math-element .value.num-a{background:rgba(0,214,143,.15);border-color:var(--green);color:var(--green)}
+.math-element .value.num-b{background:rgba(56,189,248,.15);border-color:var(--blue);color:var(--blue)}
+.math-element .value.symbol{background:rgba(255,159,67,.15);border-color:var(--orange);color:var(--orange);font-size:1.5rem;width:44px;height:52px}
+.math-element .value.equals{background:transparent;border:none;color:var(--text-dim);font-size:1.4rem;width:30px}
+.math-element .value.result{background:rgba(255,212,59,.15);border-color:var(--yellow);color:var(--yellow)}
+.math-element .label{font-size:.55rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.3px;line-height:1.1;min-height:22px;display:flex;align-items:center;text-align:center}
+.math-element .label.highlight{color:var(--cyan)}
+
+/* División como fracción (numerador arriba, denominador abajo) */
+.division-display{align-items:center}
+.fraction-container{display:flex;flex-direction:column;align-items:center;gap:4px;margin-right:8px}
+.fraction-top,.fraction-bottom{display:flex;flex-direction:column;align-items:center;gap:4px}
+.fraction-top .value{font-size:1.8rem;font-weight:900;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,214,143,.15);border:2px solid var(--green);color:var(--green)}
+.fraction-bottom .value{font-size:1.8rem;font-weight:900;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(56,189,248,.15);border:2px solid var(--blue);color:var(--blue)}
+.fraction-top .label,.fraction-bottom .label{font-size:.55rem;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:.3px;line-height:1.1}
+.fraction-line{width:70px;height:4px;background:var(--orange);border-radius:2px;margin:6px 0}
+
+/* Tabla de términos - rediseñada */
+.terms-table{background:rgba(0,0,0,.25);border-radius:12px;padding:12px;margin-top:12px}
+.terms-table-title{font-size:.7rem;font-weight:700;color:var(--purple);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+.terms-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:8px}
+.term-item{background:rgba(255,255,255,.06);border-radius:10px;padding:10px 8px;text-align:center;border-top:3px solid var(--purple)}
+.term-item .term-name{font-size:.6rem;font-weight:800;color:var(--cyan);text-transform:uppercase;margin-bottom:4px;letter-spacing:.5px}
+.term-item .term-value{font-size:1.3rem;font-weight:900;color:var(--yellow);margin-bottom:2px}
+.term-item .term-desc{font-size:.58rem;color:var(--text-dim);line-height:1.3}
+
+.fun-fact{font-size:.72rem;color:var(--yellow);margin-top:12px;font-style:italic;padding:8px 12px;background:rgba(255,212,59,.08);border-radius:8px;border-left:3px solid var(--yellow)}
+
+/* Quiz de términos */
+.terms-quiz{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1)}
+.terms-quiz-question{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.4}
+.terms-quiz-question .quiz-highlight{color:var(--yellow);font-weight:900;font-size:1.05rem}
+.terms-options{display:grid;grid-template-columns:repeat(2, 1fr);gap:8px}
+.term-option{padding:11px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--text);font-weight:700;font-size:.82rem;cursor:pointer;transition:all .2s;text-align:center}
+.term-option:hover{border-color:rgba(255,255,255,.3);transform:scale(1.02)}
+.term-option.correct{border-color:var(--green)!important;background:rgba(0,214,143,.2)!important;animation:correctPulse .4s ease}
+.term-option.wrong{border-color:var(--red)!important;background:rgba(255,71,87,.15)!important;animation:wrongShake .4s ease}
+.term-option.disabled{opacity:.6;pointer-events:none}
+.terms-quiz-feedback{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:.8rem;display:none}
+.terms-quiz-feedback.show{display:block;animation:fadeIn .3s ease}
+.terms-quiz-feedback.success{background:rgba(0,214,143,.15);border:1px solid var(--green);color:var(--green)}
+.terms-quiz-feedback.error{background:rgba(255,71,87,.15);border:1px solid var(--red);color:var(--text)}
+.terms-quiz-progress{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.quiz-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15)}
+.quiz-dot.done{background:var(--green)}
+.quiz-dot.current{background:var(--yellow);animation:pulse 1s ease infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+.continue-btn{margin-top:16px;padding:14px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--green),#00b377);color:#fff;font-weight:800;font-size:1rem;cursor:pointer;transition:all .2s;display:none}
+.continue-btn.show{display:inline-block;animation:fadeIn .3s ease}
+.continue-btn:hover{transform:scale(1.05);box-shadow:0 4px 20px rgba(0,214,143,.4)}
+
+/* Mobile adjustments for math review */
+@media(max-width:900px){
+  .math-review-modal{padding:12px}
+  .math-review-content{padding:16px;max-height:95vh}
+  .math-review-header{margin-bottom:12px}
+  .math-review-header h2{font-size:1rem}
+  .math-review-header p{font-size:.8rem}
+  .formal-operation{padding:12px 10px}
+  .formal-operation-title{font-size:.65rem;margin-bottom:12px}
+  .operation-display{gap:4px}
+  .math-element{min-width:50px;gap:4px}
+  .math-element .value{font-size:1.4rem;width:42px;height:42px;border-radius:10px}
+  .math-element .value.symbol{width:36px;font-size:1.2rem}
+  .math-element .value.equals{width:24px;font-size:1.2rem}
+  .math-element .label{font-size:.5rem;min-height:18px}
+  .terms-table{padding:10px;margin-top:10px}
+  .terms-table-title{font-size:.65rem;margin-bottom:8px}
+  .terms-grid{grid-template-columns:repeat(3, 1fr);gap:6px}
+  .term-item{padding:8px 6px;border-radius:8px}
+  .term-item .term-name{font-size:.55rem;margin-bottom:2px}
+  .term-item .term-value{font-size:1.1rem}
+  .term-item .term-desc{font-size:.52rem}
+  .fun-fact{font-size:.65rem;padding:6px 10px;margin-top:10px}
+  .terms-quiz{margin-top:12px;padding-top:12px}
+  .terms-quiz-question{font-size:.85rem;margin-bottom:10px}
+  .terms-quiz-question .quiz-highlight{font-size:1rem}
+  .terms-options{gap:6px}
+  .term-option{padding:10px 8px;font-size:.78rem;border-radius:8px}
+  .terms-quiz-feedback{padding:8px 10px;font-size:.75rem}
+  .continue-btn{padding:12px 24px;font-size:.9rem}
+}
+
+/* Trivia Modal - Juego de Premio */
+.trivia-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;z-index:998;padding:20px;overflow:auto}
+.trivia-content{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:24px;padding:28px;text-align:center;max-width:500px;width:100%;border:3px solid var(--yellow);box-shadow:0 0 60px rgba(255,212,59,.4);animation:modalAppear .5s ease}
+.trivia-header{margin-bottom:20px}
+.trivia-category{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:8px 16px;border-radius:20px;font-size:.85rem;font-weight:700;color:var(--yellow);margin-bottom:12px}
+.trivia-category-icon{font-size:1.5rem}
+.trivia-title{font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:4px}
+.trivia-subtitle{font-size:.85rem;color:var(--text-dim)}
+.trivia-question-box{background:rgba(0,0,0,.4);border-radius:16px;padding:20px;margin-bottom:20px;border:2px solid rgba(255,255,255,.1)}
+.trivia-question{font-size:1.1rem;font-weight:700;color:#fff;line-height:1.4}
+.trivia-image{font-size:4rem;margin-bottom:12px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.trivia-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trivia-option{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 12px;font-size:.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all .2s ease}
+.trivia-option:hover{background:rgba(255,255,255,.15);border-color:var(--cyan);transform:scale(1.02)}
+.trivia-option.correct{background:rgba(0,214,143,.3);border-color:var(--green);color:var(--green);animation:pulse .3s ease}
+.trivia-option.wrong{background:rgba(255,107,107,.3);border-color:var(--red);color:var(--red)}
+.trivia-option.disabled{pointer-events:none;opacity:.6}
+.trivia-feedback{margin-top:16px;padding:12px;border-radius:12px;font-weight:700;display:none}
+.trivia-feedback.show{display:block;animation:fadeIn .3s ease}
+.trivia-feedback.success{background:rgba(0,214,143,.2);border:2px solid var(--green);color:var(--green)}
+.trivia-feedback.error{background:rgba(255,107,107,.2);border:2px solid var(--red);color:var(--red)}
+.trivia-continue-btn{margin-top:16px;background:linear-gradient(135deg,var(--yellow),var(--orange));color:#000;border:none;border-radius:12px;padding:14px 32px;font-size:1rem;font-weight:800;cursor:pointer;display:none}
+.trivia-continue-btn.show{display:inline-block;animation:bounceIn .4s ease}
+@keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000;overflow:hidden}
+.confetti-piece{position:absolute;width:8px;height:8px;top:-20px;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+@media(max-width:1100px){.app{grid-template-columns:220px 1fr 200px}}
+
+/* MÓVIL - Layout vertical, TODO MÁS GRANDE */
+@media(max-width:900px){
+  html,body{overflow:auto;height:auto;min-height:100%;overscroll-behavior:none}
+  .app{
+    display:flex;
+    flex-direction:column;
+    grid-template-columns:none;
+    min-height:auto;
+    overflow:visible;
+    padding:10px;
+    gap:12px;
+  }
+  .left-panel{display:flex;flex-direction:column;gap:10px;overflow:visible}
+  .story-panel{padding:14px}
+  .story-header{margin-bottom:8px}
+  .story-avatar{width:50px;height:50px;font-size:1.6rem}
+  .story-title{font-size:1rem}
+  .story-chapter{font-size:.7rem}
+  .story-text{padding:12px;font-size:.9rem;line-height:1.5}
+  .story-text .number{min-width:28px;height:28px;font-size:1rem}
+  .progress-step{height:8px}
+  .challenge-card{padding:14px}
+  .challenge-equation{padding:12px;gap:8px}
+  .challenge-equation .num{min-width:40px;height:40px;font-size:1.3rem}
+  .challenge-equation .result-box{min-width:40px;height:40px;font-size:1.3rem}
+  .challenge-equation .op-sym{font-size:1.5rem}
+  .challenge-equation .eq{font-size:1.4rem}
+  .hint-panel{display:none}
+  .center-panel{min-height:auto;padding:10px 0}
+  .right-panel{flex-direction:column;gap:10px;overflow:visible}
+  .actions{flex-direction:row}
+  .result-card{padding:14px}
+  .btn{padding:16px 28px;font-size:1.1rem;border-radius:14px}
+  .source-area{padding:16px}
+  .source-title{font-size:.9rem;margin-bottom:12px}
+  .source-group{padding:12px;min-width:100px}
+  .source-group-label{font-size:.75rem;margin-bottom:8px}
+  .source-items{gap:8px;min-height:50px}
+  .source-emoji{font-size:2.5rem}
+  .tap-hint{font-size:.75rem;margin-top:10px}
+  .workspace-title{font-size:1rem;padding:12px 20px}
+  .drop-zones{gap:12px}
+  .drop-zone{min-width:100px;min-height:100px;padding:14px;border-radius:16px;border-width:3px}
+  .drop-zone-label{font-size:.8rem}
+  .drop-zone-label .zone-emoji{font-size:1.5rem}
+  .drop-zone-items{gap:8px;min-height:60px}
+  .placed-emoji{font-size:2.2rem}
+  .single-zone{min-width:220px;min-height:140px}
+  .multi-zones .drop-zone{min-width:90px;max-width:140px;min-height:100px}
+  .divi-zones .drop-zone{min-width:90px;max-width:140px;min-height:100px}
+  .resta-zones .drop-zone{min-width:130px;max-width:180px}
+  .trash-row{margin-top:12px}
+  .trash-bin{width:60px;height:60px;font-size:1.8rem}
+  .board-counters{margin-top:10px}
+  .counter-chip{padding:6px 10px;font-size:.75rem}
+  .feedback{padding:14px;font-size:1rem}
+  .feedback .big-emoji{font-size:2rem;margin-bottom:8px}
+  .feedback .detail{font-size:.8rem}
+  .result-card h3{font-size:.85rem}
+}
+</style>
+</head>
+<body>
+
+<button class="sound-toggle" id="soundToggle" title="Sonido On/Off">🔊</button>
+
+<div class="header">
+  <h1>🧩 MateBlocks</h1>
+  <div class="score-bar" id="scoreBar"></div>
+</div>
+
+<div class="app">
+  <div class="left-panel">
+    <div class="story-panel" id="storyPanel"></div>
+    <div class="challenge-card" id="challengeCard"></div>
+    <div class="hint-panel" id="hintPanel"></div>
+  </div>
+
+  <div class="center-panel">
+    <div class="workspace" id="workspace"></div>
+    <div class="board-counters" id="counters"></div>
+  </div>
+
+  <div class="right-panel">
+    <div class="actions" id="actions"></div>
+    <div class="result-card" id="resultCard"></div>
+  </div>
+</div>
+
+<div class="celebration" id="celebration" style="display:none"></div>
+<div class="story-modal" id="storyModal" style="display:none"></div>
+<div class="math-review-modal" id="mathReviewModal" style="display:none"></div>
+<div class="trivia-modal" id="triviaModal" style="display:none"></div>
+
+<script>
+// ========== CONFIGURACIÓN DEL JUGADOR ==========
+const PLAYER = {
+  name: 'Emilio',           // Nombre real - para llamar la atención cuando se equivoca
+  nickname: 'Esmi',         // Apodo cariñoso - para felicitar
+  fullName: 'Emilio Quintero Tetero',  // Apodo de juego - para celebraciones especiales
+  // Mensajes de ánimo personalizados - usar Esmi
+  encouragements: [
+    '¡Tú puedes, {nickname}!',
+    '¡Vamos {nickname}, yo creo en ti!',
+    '¡Eso es {nickname}! ¡Sigue así!',
+    '¡{nickname}, eres muy inteligente!',
+    '¡Excelente trabajo, {nickname}!',
+    '¡Ánimo {nickname}, lo estás haciendo genial!',
+    '¡{nickname} puede con todo!'
+  ],
+  // Mensajes cuando se equivoca (cariñosos pero firmes) - usar Emilio
+  wrongAttemptMessages: [
+    '{name}, pon atención al problema.',
+    '{name}, no adivines. Lee bien el problema.',
+    'A ver {name}, vuelve a leer con calma.',
+    '{name}, piénsalo bien. ¿Qué te pide el problema?',
+    '{name}, concéntrate. Tú sabes esto.',
+    'Oye {name}, no tan rápido. Lee la pista.',
+    '{name}, escucha bien la explicación.',
+    '{name}, presta atención. Yo sé que puedes.'
+  ],
+  // Mensajes cuando se equivoca varias veces - también usar Emilio (más firme)
+  multipleWrongMessages: [
+    '{name}, necesito que pongas más atención.',
+    '{name}, ya van varios intentos. Lee despacio.',
+    '{name}, respira y vuelve a intentar con calma.',
+    '{name}, sé que puedes pero necesitas concentrarte.',
+    '{name}, escúchame bien. Tú eres inteligente, solo necesitas enfocarte.',
+    '{name}, para un momento y piensa.'
+  ],
+  // Mensajes de felicitación - usar Esmi
+  correctMessages: [
+    '¡Muy bien {nickname}! ¡Eso es!',
+    '¡Excelente {nickname}! ¡Lo lograste!',
+    '¡Así se hace, {nickname}!',
+    '¡Bravo {nickname}! ¡Sabía que podías!',
+    '¡{nickname}, eres un crack!',
+    '¡Eso {nickname}! ¡Eres increíble!',
+    '¡Genial {nickname}! ¡Sigue así!',
+    '¡{nickname} lo logró! ¡Muy bien!',
+    '¡Perfecto {nickname}!'
+  ],
+  // Mensajes especiales de celebración grande - usar Emilio Quintero Tetero (apodo de juego)
+  specialMessages: [
+    '¡{fullName} es el mejor matemático!',
+    '¡{fullName} es súper inteligente!',
+    '¡{fullName} puede con todo!',
+    '¡{fullName} es un campeón de las matemáticas!',
+    '¡Nadie le gana a {fullName}!',
+    '¡{fullName} lo hizo de nuevo!',
+    '¡Arriba {fullName}!',
+    '¡Ese es mi {fullName}!'
+  ]
+};
+
+// Función para obtener mensaje personalizado
+function getPlayerMessage(type, attemptCount = 0){
+  let messages;
+  switch(type){
+    case 'encourage': messages = PLAYER.encouragements; break;
+    case 'wrong': messages = attemptCount >= 3 ? PLAYER.multipleWrongMessages : PLAYER.wrongAttemptMessages; break;
+    case 'correct': messages = PLAYER.correctMessages; break;
+    case 'special': messages = PLAYER.specialMessages; break;
+    default: messages = PLAYER.encouragements;
+  }
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+  return msg
+    .replace('{name}', PLAYER.name)
+    .replace('{nickname}', PLAYER.nickname)
+    .replace('{fullName}', PLAYER.fullName);
+}
+
+// ========== AUDIO ==========
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+let soundOn = true;
+
+function ensureAudio(){if(!actx) actx = new AudioCtx()}
+function playTone(freq, dur, type='sine', vol=.12){
+  if(!soundOn) return;
+  ensureAudio();
+  const o = actx.createOscillator();
+  const g = actx.createGain();
+  o.type = type;
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(vol, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, actx.currentTime + dur);
+  o.connect(g).connect(actx.destination);
+  o.start();
+  o.stop(actx.currentTime + dur);
+}
+
+// Función helper para variación aleatoria
+function vary(base, range){ return base + (Math.random() - 0.5) * range * 2; }
+function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+// ===== SISTEMA DE SONIDOS MUSICALES PROGRESIVOS =====
+
+// Escalas para los sonidos de interacción (pentatónica para que siempre suene bien)
+const interactionScales = [
+  [262, 294, 330, 392, 440, 523, 587, 659, 784, 880, 1047], // Do Mayor Pentatónica extendida
+  [294, 330, 370, 440, 494, 587, 659, 740, 880, 988, 1175], // Re Mayor
+  [330, 370, 415, 494, 554, 659, 740, 830, 988, 1108, 1318], // Mi Mayor
+  [349, 392, 440, 523, 587, 698, 784, 880, 1047, 1175, 1397], // Fa Mayor
+  [392, 440, 494, 587, 659, 784, 880, 988, 1175, 1318, 1568], // Sol Mayor
+];
+
+let currentInteractionScale = null;
+let pickNoteIndex = 0;
+let dropNoteIndex = 0;
+let lastInteractionTime = 0;
+const INTERACTION_RESET_TIME = 3000; // Resetear después de 3 segundos sin interacción
+
+function getInteractionScale(){
+  const now = Date.now();
+  // Si pasó mucho tiempo, elegir nueva escala y resetear índices
+  if(now - lastInteractionTime > INTERACTION_RESET_TIME || !currentInteractionScale){
+    currentInteractionScale = pick(interactionScales);
+    pickNoteIndex = 0;
+    dropNoteIndex = currentInteractionScale.length - 1;
+  }
+  lastInteractionTime = now;
+  return currentInteractionScale;
+}
+
+// Click/Agarrar - ASCENDENTE (sube la escala cada vez que agarras)
+function sndClick(){
+  const scale = getInteractionScale();
+  const note = scale[pickNoteIndex % scale.length];
+  const nextNote = scale[(pickNoteIndex + 2) % scale.length]; // Tercera arriba
+
+  // Sonido de "pick up" ascendente
+  playTone(note, 0.06, 'sine', 0.1);
+  setTimeout(() => playTone(nextNote, 0.05, 'sine', 0.08), 25);
+
+  // Pequeño brillo
+  setTimeout(() => playTone(note * 2, 0.03, 'triangle', 0.04), 40);
+
+  pickNoteIndex++;
+  // Mantener dropNoteIndex sincronizado para que el drop sea descendente desde arriba
+  dropNoteIndex = Math.max(dropNoteIndex, pickNoteIndex);
+}
+
+// Soltar/Drop - DESCENDENTE (baja la escala, sonido satisfactorio de "plop")
+function sndDrop(){
+  const scale = getInteractionScale();
+
+  // Usar nota alta y bajar
+  const highNote = scale[Math.min(dropNoteIndex, scale.length - 1)];
+  const midNote = scale[Math.max(0, Math.min(dropNoteIndex - 2, scale.length - 1))];
+  const lowNote = scale[Math.max(0, Math.min(dropNoteIndex - 4, scale.length - 1))];
+
+  // Sonido descendente satisfactorio "plop"
+  playTone(highNote, 0.07, 'sine', 0.11);
+  setTimeout(() => playTone(midNote, 0.09, 'sine', 0.1), 35);
+  setTimeout(() => playTone(lowNote, 0.12, 'triangle', 0.08), 75);
+
+  // Resonancia grave satisfactoria
+  setTimeout(() => playTone(lowNote * 0.5, 0.15, 'sine', 0.05), 90);
+
+  dropNoteIndex = Math.max(0, dropNoteIndex - 1);
+}
+
+// Mover/colocar entre zonas - nota media estable
+function sndPlace(){
+  const scale = getInteractionScale();
+  const midIndex = Math.floor(scale.length / 2);
+  const note = scale[midIndex];
+  const harmonic = scale[midIndex + 2] || scale[midIndex];
+
+  playTone(note, 0.06, 'sine', 0.09);
+  setTimeout(() => playTone(harmonic, 0.05, 'triangle', 0.07), 30);
+}
+
+// Basura - sonido descendente dramático (whoosh hacia abajo)
+function sndTrash(){
+  const scale = getInteractionScale();
+  // Descenso rápido desde nota alta a muy baja
+  const startNote = scale[scale.length - 1];
+  const midNote = scale[Math.floor(scale.length / 2)];
+  const endNote = scale[0] * 0.5; // Octava abajo del inicio
+
+  playTone(startNote, 0.06, 'triangle', 0.06);
+  setTimeout(() => playTone(midNote, 0.08, 'sawtooth', 0.04), 40);
+  setTimeout(() => playTone(endNote, 0.15, 'triangle', 0.03), 85);
+  setTimeout(() => playTone(endNote * 0.5, 0.2, 'sine', 0.02), 120);
+
+  // Resetear los índices un poco para dar sensación de "quitar"
+  dropNoteIndex = Math.min(scale.length - 1, dropNoteIndex + 2);
+}
+
+// Correcto - acordes alegres variados
+const correctStyles = [
+  () => { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(vary(f,20),.18,'sine',.14),i*75)); setTimeout(()=>playTone(vary(1318,50),.25,'sine',.1),330); },
+  () => { [494,622,740,988].forEach((f,i)=>setTimeout(()=>playTone(vary(f,20),.16,'sine',.13),i*70)); setTimeout(()=>playTone(vary(1244,50),.22,'triangle',.09),300); },
+  () => { [440,554,659,880].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.17,'sine',.14),i*65)); setTimeout(()=>playTone(vary(1108,40),.24,'sine',.1),280); },
+  () => { [392,494,587,784].forEach((f,i)=>setTimeout(()=>playTone(vary(f,18),.19,'triangle',.12),i*80)); setTimeout(()=>playTone(vary(988,45),.26,'sine',.09),350); },
+  () => { [349,440,523,698].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.18,'sine',.13),i*72)); setTimeout(()=>playTone(vary(880,40),.24,'sine',.1),310); }
+];
+function sndCorrect(){ pick(correctStyles)(); }
+
+// Incorrecto - sonidos suaves de error
+const wrongStyles = [
+  () => { playTone(vary(200,30),.14,'sawtooth',.05); setTimeout(()=>playTone(vary(170,25),.16,'sawtooth',.04),90); },
+  () => { playTone(vary(180,25),.15,'triangle',.06); playTone(vary(150,20),.18,'sawtooth',.04); },
+  () => { [vary(220,30),vary(180,25)].forEach((f,i)=>setTimeout(()=>playTone(f,.13,'sawtooth',.05),i*80)); },
+  () => { playTone(vary(250,35),.12,'sawtooth',.05); setTimeout(()=>playTone(vary(190,25),.15,'triangle',.04),70); setTimeout(()=>playTone(vary(150,20),.18,'sawtooth',.03),130); }
+];
+function sndWrong(){ pick(wrongStyles)(); }
+
+// Nuevo paso - fanfarrias variadas
+const newStepStyles = [
+  () => { [392,523,659].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.12,'triangle',.1),i*55)); },
+  () => { [440,554,698].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.11,'sine',.1),i*50)); },
+  () => { [349,466,587].forEach((f,i)=>setTimeout(()=>playTone(vary(f,12),.13,'triangle',.09),i*60)); },
+  () => { [330,440,554].forEach((f,i)=>setTimeout(()=>playTone(vary(f,10),.12,'sine',.1),i*52)); },
+  () => { [294,392,494].forEach((f,i)=>setTimeout(()=>playTone(vary(f,12),.14,'triangle',.09),i*58)); }
+];
+function sndNewStep(){ pick(newStepStyles)(); }
+
+// Victoria - celebración épica con variaciones
+const victoryStyles = [
+  () => { [523,659,784,880,1047,1318].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.22,'sine',.12),i*95)); setTimeout(()=>{[1047,1318,1568].forEach((f,i)=>setTimeout(()=>playTone(vary(f,20),.3,'sine',.08),i*75));},680); },
+  () => { [494,622,740,880,988,1244].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.2,'sine',.11),i*90)); setTimeout(()=>{[988,1244,1480].forEach((f,i)=>setTimeout(()=>playTone(vary(f,18),.28,'triangle',.07),i*70));},650); },
+  () => { [440,554,659,784,880,1108].forEach((f,i)=>setTimeout(()=>playTone(vary(f,12),.21,'sine',.12),i*88)); setTimeout(()=>{[880,1108,1318].forEach((f,i)=>setTimeout(()=>playTone(vary(f,15),.32,'sine',.08),i*78));},630); }
+];
+function sndVictory(){ pick(victoryStyles)(); }
+
+// Pista/hint - sonidos curiosos
+const hintStyles = [
+  () => { playTone(vary(500,60),.1,'triangle',.08); setTimeout(()=>playTone(vary(700,80),.12,'triangle',.07),75); },
+  () => { playTone(vary(450,50),.11,'sine',.08); setTimeout(()=>playTone(vary(650,70),.1,'triangle',.07),70); },
+  () => { [vary(480,50),vary(680,70)].forEach((f,i)=>setTimeout(()=>playTone(f,.1,'triangle',.08),i*65)); }
+];
+function sndHint(){ pick(hintStyles)(); }
+
+// Estrella - brillos mágicos
+const starStyles = [
+  () => { [800,1000,1200].forEach((f,i)=>setTimeout(()=>playTone(vary(f,50),.1,'sine',.08),i*45)); },
+  () => { [900,1100,1350].forEach((f,i)=>setTimeout(()=>playTone(vary(f,60),.09,'triangle',.07),i*42)); },
+  () => { [750,950,1150,1400].forEach((f,i)=>setTimeout(()=>playTone(vary(f,55),.08,'sine',.07),i*38)); },
+  () => { [850,1050,1300].forEach((f,i)=>setTimeout(()=>playTone(vary(f,45),.11,'sine',.08),i*48)); }
+];
+function sndStar(){ pick(starStyles)(); }
+
+// Pop - burbujas variadas
+const popStyles = [
+  () => { playTone(vary(1200,150),.05,'sine',.1); setTimeout(()=>playTone(vary(800,100),.07,'triangle',.08),20); },
+  () => { playTone(vary(1100,120),.055,'triangle',.09); playTone(vary(750,90),.075,'sine',.08); },
+  () => { playTone(vary(1300,140),.045,'sine',.1); setTimeout(()=>playTone(vary(900,110),.065,'sine',.07),18); },
+  () => { playTone(vary(1000,100),.06,'sine',.1); playTone(vary(700,80),.08,'triangle',.08); },
+  () => { [vary(1150,130),vary(850,100)].forEach((f,i)=>setTimeout(()=>playTone(f,.055,'sine',.09),i*22)); }
+];
+function sndPop(){ pick(popStyles)(); }
+
+// Borrar - whoosh suave
+function sndErase(){ playTone(vary(400,50),.08,'triangle',.07); playTone(vary(300,40),.1,'triangle',.06); }
+
+// ========== CONFETTI & EFFECTS ==========
+function spawnConfetti(count=30){
+  const c = document.createElement('div');
+  c.className = 'confetti-container';
+  document.body.appendChild(c);
+  const colors = ['#00d68f','#38bdf8','#ff9f43','#ff6b9d','#ffd43b','#a78bfa'];
+  const shapes = ['50%', '2px', '0'];
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random()*100+'%';
+    p.style.background = colors[i%colors.length];
+    p.style.borderRadius = shapes[Math.floor(Math.random()*shapes.length)];
+    p.style.width = (6 + Math.random()*6)+'px';
+    p.style.height = (6 + Math.random()*6)+'px';
+    p.style.animationDuration = (1.5+Math.random()*2)+'s';
+    p.style.animationDelay = Math.random()*.5+'s';
+    c.appendChild(p);
+  }
+  setTimeout(()=>c.remove(), 4000);
+}
+
+function spawnStars(count=5){
+  const c = document.createElement('div');
+  c.className = 'confetti-container';
+  document.body.appendChild(c);
+  for(let i=0;i<count;i++){
+    const s = document.createElement('div');
+    s.textContent = '⭐';
+    s.style.position = 'absolute';
+    s.style.left = (20 + Math.random()*60)+'%';
+    s.style.fontSize = (1.5 + Math.random())+'rem';
+    s.style.animation = `confettiFall ${1.5+Math.random()}s linear forwards`;
+    s.style.animationDelay = Math.random()*.3+'s';
+    c.appendChild(s);
+    sndStar();
+  }
+  setTimeout(()=>c.remove(), 3000);
+}
+
+function pulseElement(el){
+  el.style.animation = 'none';
+  el.offsetHeight; // Trigger reflow
+  el.style.animation = 'successBurst .4s ease';
+}
+
+// ========== ENCOURAGEMENTS ==========
+const ENCOURAGEMENTS = [
+  "¡Tú puedes! 💪",
+  "¡Sigue intentando! 🌟",
+  "¡Casi lo tienes! ✨",
+  "¡No te rindas! 🚀",
+  "¡Piensa un poco más! 🤔",
+  "¡Vas muy bien! 👏"
+];
+
+// ========== STORIES ==========
+const STORIES = [
+  // === HISTORIAS MIXTAS BALANCEADAS (todas las operaciones) ===
+  {
+    title: "La Granja de Lucas", avatar: "🧑‍🌾", character: "Lucas",
+    steps: [
+      { op: 'suma', template: '{char} tiene {a} gallinas en el corral. Llegan {b} gallinas más del campo.', question: '¿Cuántas gallinas tiene ahora en total?', successMsg: '¡{ans} gallinas en total!', emoji: '🐔', emojiB: '🐔' },
+      { op: 'multi', template: '{char} tiene {a} gallinas. Cada gallina pone {b} huevos.', question: '¿Cuántos huevos hay en total?', successMsg: '¡{ans} huevos frescos!', emoji: '🥚', groupEmoji: '🐔' },
+      { op: 'resta', template: '{char} tenía {a} huevos. Vendió {b} huevos en el mercado.', question: '¿Cuántos huevos le quedan ahora?', successMsg: '¡Le quedan {ans} huevos!', emoji: '🥚', emojiB: '🥚' },
+      { op: 'divi', template: '{char} tiene {a} zanahorias para repartir entre {b} conejos. Quiere darle la misma cantidad a cada conejo.', question: '¿Cuántas zanahorias recibe cada conejo?', successMsg: '¡{ans} zanahorias para cada conejo!', emoji: '🥕', groupEmoji: '🐰' }
+    ]
+  },
+  {
+    title: "La Pastelería Mágica", avatar: "👨‍🍳", character: "Chef María",
+    steps: [
+      { op: 'suma', template: '{char} horneó {a} cupcakes de chocolate y {b} cupcakes de fresa.', question: '¿Cuántos cupcakes horneó en total?', successMsg: '¡{ans} cupcakes deliciosos!', emoji: '🧁', emojiB: '🧁' },
+      { op: 'divi', template: '{char} tiene {a} galletas para repartir entre {b} cajas.', question: '¿Cuántas galletas van en cada caja?', successMsg: '¡{ans} galletas por caja!', emoji: '🍪', groupEmoji: '📦' },
+      { op: 'resta', template: '{char} tenía {a} donas. Vendió {b} donas esta mañana.', question: '¿Cuántas donas le quedan?', successMsg: '¡Le quedan {ans} donas!', emoji: '🍩', emojiB: '🍩' },
+      { op: 'divi', template: '{char} tiene {a} fresas para decorar {b} pasteles.', question: '¿Cuántas fresas pondrá en cada pastel?', successMsg: '¡{ans} fresas en cada pastel!', emoji: '🍓', groupEmoji: '🎂' }
+    ]
+  },
+  {
+    title: "El Tesoro Pirata", avatar: "🏴‍☠️", character: "Capitán Pedro",
+    steps: [
+      { op: 'suma', template: '{char} encontró {a} monedas de oro en una isla y {b} más en otra isla.', question: '¿Cuántas monedas tiene ahora?', successMsg: '¡{ans} monedas de oro!', emoji: '🪙', emojiB: '🪙' },
+      { op: 'divi', template: 'Ahora {char} reparte las {a} monedas entre {b} piratas.', question: '¿Cuántas monedas recibe cada pirata?', successMsg: '¡{ans} monedas cada uno!', emoji: '🪙', groupEmoji: '🏴‍☠️', usePrevAnswer: true },
+      { op: 'multi', template: '{char} tiene {a} cofres. Cada cofre tiene {b} diamantes.', question: '¿Cuántos diamantes hay en total?', successMsg: '¡{ans} diamantes brillantes!', emoji: '💎', groupEmoji: '📦' },
+      { op: 'divi', template: '{char} tiene {a} joyas para repartir entre {b} marineros.', question: '¿Cuántas joyas recibe cada marinero?', successMsg: '¡{ans} joyas para cada uno!', emoji: '💎', groupEmoji: '⚓' }
+    ]
+  },
+  {
+    title: "La Fiesta de Cumpleaños", avatar: "🎂", character: "Carlos",
+    steps: [
+      { op: 'suma', template: '{char} infló {a} globos rojos y {b} globos azules.', question: '¿Cuántos globos infló en total?', successMsg: '¡{ans} globos coloridos!', emoji: '🎈', emojiB: '🎈' },
+      { op: 'divi', template: 'Los {a} globos son para decorar {b} mesas.', question: '¿Cuántos globos van en cada mesa?', successMsg: '¡{ans} globos por mesa!', emoji: '🎈', groupEmoji: '🪑', usePrevAnswer: true },
+      { op: 'divi', template: '{char} tiene {a} dulces para repartir entre {b} amigos.', question: '¿Cuántos dulces recibe cada amigo?', successMsg: '¡{ans} dulces cada uno!', emoji: '🍬', groupEmoji: '👦' },
+      { op: 'resta', template: '{char} tenía {a} rebanadas de pastel. Se comieron {b}.', question: '¿Cuántas rebanadas quedan?', successMsg: '¡Quedan {ans} rebanadas!', emoji: '🍰', emojiB: '🍰' }
+    ]
+  },
+  {
+    title: "El Espacio Sideral", avatar: "🚀", character: "Astronauta Ana",
+    steps: [
+      { op: 'multi', template: '{char} visitó {a} planetas. En cada planeta encontró {b} meteoritos.', question: '¿Cuántos meteoritos encontró en total?', successMsg: '¡{ans} meteoritos!', emoji: '☄️', groupEmoji: '🪐' },
+      { op: 'divi', template: 'Ahora reparte los {a} meteoritos en {b} cajas espaciales.', question: '¿Cuántos meteoritos van en cada caja?', successMsg: '¡{ans} por caja!', emoji: '☄️', groupEmoji: '📦', usePrevAnswer: true },
+      { op: 'suma', template: '{char} descubrió {a} estrellas y luego encontró {b} más.', question: '¿Cuántas estrellas descubrió en total?', successMsg: '¡{ans} estrellas!', emoji: '⭐', emojiB: '⭐' },
+      { op: 'divi', template: '{char} tiene {a} cristales lunares para {b} museos espaciales.', question: '¿Cuántos cristales van a cada museo?', successMsg: '¡{ans} cristales por museo!', emoji: '💎', groupEmoji: '🏛️' }
+    ]
+  },
+
+  // === HISTORIAS CON ÉNFASIS EN DIVISIÓN Y GRUPOS VARIADOS ===
+  {
+    title: "El Gran Reparto de Pizza", avatar: "🍕", character: "Pizzero Tony",
+    steps: [
+      { op: 'suma', template: '{char} horneó {a} pizzas en la mañana y {b} pizzas en la tarde.', question: '¿Cuántas pizzas horneó en total?', successMsg: '¡{ans} pizzas deliciosas!', emoji: '🍕', emojiB: '🍕' },
+      { op: 'divi', template: 'Las {a} pizzas son para {b} mesas del restaurante.', question: '¿Cuántas pizzas van en cada mesa?', successMsg: '¡{ans} pizzas por mesa!', emoji: '🍕', groupEmoji: '🪑', usePrevAnswer: true },
+      { op: 'divi', template: '{char} tiene {a} refrescos para repartir entre {b} niños.', question: '¿Cuántos refrescos recibe cada niño?', successMsg: '¡{ans} refrescos cada uno!', emoji: '🥤', groupEmoji: '👦' },
+      { op: 'divi', template: 'Para el postre, tiene {a} helados para {b} clientes.', question: '¿Cuántos helados recibe cada cliente?', successMsg: '¡{ans} helados cada uno!', emoji: '🍦', groupEmoji: '😊' }
+    ]
+  },
+  {
+    title: "El Zoológico Feliz", avatar: "🦁", character: "Cuidador Max",
+    steps: [
+      { op: 'divi', template: '{char} tiene {a} pescados para alimentar a {b} focas hambrientas.', question: '¿Cuántos pescados come cada foca?', successMsg: '¡{ans} pescados por foca!', emoji: '🐟', groupEmoji: '🦭' },
+      { op: 'divi', template: 'Luego reparte {a} plátanos entre {b} monos juguetones.', question: '¿Cuántos plátanos recibe cada mono?', successMsg: '¡{ans} plátanos cada uno!', emoji: '🍌', groupEmoji: '🐒' },
+      { op: 'suma', template: 'Llegaron {a} conejos nuevos y ya había {b} en el zoológico.', question: '¿Cuántos conejos hay ahora?', successMsg: '¡{ans} conejos!', emoji: '🐰', emojiB: '🐰' },
+      { op: 'divi', template: '{char} tiene {a} zanahorias para los {b} conejos.', question: '¿Cuántas zanahorias come cada conejo?', successMsg: '¡{ans} zanahorias cada uno!', emoji: '🥕', groupEmoji: '🐰' }
+    ]
+  },
+  {
+    title: "La Escuelita de Arte", avatar: "🎨", character: "Maestra Luna",
+    steps: [
+      { op: 'multi', template: '{char} tiene {a} mesas. Cada mesa necesita {b} crayones.', question: '¿Cuántos crayones necesita en total?', successMsg: '¡{ans} crayones!', emoji: '🖍️', groupEmoji: '🪑' },
+      { op: 'divi', template: 'Reparte los {a} crayones entre {b} estudiantes.', question: '¿Cuántos crayones recibe cada estudiante?', successMsg: '¡{ans} crayones cada uno!', emoji: '🖍️', groupEmoji: '👧', usePrevAnswer: true },
+      { op: 'divi', template: '{char} tiene {a} pinceles para {b} equipos de pintura.', question: '¿Cuántos pinceles recibe cada equipo?', successMsg: '¡{ans} pinceles por equipo!', emoji: '🖌️', groupEmoji: '👨‍👩‍👧' },
+      { op: 'divi', template: 'Al final, reparte {a} stickers entre {b} artistas.', question: '¿Cuántos stickers recibe cada artista?', successMsg: '¡{ans} stickers cada uno!', emoji: '⭐', groupEmoji: '🧑‍🎨' }
+    ]
+  },
+  {
+    title: "El Huerto Mágico", avatar: "🌻", character: "Jardinera Lily",
+    steps: [
+      { op: 'suma', template: '{char} cosechó {a} tomates rojos y {b} tomates verdes.', question: '¿Cuántos tomates cosechó en total?', successMsg: '¡{ans} tomates!', emoji: '🍅', emojiB: '🍅' },
+      { op: 'divi', template: 'Reparte los {a} tomates en {b} canastas.', question: '¿Cuántos tomates van en cada canasta?', successMsg: '¡{ans} tomates por canasta!', emoji: '🍅', groupEmoji: '🧺', usePrevAnswer: true },
+      { op: 'divi', template: '{char} tiene {a} fresas para repartir entre {b} vecinos.', question: '¿Cuántas fresas recibe cada vecino?', successMsg: '¡{ans} fresas cada uno!', emoji: '🍓', groupEmoji: '🏠' },
+      { op: 'divi', template: 'Empaca {a} zanahorias en {b} bolsas para el mercado.', question: '¿Cuántas zanahorias van en cada bolsa?', successMsg: '¡{ans} zanahorias por bolsa!', emoji: '🥕', groupEmoji: '🛍️' }
+    ]
+  },
+  {
+    title: "La Tienda de Mascotas", avatar: "🐾", character: "Veterinaria Ana",
+    steps: [
+      { op: 'divi', template: '{char} tiene {a} premios para repartir entre {b} perritos.', question: '¿Cuántos premios recibe cada perrito?', successMsg: '¡{ans} premios cada uno!', emoji: '🦴', groupEmoji: '🐕' },
+      { op: 'divi', template: 'También tiene {a} pescaditos para {b} gatitos.', question: '¿Cuántos pescaditos come cada gatito?', successMsg: '¡{ans} pescaditos cada uno!', emoji: '🐟', groupEmoji: '🐱' },
+      { op: 'suma', template: 'Llegaron {a} hámsters nuevos y ya tenía {b}.', question: '¿Cuántos hámsters hay ahora?', successMsg: '¡{ans} hámsters!', emoji: '🐹', emojiB: '🐹' },
+      { op: 'divi', template: '{char} tiene {a} lechugas para {b} conejitos.', question: '¿Cuántas lechugas come cada conejito?', successMsg: '¡{ans} lechugas cada uno!', emoji: '🥬', groupEmoji: '🐰' }
+    ]
+  },
+  {
+    title: "El Mercado de Frutas", avatar: "🍊", character: "Don Frutero",
+    steps: [
+      { op: 'divi', template: '{char} tiene {a} naranjas para poner en {b} cajas.', question: '¿Cuántas naranjas van en cada caja?', successMsg: '¡{ans} naranjas por caja!', emoji: '🍊', groupEmoji: '📦' },
+      { op: 'divi', template: 'Reparte {a} manzanas entre {b} clientes.', question: '¿Cuántas manzanas recibe cada cliente?', successMsg: '¡{ans} manzanas cada uno!', emoji: '🍎', groupEmoji: '🧑' },
+      { op: 'resta', template: '{char} tenía {a} sandías pero vendió {b}.', question: '¿Cuántas sandías le quedan?', successMsg: '¡Le quedan {ans} sandías!', emoji: '🍉', emojiB: '🍉' },
+      { op: 'divi', template: 'Tiene {a} plátanos para {b} escuelas.', question: '¿Cuántos plátanos van a cada escuela?', successMsg: '¡{ans} plátanos por escuela!', emoji: '🍌', groupEmoji: '🏫' }
+    ]
+  },
+  {
+    title: "La Fábrica de Juguetes", avatar: "🏭", character: "Jefe de Elfos",
+    steps: [
+      { op: 'multi', template: 'Los elfos fabricaron {a} cajas. Cada caja tiene {b} muñecos.', question: '¿Cuántos muñecos fabricaron?', successMsg: '¡{ans} muñecos!', emoji: '🧸', groupEmoji: '📦' },
+      { op: 'divi', template: 'Reparten los {a} muñecos entre {b} tiendas.', question: '¿Cuántos muñecos van a cada tienda?', successMsg: '¡{ans} por tienda!', emoji: '🧸', groupEmoji: '🏪', usePrevAnswer: true },
+      { op: 'divi', template: 'Tienen {a} pelotas para {b} centros deportivos.', question: '¿Cuántas pelotas van a cada centro?', successMsg: '¡{ans} pelotas por centro!', emoji: '⚽', groupEmoji: '🏟️' },
+      { op: 'divi', template: 'Los {a} rompecabezas van a {b} bibliotecas.', question: '¿Cuántos rompecabezas por biblioteca?', successMsg: '¡{ans} por biblioteca!', emoji: '🧩', groupEmoji: '📚' }
+    ]
+  },
+  {
+    title: "El Campamento Aventura", avatar: "⛺", character: "Guía Tomás",
+    steps: [
+      { op: 'suma', template: '{char} tiene {a} linternas grandes y {b} linternas pequeñas.', question: '¿Cuántas linternas tiene en total?', successMsg: '¡{ans} linternas!', emoji: '🔦', emojiB: '🔦' },
+      { op: 'divi', template: 'Reparte las {a} linternas entre {b} carpas.', question: '¿Cuántas linternas van en cada carpa?', successMsg: '¡{ans} linternas por carpa!', emoji: '🔦', groupEmoji: '⛺', usePrevAnswer: true },
+      { op: 'divi', template: 'Prepara {a} malvaviscos para {b} exploradores.', question: '¿Cuántos malvaviscos recibe cada explorador?', successMsg: '¡{ans} malvaviscos cada uno!', emoji: '🍡', groupEmoji: '🧑‍🤝‍🧑' },
+      { op: 'divi', template: 'Tiene {a} mapas para {b} equipos de aventura.', question: '¿Cuántos mapas recibe cada equipo?', successMsg: '¡{ans} mapas por equipo!', emoji: '🗺️', groupEmoji: '👨‍👩‍👧' }
+    ]
+  },
+  {
+    title: "La Panadería del Pueblo", avatar: "🥖", character: "Panadero Juan",
+    steps: [
+      { op: 'multi', template: '{char} hornea {a} tandas de pan. Cada tanda tiene {b} panes.', question: '¿Cuántos panes horneó?', successMsg: '¡{ans} panes frescos!', emoji: '🍞', groupEmoji: '🔥' },
+      { op: 'divi', template: 'Reparte los {a} panes entre {b} familias.', question: '¿Cuántos panes recibe cada familia?', successMsg: '¡{ans} panes por familia!', emoji: '🍞', groupEmoji: '👨‍👩‍👧', usePrevAnswer: true },
+      { op: 'divi', template: 'Tiene {a} donas para {b} tiendas cercanas.', question: '¿Cuántas donas van a cada tienda?', successMsg: '¡{ans} donas por tienda!', emoji: '🍩', groupEmoji: '🏪' },
+      { op: 'resta', template: '{char} tenía {a} croissants. Vendió {b}.', question: '¿Cuántos croissants le quedan?', successMsg: '¡Le quedan {ans} croissants!', emoji: '🥐', emojiB: '🥐' }
+    ]
+  },
+  {
+    title: "El Día de Campo", avatar: "🧺", character: "Familia García",
+    steps: [
+      { op: 'suma', template: '{char} preparó {a} sándwiches de jamón y {b} de queso.', question: '¿Cuántos sándwiches prepararon?', successMsg: '¡{ans} sándwiches!', emoji: '🥪', emojiB: '🥪' },
+      { op: 'divi', template: 'Los {a} sándwiches son para {b} personas.', question: '¿Cuántos sándwiches le tocan a cada uno?', successMsg: '¡{ans} sándwiches cada uno!', emoji: '🥪', groupEmoji: '👦', usePrevAnswer: true },
+      { op: 'divi', template: 'Trajeron {a} frutas para {b} canastas.', question: '¿Cuántas frutas van en cada canasta?', successMsg: '¡{ans} frutas por canasta!', emoji: '🍎', groupEmoji: '🧺' },
+      { op: 'divi', template: 'Para el postre, tienen {a} galletas para {b} niños.', question: '¿Cuántas galletas recibe cada niño?', successMsg: '¡{ans} galletas cada uno!', emoji: '🍪', groupEmoji: '👧' }
+    ]
+  },
+  {
+    title: "La Biblioteca Mágica", avatar: "📚", character: "Bibliotecaria Sara",
+    steps: [
+      { op: 'suma', template: '{char} recibió {a} libros nuevos y {b} libros donados.', question: '¿Cuántos libros tiene ahora?', successMsg: '¡{ans} libros!', emoji: '📕', emojiB: '📕' },
+      { op: 'divi', template: 'Coloca los {a} libros en {b} estantes.', question: '¿Cuántos libros van en cada estante?', successMsg: '¡{ans} libros por estante!', emoji: '📕', groupEmoji: '📚', usePrevAnswer: true },
+      { op: 'divi', template: 'Reparte {a} marcapáginas entre {b} lectores.', question: '¿Cuántos marcapáginas recibe cada lector?', successMsg: '¡{ans} marcapáginas cada uno!', emoji: '🔖', groupEmoji: '👧' },
+      { op: 'divi', template: 'Guarda {a} lápices en {b} cajones.', question: '¿Cuántos lápices van en cada cajón?', successMsg: '¡{ans} lápices por cajón!', emoji: '✏️', groupEmoji: '🗄️' }
+    ]
+  },
+  {
+    title: "El Circo Mágico", avatar: "🎪", character: "Payaso Pipo",
+    steps: [
+      { op: 'suma', template: '{char} tiene {a} pelotas rojas y {b} pelotas amarillas.', question: '¿Cuántas pelotas tiene para malabares?', successMsg: '¡{ans} pelotas!', emoji: '🔴', emojiB: '🟡' },
+      { op: 'divi', template: 'Reparte las {a} pelotas entre {b} payasos.', question: '¿Cuántas pelotas recibe cada payaso?', successMsg: '¡{ans} pelotas cada uno!', emoji: '🔴', groupEmoji: '🤡', usePrevAnswer: true },
+      { op: 'divi', template: 'Tiene {a} globos para {b} niños del público.', question: '¿Cuántos globos recibe cada niño?', successMsg: '¡{ans} globos cada uno!', emoji: '🎈', groupEmoji: '👧' },
+      { op: 'multi', template: 'Hace {a} trucos. Cada truco usa {b} cartas.', question: '¿Cuántas cartas usó en total?', successMsg: '¡{ans} cartas mágicas!', emoji: '🃏', groupEmoji: '🎩' }
+    ]
+  },
+  {
+    title: "El Castillo Medieval", avatar: "🏰", character: "Princesa Elena",
+    steps: [
+      { op: 'divi', template: '{char} tiene {a} coronas para {b} princesas invitadas.', question: '¿Cuántas coronas recibe cada princesa?', successMsg: '¡{ans} coronas cada una!', emoji: '👑', groupEmoji: '👸' },
+      { op: 'divi', template: 'Reparte {a} escudos entre {b} caballeros.', question: '¿Cuántos escudos recibe cada caballero?', successMsg: '¡{ans} escudos cada uno!', emoji: '🛡️', groupEmoji: '🤴' },
+      { op: 'suma', template: 'El castillo tiene {a} torres grandes y {b} torres pequeñas.', question: '¿Cuántas torres tiene en total?', successMsg: '¡{ans} torres!', emoji: '🗼', emojiB: '🗼' },
+      { op: 'divi', template: '{char} tiene {a} banderas para las {b} torres.', question: '¿Cuántas banderas van en cada torre?', successMsg: '¡{ans} banderas por torre!', emoji: '🚩', groupEmoji: '🗼' }
+    ]
+  }
+];
+
+// ========== STATE ==========
+let GRID_SIZE = 6;
+let CELL_SIZE = 52;
+let grid = [];
+let currentStory = null;
+let currentStep = 0;
+let numA = 0, numB = 0, answer = 0;
+let currentOp = 'suma';
+let score = { adventures: 0, streak: 0, stars: 0 };
+let hasChecked = false;
+let attempts = 0;
+let hintLevel = 0;
+let maxHints = 3;
+
+// Para el nuevo sistema de emojis
+let currentEmoji = '';
+let currentEmojiB = '';
+let currentGroupEmoji = '';
+let sourceItems = []; // Items disponibles para arrastrar {id, emoji, group}
+let placedItems = []; // Items colocados en zonas {id, emoji, zone}
+let previousAnswer = 0; // Para encadenar respuestas entre pasos
+let itemIdCounter = 0;
+
+const COLORS = [
+  {name:'Verde', hex:'#00d68f'},
+  {name:'Azul', hex:'#38bdf8'},
+  {name:'Naranja', hex:'#ff9f43'},
+  {name:'Rosa', hex:'#ff6b9d'},
+];
+
+const ZONE_COLORS = ['#00d68f', '#38bdf8', '#ff9f43', '#ff6b9d', '#a78bfa'];
+
+const OPS = {
+  suma: {label:'Suma', sym:'+'},
+  resta: {label:'Resta', sym:'−'},
+  multi: {label:'Multi', sym:'×'},
+  divi: {label:'Div', sym:'÷'},
+};
+
+// ========== INIT ==========
+function init(){
+  calculateGridSize();
+  window.addEventListener('resize', calculateGridSize);
+  initGrid();
+  renderScoreBar();
+
+  // Personalizar título con el nombre del jugador
+  document.querySelector('.header h1').innerHTML = `🧩 MateBlocks <span style="font-size:0.7em;color:var(--cyan)">— ${PLAYER.name}</span>`;
+
+  // Saludo inicial
+  const greetings = [
+    `¡Hola ${PLAYER.fullName}! ¡Bienvenido a MateBlocks!`,
+    `¡${PLAYER.name}! ¡Qué bueno verte! ¡Vamos a aprender matemáticas!`,
+    `¡Hola ${PLAYER.nickname}! ¡Prepárate para una aventura matemática!`
+  ];
+  setTimeout(() => {
+    speakText(greetings[Math.floor(Math.random() * greetings.length)], () => {
+      startNewAdventure();
+    }, { rate: 0.88, pitch: 1.0 });
+  }, 800);
+
+  document.getElementById('soundToggle').addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    document.getElementById('soundToggle').textContent = soundOn ? '🔊' : '🔇';
+    if(soundOn) sndClick();
+  });
+}
+
+function calculateGridSize(){
+  const availableHeight = window.innerHeight - 140;
+  const availableWidth = window.innerWidth - 600;
+  const maxSize = Math.min(availableHeight, availableWidth) - 40;
+  CELL_SIZE = Math.floor(Math.max(36, Math.min(56, maxSize / GRID_SIZE)));
+  document.documentElement.style.setProperty('--cell-size', CELL_SIZE + 'px');
+}
+
+function initGrid(){
+  grid = Array.from({length:GRID_SIZE}, ()=> Array(GRID_SIZE).fill(null));
+}
+
+function clearWorkspace(){
+  sourceItems = [];
+  placedItems = [];
+  itemIdCounter = 0;
+
+  // Crear los items en el área fuente según la operación
+  if(currentOp === 'suma'){
+    // Suma: dos grupos de objetos que hay que juntar
+    for(let i = 0; i < numA; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: currentEmoji, group: 'A'});
+    }
+    for(let i = 0; i < numB; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: currentEmojiB, group: 'B'});
+    }
+  } else if(currentOp === 'resta'){
+    // Resta: todos los objetos que tienes (numA), algunos deben irse
+    for(let i = 0; i < numA; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: currentEmoji, group: 'main'});
+    }
+  } else if(currentOp === 'multi'){
+    // Multiplicación: numA * numB objetos para organizar en grupos
+    for(let i = 0; i < answer; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: currentEmoji, group: 'main'});
+    }
+  } else if(currentOp === 'divi'){
+    // División: numA objetos para repartir
+    for(let i = 0; i < numA; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: currentEmoji, group: 'main'});
+    }
+  }
+}
+
+function clearGrid(){
+  initGrid();
+  renderCounters();
+  sndErase();
+}
+
+// ========== STORY ==========
+function startNewAdventure(){
+  currentStory = STORIES[Math.floor(Math.random() * STORIES.length)];
+  currentStep = 0;
+  previousAnswer = 0;
+
+  // Mensaje de bienvenida a nueva aventura
+  const welcomeMsgs = [
+    `¡Nueva aventura, ${PLAYER.name}! Vamos a ayudar a ${currentStory.character}.`,
+    `¡${PLAYER.nickname}, tenemos una nueva misión! ${currentStory.title}.`,
+    `¡Listo ${PLAYER.name}? ¡Vamos con ${currentStory.character}!`
+  ];
+
+  // Decir bienvenida ocasionalmente (no siempre para no ser repetitivo)
+  if(Math.random() > 0.3){
+    speakText(welcomeMsgs[Math.floor(Math.random() * welcomeMsgs.length)], null, { rate: 0.88, pitch: 1.0 });
+  }
+
+  loadCurrentStep();
+}
+
+// ========== STORY MODAL & QUIZ ==========
+let quizCooldown = 0;
+let quizCooldownInterval = null;
+let quizWrongAttempts = 0;
+
+// Explicaciones habladas para cada operación (más naturales para voz)
+function getOperationExplanation(op){
+  const explanations = {
+    suma: 'juntar cosas, cuando llegan más o agregas algo',
+    resta: 'quitar cosas, cuando algo se va, se vende o se pierde',
+    multi: 'cuando tienes grupos iguales, como varias cajas con lo mismo adentro',
+    divi: 'repartir en partes iguales, como dividir entre varias personas'
+  };
+  return explanations[op] || '';
+}
+
+const OPERATION_TIPS = {
+  suma: {
+    name: 'Suma',
+    sym: '+',
+    keywords: ['juntar', 'más', 'llegan', 'agregar', 'total', 'en total', 'añadir', 'y', 'junto con'],
+    tip: '<b>🟢 SUMA (+)</b> = Juntar cosas<br>Palabras clave: "llegan más", "en total", "juntar", "agregar", "y"<br>Ejemplo: Tengo 3 🍎 y llegan 2 más → 3 + 2'
+  },
+  resta: {
+    name: 'Resta',
+    sym: '−',
+    keywords: ['quedan', 'quitar', 'menos', 'vendió', 'perdió', 'se fueron', 'se van', 'comió', 'gastó', 'regaló'],
+    tip: '<b>🟠 RESTA (−)</b> = Quitar cosas<br>Palabras clave: "quedan", "vendió", "se van", "perdió", "quitar"<br>Ejemplo: Tengo 5 🍎 y vendo 2 → 5 - 2'
+  },
+  multi: {
+    name: 'Multiplicación',
+    sym: '×',
+    keywords: ['cada uno tiene', 'grupos', 'veces', 'cada', 'por', 'repetir'],
+    tip: '<b>🔵 MULTIPLICACIÓN (×)</b> = Grupos iguales<br>Palabras clave: "cada uno tiene", "grupos de", "veces"<br>Ejemplo: 3 cajas con 4 🍎 cada una → 3 × 4'
+  },
+  divi: {
+    name: 'División',
+    sym: '÷',
+    keywords: ['repartir', 'dividir', 'entre', 'partes iguales', 'a cada uno', 'por igual'],
+    tip: '<b>🔴 DIVISIÓN (÷)</b> = Repartir igual<br>Palabras clave: "repartir entre", "a cada uno", "partes iguales"<br>Ejemplo: 12 🍎 para 3 niños → 12 ÷ 3'
+  }
+};
+
+function showStoryModal(){
+  const step = currentStory.steps[currentStep];
+  quizWrongAttempts = 0;
+
+  // Texto con HTML para mostrar
+  const storyTextHTML = step.template
+    .replace('{char}', `<span class="highlight">${currentStory.character}</span>`)
+    .replace('{a}', `<span class="number">${numA}</span>`)
+    .replace('{b}', `<span class="number">${numB}</span>`);
+
+  // Texto limpio para lectura en voz alta
+  const storyTextClean = step.template
+    .replace('{char}', currentStory.character)
+    .replace('{a}', numA)
+    .replace('{b}', numB);
+
+  document.getElementById('storyModal').innerHTML = `
+    <div class="story-modal-content">
+      <div class="story-modal-avatar">${currentStory.avatar}</div>
+      <div class="story-modal-title">${currentStory.title}</div>
+      <div class="story-modal-chapter">📖 Paso ${currentStep + 1} de ${currentStory.steps.length}</div>
+
+      <button class="listen-btn" id="listenBtn" onclick="startStoryReading()">
+        <span class="listen-icon">🔊</span>
+        <span class="listen-text">Escuchar el problema</span>
+      </button>
+
+      <div class="voice-reading-indicator" id="voiceIndicator" style="display:none">
+        <span class="voice-icon">🔊</span>
+        <span class="voice-text">Leyendo...</span>
+        <div class="voice-dots"><span></span><span></span><span></span></div>
+      </div>
+
+      <div class="story-modal-text" id="storyText">${storyTextHTML}</div>
+      <div class="story-modal-question" id="storyQuestion">❓ ${step.question}</div>
+
+      <div class="quiz-section hidden" id="quizSection">
+        <div class="quiz-label">🧠 ¿Qué operación necesitas para resolver esto?</div>
+        <div class="operation-btns" id="opBtns">
+          <button class="op-btn suma" onclick="checkOperationQuiz('suma')">
+            <span class="op-sym">+</span>
+            <span class="op-name">Suma</span>
+          </button>
+          <button class="op-btn resta" onclick="checkOperationQuiz('resta')">
+            <span class="op-sym">−</span>
+            <span class="op-name">Resta</span>
+          </button>
+          <button class="op-btn multi" onclick="checkOperationQuiz('multi')">
+            <span class="op-sym">×</span>
+            <span class="op-name">Multi</span>
+          </button>
+          <button class="op-btn divi" onclick="checkOperationQuiz('divi')">
+            <span class="op-sym">÷</span>
+            <span class="op-name">Dividir</span>
+          </button>
+        </div>
+        <div class="quiz-feedback" id="quizFeedback"></div>
+        <div class="quiz-cooldown" id="quizCooldown" style="display:none">
+          ⏱️ Lee la ayuda... Podrás intentar en <span class="timer" id="cooldownTimer">5</span>s
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('storyModal').style.display = 'flex';
+
+  // Guardar texto limpio para lectura
+  window.currentStoryTextClean = storyTextClean;
+  window.currentStoryQuestion = step.question;
+}
+
+// Iniciar lectura del cuento (llamado por botón)
+function startStoryReading(){
+  const listenBtn = document.getElementById('listenBtn');
+  const indicator = document.getElementById('voiceIndicator');
+
+  // Ocultar botón, mostrar indicador
+  if(listenBtn) listenBtn.style.display = 'none';
+  if(indicator) indicator.style.display = 'flex';
+
+  // Saludos personalizados para iniciar
+  const greetings = [
+    `¡Escucha bien, ${PLAYER.name}!`,
+    `¡Atención ${PLAYER.nickname}!`,
+    `¡${PLAYER.name}, aquí viene tu problema!`,
+    `¡Listo ${PLAYER.nickname}? ¡Escucha!`,
+    `¡Oye ${PLAYER.name}, pon atención!`
+  ];
+  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+
+  // Texto completo: saludo + problema + pregunta + instrucción del quiz
+  const fullText = greeting + ' ' +
+                   window.currentStoryTextClean + '. ' +
+                   window.currentStoryQuestion + '. ' +
+                   `¿Qué operación necesitas para resolver este problema, ${PLAYER.name}? ¿Es suma, resta, multiplicación o división?`;
+
+  // Iniciar lectura completa
+  speakText(fullText, () => {
+    // Ocultar indicador y habilitar quiz
+    if(indicator) indicator.style.display = 'none';
+    enableQuizSection();
+  }, { rate: 0.88, pitch: 1.0 });
+}
+
+function checkOperationQuiz(selectedOp){
+  if(quizCooldown > 0) return;
+
+  const correctOp = currentOp;
+  const btns = document.querySelectorAll('.op-btn');
+  const selectedBtn = document.querySelector(`.op-btn.${selectedOp}`);
+
+  if(selectedOp === correctOp){
+    // ¡Correcto!
+    sndCorrect();
+    selectedBtn.classList.add('correct');
+    btns.forEach(b => b.classList.add('disabled'));
+
+    // Mensaje personalizado de felicitación
+    const correctMessage = getPlayerMessage('correct');
+
+    const feedback = document.getElementById('quizFeedback');
+    feedback.className = 'quiz-feedback show';
+    feedback.style.background = 'rgba(0,214,143,.15)';
+    feedback.style.border = '2px solid var(--green)';
+    feedback.innerHTML = `<span style="color:var(--green);font-weight:800">🎉 ${correctMessage}</span><br>Es una <b>${OPERATION_TIPS[correctOp].name}</b> (${OPERATION_TIPS[correctOp].sym})`;
+
+    // Leer felicitación con su nombre y esperar a que termine antes de continuar
+    speakText(`${correctMessage} Es una ${OPERATION_TIPS[correctOp].name}. ¡Ahora vamos a resolverlo!`, () => {
+      // Cuando termina de hablar, continuar
+      setTimeout(() => {
+        closeStoryModal();
+        startGameplay();
+      }, 500); // Pequeña pausa después de que termine de hablar
+    }, { rate: 0.88, pitch: 1.0 });
+
+  } else {
+    // Incorrecto
+    sndWrong();
+    quizWrongAttempts++;
+    selectedBtn.classList.add('wrong');
+    setTimeout(() => selectedBtn.classList.remove('wrong'), 500);
+
+    const feedback = document.getElementById('quizFeedback');
+    feedback.className = 'quiz-feedback wrong show';
+
+    // Determinar cooldown basado en intentos
+    let cooldownTime = 8;
+    if(quizWrongAttempts === 2) cooldownTime = 10;
+    if(quizWrongAttempts >= 3) cooldownTime = 12;
+
+    // Mostrar pista específica del error y de la operación correcta
+    const wrongTip = OPERATION_TIPS[selectedOp];
+    const correctTip = OPERATION_TIPS[correctOp];
+
+    // Mensaje personalizado para Emilio
+    const personalMessage = getPlayerMessage('wrong', quizWrongAttempts);
+
+    feedback.innerHTML = `
+      <span class="feedback-title">❌ ${personalMessage}</span>
+      <div class="tip-box">
+        No es ${wrongTip.name}. ${wrongTip.tip}
+      </div>
+      <div class="tip-box" style="margin-top:8px;border-left:3px solid var(--green)">
+        <b style="color:var(--green)">💡 Pista:</b> Busca palabras como: <b>"${correctTip.keywords.slice(0,3).join('", "')}"</b>
+      </div>
+    `;
+
+    // Deshabilitar botones mientras habla
+    const btns = document.querySelectorAll('.op-btn');
+    btns.forEach(b => b.classList.add('disabled'));
+
+    // Leer la explicación en voz alta con su nombre - cooldown empieza después de hablar
+    // Incluir el problema para que lo escuche de nuevo
+    const problemText = window.currentStoryTextClean || '';
+    const questionText = window.currentStoryQuestion || '';
+
+    const explanationText = `${personalMessage}. ` +
+      `No es ${wrongTip.name}. La ${wrongTip.name} se usa para ${getOperationExplanation(selectedOp)}. . ` +
+      `Escucha de nuevo el problema: . ${problemText}. . ${questionText}. . ` +
+      `Pista: busca palabras como "${correctTip.keywords.slice(0,2).join('" o "')}". . ` +
+      `¿Qué operación necesitas para resolver este problema, ${PLAYER.name}?`;
+
+    speakText(explanationText, () => {
+      // Iniciar cooldown DESPUÉS de que termine de hablar
+      startQuizCooldown(cooldownTime);
+    }, { rate: 0.88, pitch: 1.0 });
+  }
+}
+
+function startQuizCooldown(seconds){
+  quizCooldown = seconds;
+  const btns = document.querySelectorAll('.op-btn');
+  btns.forEach(b => b.classList.add('disabled'));
+
+  document.getElementById('quizCooldown').style.display = 'block';
+  document.getElementById('cooldownTimer').textContent = quizCooldown;
+
+  quizCooldownInterval = setInterval(()=>{
+    quizCooldown--;
+    document.getElementById('cooldownTimer').textContent = quizCooldown;
+
+    if(quizCooldown <= 0){
+      clearInterval(quizCooldownInterval);
+      document.getElementById('quizCooldown').style.display = 'none';
+      btns.forEach(b => b.classList.remove('disabled'));
+    }
+  }, 1000);
+}
+
+function closeStoryModal(){
+  stopSpeaking(); // Detener lectura en voz alta
+  document.getElementById('storyModal').style.display = 'none';
+  if(quizCooldownInterval) clearInterval(quizCooldownInterval);
+  quizCooldown = 0;
+}
+
+function startGameplay(){
+  // Continuar con el flujo normal del juego
+  clearWorkspace();
+  hasChecked = false;
+  attempts = 0;
+  hintLevel = 0;
+  renderStoryPanel();
+  renderChallengeCard();
+  renderHintPanel();
+  renderWorkspace();
+  renderActions();
+  renderCounters();
+
+  // Mensajes de instrucción según la operación
+  const thinkingMessages = {
+    suma: `¿Cuánto es ${numA} + ${numB}? ¡Coloca los ${currentEmoji} que necesitas!`,
+    resta: `Si tienes ${numA} y quitas ${numB}... ¿cuántos quedan?`,
+    multi: `${numA} grupos × ${numB} cada uno = ¿? ¡Forma los grupos!`,
+    divi: `${numA} ${currentEmoji} ÷ ${numB} ${currentGroupEmoji} = ¿? ¡Reparte!`
+  };
+  renderResult({type:'thinking', emoji:'🤔', text:'¡Piensa y resuelve!', detail:thinkingMessages[currentOp]});
+
+  // Explicación hablada de qué debe hacer según la operación
+  const gameplayInstructions = {
+    suma: [
+      `Muy bien ${PLAYER.name}, ahora tienes que sumar. Arrastra ${numA} más ${numB} objetos al tablero. ¿Cuántos son en total?`,
+      `${PLAYER.nickname}, es hora de sumar. Pon ${numA} objetos y luego ${numB} más. Cuenta cuántos quedan.`,
+      `Vamos ${PLAYER.name}, junta ${numA} con ${numB}. Arrastra los objetos al tablero y cuenta el total.`
+    ],
+    resta: [
+      `Ahora ${PLAYER.name}, tienes que restar. Empiezas con ${numA} y debes quitar ${numB}. ¿Cuántos quedan?`,
+      `${PLAYER.nickname}, aquí hay que restar. De ${numA} objetos, quita ${numB}. Arrastra al tablero los que quedan.`,
+      `Vamos ${PLAYER.name}, si tienes ${numA} y te quitan ${numB}, ¿cuántos te quedan? Pon esa cantidad en el tablero.`
+    ],
+    multi: [
+      `${PLAYER.name}, ahora multiplicamos. Tienes ${numA} grupos y cada grupo tiene ${numB}. ¿Cuántos hay en total?`,
+      `${PLAYER.nickname}, forma ${numA} grupos de ${numB} objetos cada uno. Arrastra al tablero el total.`,
+      `Vamos ${PLAYER.name}, ${numA} veces ${numB} es... ¡pon la cantidad correcta en el tablero!`
+    ],
+    divi: [
+      `${PLAYER.name}, ahora dividimos. Tienes ${numA} objetos para repartir entre ${numB}. ¿Cuántos le tocan a cada uno?`,
+      `${PLAYER.nickname}, reparte ${numA} objetos en ${numB} grupos iguales. ¿Cuántos van en cada grupo?`,
+      `Vamos ${PLAYER.name}, si divides ${numA} entre ${numB}, ¿cuántos quedan en cada parte? Pon esa cantidad.`
+    ]
+  };
+
+  const instructions = gameplayInstructions[currentOp];
+  const instruction = instructions[Math.floor(Math.random() * instructions.length)];
+
+  // Esperar un momento antes de hablar para que se renderice todo
+  setTimeout(() => {
+    speakText(instruction, null, { rate: 0.88, pitch: 1.0 });
+  }, 300);
+}
+
+// ========== MATH REVIEW MODAL (Repaso de términos matemáticos) ==========
+const MATH_TERMS = {
+  suma: {
+    opName: 'Suma',
+    symbol: '+',
+    symbolName: 'Signo más',
+    terms: [
+      { name: 'Sumando', desc: 'Número que se suma', key: 'a' },
+      { name: 'Sumando', desc: 'Otro número que se suma', key: 'b' },
+      { name: 'Suma o Total', desc: 'El resultado de sumar', key: 'result' }
+    ],
+    funFact: 'En la suma, el orden no importa: 3+5 = 5+3'
+  },
+  resta: {
+    opName: 'Resta',
+    symbol: '−',
+    symbolName: 'Signo menos',
+    terms: [
+      { name: 'Minuendo', desc: 'Lo que tienes al inicio', key: 'a' },
+      { name: 'Sustraendo', desc: 'Lo que quitas', key: 'b' },
+      { name: 'Diferencia', desc: 'Lo que queda (resultado)', key: 'result' }
+    ],
+    funFact: 'El minuendo siempre debe ser mayor o igual al sustraendo para obtener un resultado positivo'
+  },
+  multi: {
+    opName: 'Multiplicación',
+    symbol: '×',
+    symbolName: 'Signo por',
+    terms: [
+      { name: 'Multiplicando', desc: 'El número que se repite', key: 'a' },
+      { name: 'Multiplicador', desc: 'Cuántas veces se repite', key: 'b' },
+      { name: 'Producto', desc: 'El resultado de multiplicar', key: 'result' }
+    ],
+    funFact: 'Multiplicar es sumar el mismo número varias veces: 4×3 = 4+4+4'
+  },
+  divi: {
+    opName: 'División',
+    symbol: '÷',
+    symbolName: 'Signo dividido',
+    terms: [
+      { name: 'Numerador', desc: 'Lo que vas a repartir (arriba)', key: 'a' },
+      { name: 'Denominador', desc: 'Entre cuántos repartes (abajo)', key: 'b' },
+      { name: 'Cociente', desc: 'Lo que le toca a cada uno', key: 'result' }
+    ],
+    funFact: 'Dividir es repartir en partes iguales. ¡El denominador nunca puede ser cero!'
+  }
+};
+
+let mathQuizQuestions = [];
+let mathQuizCurrent = 0;
+
+function showMathReviewModal(){
+  const terms = MATH_TERMS[currentOp];
+  const values = { a: numA, b: numB, result: answer };
+
+  // Generar preguntas de quiz
+  generateMathQuizQuestions();
+
+  // Crear HTML de la operación formal CON etiquetas visibles
+  // Para división, mostrar como fracción (numerador arriba, denominador abajo)
+  let operationHTML;
+
+  if(currentOp === 'divi'){
+    operationHTML = `
+      <div class="operation-display division-display" id="operationDisplay">
+        <div class="fraction-container">
+          <div class="fraction-top">
+            <div class="value num-a">${numA}</div>
+            <div class="label highlight term-label" data-term="a">${terms.terms[0].name}</div>
+          </div>
+          <div class="fraction-line"></div>
+          <div class="fraction-bottom">
+            <div class="value num-b">${numB}</div>
+            <div class="label highlight term-label" data-term="b">${terms.terms[1].name}</div>
+          </div>
+        </div>
+        <div class="math-element">
+          <div class="value equals">=</div>
+          <div class="label">igual a</div>
+        </div>
+        <div class="math-element">
+          <div class="value result">${answer}</div>
+          <div class="label highlight term-label" data-term="result">${terms.terms[2].name}</div>
+        </div>
+      </div>
+    `;
+  } else {
+    operationHTML = `
+      <div class="operation-display" id="operationDisplay">
+        <div class="math-element">
+          <div class="value num-a">${numA}</div>
+          <div class="label highlight term-label" data-term="a">${terms.terms[0].name}</div>
+        </div>
+        <div class="math-element">
+          <div class="value symbol">${terms.symbol}</div>
+          <div class="label term-label" data-term="sym">${terms.symbolName}</div>
+        </div>
+        <div class="math-element">
+          <div class="value num-b">${numB}</div>
+          <div class="label highlight term-label" data-term="b">${terms.terms[1].name}</div>
+        </div>
+        <div class="math-element">
+          <div class="value equals">=</div>
+          <div class="label">igual a</div>
+        </div>
+        <div class="math-element">
+          <div class="value result">${answer}</div>
+          <div class="label highlight term-label" data-term="result">${terms.terms[2].name}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Tabla de términos
+  let termsHTML = terms.terms.map(t => `
+    <div class="term-item">
+      <div class="term-name">${t.name}</div>
+      <div class="term-value">${values[t.key]}</div>
+      <div class="term-desc">${t.desc}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('mathReviewModal').innerHTML = `
+    <div class="math-review-content">
+      <div class="math-review-header">
+        <h2>📐 ¡Aprendamos los términos, ${PLAYER.name}!</h2>
+        <p>Esta fue una <b>${terms.opName}</b></p>
+      </div>
+
+      <div class="formal-operation" id="formalOperation">
+        <div class="formal-operation-title">La operación completa</div>
+        ${operationHTML}
+        <div class="terms-table" id="termsTable">
+          <div class="terms-table-title">📚 Vocabulario matemático</div>
+          <div class="terms-grid">${termsHTML}</div>
+        </div>
+        <div class="fun-fact">💡 ${terms.funFact}</div>
+      </div>
+
+      <div class="terms-quiz" id="termsQuiz">
+        <div id="termsStartSection">
+          <p style="font-size:.85rem;color:var(--text-dim);margin-bottom:12px">📖 Escucha y memoriza los nombres...</p>
+          <button class="btn btn-check" id="startQuizBtn" onclick="startTermsQuiz()" style="width:100%;opacity:0.5;pointer-events:none">🧠 ¡Empezar Quiz!</button>
+        </div>
+        <div id="termsQuizSection" style="display:none">
+          <div class="terms-quiz-progress" id="quizProgress"></div>
+          <div id="mathQuizContainer"></div>
+          <div class="terms-quiz-feedback" id="mathQuizFeedback"></div>
+        </div>
+        <button class="continue-btn" id="continueBtn" onclick="closeMathReviewAndContinue()">✨ ¡Continuar!</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('mathReviewModal').style.display = 'flex';
+
+  // Leer explicación del modal - habilitar botón cuando termine
+  const mathReviewIntro = `¡Muy bien ${PLAYER.name}! Ahora aprendamos los nombres de los números. ` +
+    `Esto fue una ${terms.opName}. ` +
+    `El ${terms.terms[0].name} es ${numA}. El ${terms.terms[1].name} es ${numB}. ` +
+    `Y el resultado, que se llama ${terms.terms[2].name}, es ${answer}. ` +
+    `Memoriza estos nombres, ${PLAYER.nickname}, porque luego te voy a preguntar.`;
+
+  setTimeout(() => {
+    speakText(mathReviewIntro, () => {
+      // Habilitar botón de quiz cuando termine de hablar
+      const btn = document.getElementById('startQuizBtn');
+      if(btn){
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+      }
+    }, { rate: 0.88, pitch: 1.0 });
+  }, 500);
+}
+
+function startTermsQuiz(){
+  sndClick();
+  console.log('startTermsQuiz llamado, preguntas:', mathQuizQuestions.length);
+
+  // Ocultar los nombres de los términos
+  document.querySelectorAll('.term-label').forEach(label => {
+    label.textContent = '???';
+    label.style.color = 'var(--yellow)';
+  });
+
+  // Ocultar la tabla de vocabulario
+  const termsTable = document.getElementById('termsTable');
+  if(termsTable) termsTable.style.display = 'none';
+
+  // Mostrar sección del quiz de términos
+  const startSection = document.getElementById('termsStartSection');
+  const quizSection = document.getElementById('termsQuizSection');
+  console.log('startSection:', startSection, 'quizSection:', quizSection);
+
+  if(startSection) startSection.style.display = 'none';
+  if(quizSection) quizSection.style.display = 'block';
+
+  // Generar dots del progreso
+  const dotsHTML = mathQuizQuestions.map((_, i) => `
+    <div class="quiz-dot ${i === 0 ? 'current' : ''}"></div>
+  `).join('');
+  document.getElementById('quizProgress').innerHTML = dotsHTML;
+
+  // Renderizar primera pregunta (sin hablar todavía)
+  renderMathQuizQuestion(false);
+
+  // Deshabilitar botones mientras habla
+  document.querySelectorAll('.term-option').forEach(b => b.classList.add('disabled'));
+
+  // Intro corto + primera pregunta
+  const introMsg = `¡A ver! ¿Cómo se llama el símbolo de esta operación?`;
+
+  speakText(introMsg, () => {
+    // Habilitar botones cuando termine de hablar
+    document.querySelectorAll('.term-option').forEach(b => b.classList.remove('disabled'));
+  }, { rate: 0.88, pitch: 1.0 });
+}
+
+function generateMathQuizQuestions(){
+  mathQuizQuestions = [];
+  mathQuizCurrent = 0;
+
+  const terms = MATH_TERMS[currentOp];
+  const values = { a: numA, b: numB, result: answer };
+
+  // Pregunta 1: ¿Cómo se llama el símbolo?
+  mathQuizQuestions.push({
+    question: `¿Cómo se llama el símbolo <span class="quiz-highlight">${terms.symbol}</span>?`,
+    correct: terms.symbolName,
+    alsoCorrect: [], // Sin alternativas
+    options: shuffleArray([terms.symbolName, 'Signo igual', getRandomWrongSymbol(currentOp), 'Paréntesis'])
+  });
+
+  // Pregunta 2: ¿Cómo se llama el primer número?
+  // Para suma: ambos son "Sumando", así que aceptamos ambos
+  const alsoCorrectForA = (currentOp === 'suma') ? [terms.terms[1].name] : [];
+  mathQuizQuestions.push({
+    question: `En ${numA} ${terms.symbol} ${numB} = ${answer}, ¿cómo se llama el <span class="quiz-highlight">${numA}</span>?`,
+    correct: terms.terms[0].name,
+    alsoCorrect: alsoCorrectForA,
+    options: currentOp === 'suma'
+      ? shuffleArray([terms.terms[0].name, terms.terms[2].name, getRandomWrongTerm(currentOp, 0), getRandomWrongTerm(currentOp, 1)])
+      : shuffleArray([terms.terms[0].name, terms.terms[1].name, terms.terms[2].name, getRandomWrongTerm(currentOp, 0)])
+  });
+
+  // Pregunta 3: ¿Cómo se llama el resultado?
+  mathQuizQuestions.push({
+    question: `El resultado <span class="quiz-highlight">${answer}</span> se llama...`,
+    correct: terms.terms[2].name,
+    alsoCorrect: [],
+    options: shuffleArray([terms.terms[2].name, terms.terms[0].name, getRandomWrongTerm(currentOp, 2), getRandomWrongTerm(currentOp, 1)])
+  });
+
+  // Pregunta 4: ¿Cuál es el [término específico]?
+  // Para suma, preguntamos por el resultado para evitar confusión
+  let randomTerm;
+  if(currentOp === 'suma'){
+    randomTerm = terms.terms[2]; // Siempre preguntar por el resultado en suma
+  } else {
+    randomTerm = terms.terms[Math.floor(Math.random() * 3)];
+  }
+
+  // Para suma con Sumando, ambos valores son válidos
+  const alsoCorrectValues = (currentOp === 'suma' && randomTerm.name === 'Sumando')
+    ? [String(numA), String(numB)]
+    : [];
+
+  mathQuizQuestions.push({
+    question: `¿Cuál es el <span class="quiz-highlight">${randomTerm.name}</span> en esta operación?`,
+    correct: String(values[randomTerm.key]),
+    alsoCorrect: alsoCorrectValues,
+    options: shuffleArray([String(numA), String(numB), String(answer), String(numA + numB)])
+  });
+}
+
+function getRandomWrongSymbol(op){
+  const symbols = {suma: 'Signo por', resta: 'Signo más', multi: 'Signo menos', divi: 'Signo más'};
+  return symbols[op];
+}
+
+function getRandomWrongTerm(op, excludeIndex){
+  const wrongTerms = {
+    suma: ['Minuendo', 'Numerador', 'Cociente', 'Producto'],
+    resta: ['Sumando', 'Multiplicador', 'Numerador', 'Producto'],
+    multi: ['Minuendo', 'Sumando', 'Numerador', 'Diferencia'],
+    divi: ['Sumando', 'Minuendo', 'Producto', 'Diferencia']
+  };
+  return wrongTerms[op][excludeIndex] || wrongTerms[op][0];
+}
+
+function shuffleArray(arr){
+  const shuffled = [...arr];
+  for(let i = shuffled.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, 4); // Asegurar 4 opciones
+}
+
+function renderMathQuizQuestion(shouldSpeak = true){
+  console.log('renderMathQuizQuestion, current:', mathQuizCurrent, 'total:', mathQuizQuestions.length);
+
+  if(mathQuizCurrent >= mathQuizQuestions.length){
+    showMathQuizComplete();
+    return;
+  }
+
+  const q = mathQuizQuestions[mathQuizCurrent];
+  console.log('Pregunta actual:', q);
+
+  const optionsHTML = q.options.map(opt => `
+    <button class="term-option" onclick="checkMathQuizAnswer('${opt.replace(/'/g, "\\'")}', '${q.correct.replace(/'/g, "\\'")}')">${opt}</button>
+  `).join('');
+
+  document.getElementById('mathQuizContainer').innerHTML = `
+    <div class="terms-quiz-question">${q.question}</div>
+    <div class="terms-options">${optionsHTML}</div>
+  `;
+
+  // Update progress dots
+  document.querySelectorAll('.quiz-dot').forEach((dot, i) => {
+    dot.className = 'quiz-dot';
+    if(i < mathQuizCurrent) dot.classList.add('done');
+    if(i === mathQuizCurrent) dot.classList.add('current');
+  });
+
+  document.getElementById('mathQuizFeedback').className = 'terms-quiz-feedback';
+  document.getElementById('mathQuizFeedback').innerHTML = '';
+
+  // Leer la pregunta si corresponde (no la primera que ya se leyó en el intro)
+  if(shouldSpeak && mathQuizCurrent > 0){
+    // Deshabilitar botones mientras habla
+    document.querySelectorAll('.term-option').forEach(b => b.classList.add('disabled'));
+
+    // Limpiar HTML de la pregunta para hablarla
+    const questionClean = q.question.replace(/<[^>]*>/g, '');
+    const questionNum = mathQuizCurrent + 1;
+    const spokenQuestion = `Pregunta ${questionNum}: ${questionClean}`;
+
+    speakText(spokenQuestion, () => {
+      // Habilitar botones cuando termine
+      document.querySelectorAll('.term-option').forEach(b => b.classList.remove('disabled'));
+    }, { rate: 0.88, pitch: 1.0 });
+  }
+}
+
+let mathQuizCooldown = 0;
+let mathQuizCooldownInterval = null;
+
+function checkMathQuizAnswer(selected, correct){
+  if(mathQuizCooldown > 0) return;
+
+  const btns = document.querySelectorAll('.term-option');
+  const feedback = document.getElementById('mathQuizFeedback');
+  const selectedBtn = Array.from(btns).find(b => b.textContent === selected);
+
+  // Obtener la pregunta actual para verificar respuestas alternativas
+  const currentQuestion = mathQuizQuestions[mathQuizCurrent];
+  const alsoCorrect = currentQuestion.alsoCorrect || [];
+
+  // Verificar si es correcto o una alternativa válida
+  const isCorrect = (selected === correct) || alsoCorrect.includes(selected);
+
+  if(isCorrect){
+    // ¡Correcto! Avanza a la siguiente pregunta
+    sndCorrect();
+
+    btns.forEach(btn => btn.classList.add('disabled'));
+    if(selectedBtn) selectedBtn.classList.add('correct');
+
+    feedback.className = 'terms-quiz-feedback success show';
+    feedback.innerHTML = `✅ ¡Correcto, ${PLAYER.nickname}!`;
+
+    // Felicitación hablada corta - esperar a que termine antes de pasar a la siguiente
+    const termCorrectMsgs = [
+      `¡Bien ${PLAYER.nickname}!`,
+      `¡Eso es ${PLAYER.nickname}!`,
+      `¡Correcto ${PLAYER.nickname}!`,
+      `¡Muy bien ${PLAYER.nickname}!`,
+      `¡Excelente ${PLAYER.nickname}!`,
+      `¡Así se hace ${PLAYER.nickname}!`,
+      `¡Genial ${PLAYER.nickname}!`,
+      `¡${PLAYER.nickname} lo sabe!`,
+      `¡Eso ${PLAYER.fullName}!`
+    ];
+    speakText(termCorrectMsgs[Math.floor(Math.random() * termCorrectMsgs.length)], () => {
+      // Revelar el nombre en la operación si es relevante
+      revealTermLabel(currentQuestion, selected);
+
+      // Siguiente pregunta después de terminar de hablar
+      setTimeout(() => {
+        mathQuizCurrent++;
+        renderMathQuizQuestion();
+      }, 400);
+    }, { rate: 0.85, pitch: 1.0 });
+
+  } else {
+    // Incorrecto - debe esperar y leer la explicación
+    sndWrong();
+    if(selectedBtn) selectedBtn.classList.add('wrong');
+    setTimeout(() => { if(selectedBtn) selectedBtn.classList.remove('wrong'); }, 500);
+
+    // Generar explicación según el tipo de pregunta
+    const terms = MATH_TERMS[currentOp];
+    let explanation = '';
+
+    if(correct === terms.symbolName){
+      explanation = `<b>${terms.symbol}</b> se llama <b>${terms.symbolName}</b> y se usa para la ${terms.opName}.`;
+    } else {
+      const termInfo = terms.terms.find(t => t.name === correct);
+      if(termInfo){
+        explanation = `<b>${correct}</b>: ${termInfo.desc}.<br>En ${numA} ${terms.symbol} ${numB} = ${answer}, el ${correct} es <b>${termInfo.key === 'a' ? numA : termInfo.key === 'b' ? numB : answer}</b>.`;
+      } else {
+        // Es una pregunta de valor numérico
+        explanation = `Recuerda los términos:<br>• ${terms.terms[0].name} = ${numA}<br>• ${terms.terms[1].name} = ${numB}<br>• ${terms.terms[2].name} = ${answer}`;
+      }
+    }
+
+    feedback.className = 'terms-quiz-feedback error show';
+    feedback.innerHTML = `
+      <span style="color:var(--red);font-weight:800;display:block;margin-bottom:8px">❌ ${PLAYER.name}, ese no es.</span>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;font-size:.82rem;text-align:left;margin-bottom:8px">
+        ${explanation}
+      </div>
+      <div id="mathQuizCooldownText" style="color:var(--yellow);font-weight:700">
+        ⏱️ Lee bien... podrás intentar en <span id="mathCooldownTimer">3</span>s
+      </div>
+    `;
+
+    // Deshabilitar botones mientras habla
+    const termBtns = document.querySelectorAll('.term-option');
+    termBtns.forEach(b => b.classList.add('disabled'));
+
+    // Mensaje hablado guiador según el tipo de pregunta
+    let spokenGuide = '';
+
+    if(correct === terms.symbolName){
+      // Pregunta sobre el símbolo - usar Emilio
+      spokenGuide = `No ${PLAYER.name}, ese no es el nombre del símbolo. . Mira, el símbolo ${terms.symbol} se llama ${terms.symbolName}. . Se usa para hacer ${terms.opName.toLowerCase()}s. . ¿Cuál es entonces ${PLAYER.name}?`;
+    } else {
+      const termInfo = terms.terms.find(t => t.name === correct);
+      if(termInfo){
+        // Pregunta sobre un término específico (Sumando, Minuendo, etc.) - usar Emilio
+        if(correct === terms.terms[0].name){
+          // Primer término (el de arriba/izquierda)
+          if(currentOp === 'suma'){
+            spokenGuide = `No ${PLAYER.name}, piénsalo bien. . En la suma, los números que sumamos se llaman Sumandos. . El ${numA} es un Sumando porque es uno de los números que vamos a juntar.`;
+          } else if(currentOp === 'resta'){
+            spokenGuide = `No ${PLAYER.name}. . En la resta, el número grande del que quitamos se llama Minuendo. . El ${numA} es el Minuendo porque es lo que tenemos al inicio.`;
+          } else if(currentOp === 'multi'){
+            spokenGuide = `No ${PLAYER.name}. . El número que se repite varias veces se llama Multiplicando. . El ${numA} es el Multiplicando.`;
+          } else {
+            spokenGuide = `No ${PLAYER.name}. . El número de arriba, lo que vamos a repartir, se llama Numerador. . El ${numA} es el Numerador.`;
+          }
+        } else if(correct === terms.terms[1].name){
+          // Segundo término (el de abajo/derecha)
+          if(currentOp === 'suma'){
+            spokenGuide = `No ${PLAYER.name}. . El ${numB} también es un Sumando, porque es otro número que sumamos. . En la suma, todos los números se llaman Sumandos.`;
+          } else if(currentOp === 'resta'){
+            spokenGuide = `No ${PLAYER.name}. . El número que quitamos se llama Sustraendo. . El ${numB} es el Sustraendo porque es lo que restamos.`;
+          } else if(currentOp === 'multi'){
+            spokenGuide = `No ${PLAYER.name}. . El número que dice cuántas veces repetimos se llama Multiplicador. . El ${numB} es el Multiplicador.`;
+          } else {
+            spokenGuide = `No ${PLAYER.name}. . El número de abajo, entre cuántos repartimos, se llama Denominador. . El ${numB} es el Denominador.`;
+          }
+        } else if(correct === terms.terms[2].name){
+          // Resultado
+          if(currentOp === 'suma'){
+            spokenGuide = `No ${PLAYER.name}. . El resultado de sumar se llama Suma o Total. . Cuando sumamos ${numA} más ${numB}, el ${answer} es la Suma.`;
+          } else if(currentOp === 'resta'){
+            spokenGuide = `No ${PLAYER.name}. . El resultado de restar se llama Diferencia. . Cuando restamos ${numA} menos ${numB}, el ${answer} es la Diferencia.`;
+          } else if(currentOp === 'multi'){
+            spokenGuide = `No ${PLAYER.name}. . El resultado de multiplicar se llama Producto. . Cuando multiplicamos ${numA} por ${numB}, el ${answer} es el Producto.`;
+          } else {
+            spokenGuide = `No ${PLAYER.name}. . El resultado de dividir se llama Cociente. . Cuando dividimos ${numA} entre ${numB}, el ${answer} es el Cociente.`;
+          }
+        }
+      } else {
+        // Pregunta de valor numérico - usar Emilio
+        spokenGuide = `No ${PLAYER.name}, ese número no es correcto. . Recuerda: el ${terms.terms[0].name} es ${numA}, el ${terms.terms[1].name} es ${numB}, y el ${terms.terms[2].name} es ${answer}. . Piénsalo de nuevo ${PLAYER.name}.`;
+      }
+    }
+
+    speakText(spokenGuide, () => {
+      // Iniciar cooldown DESPUÉS de que termine de hablar
+      startMathQuizCooldown(3);
+    }, { rate: 0.88, pitch: 1.0 });
+  }
+}
+
+// Revelar el nombre del término cuando contesta correctamente
+function revealTermLabel(question, selectedAnswer){
+  const terms = MATH_TERMS[currentOp];
+
+  // Determinar qué etiqueta revelar basándose en la pregunta
+  if(selectedAnswer === terms.symbolName){
+    // Revelar el símbolo
+    const label = document.querySelector('.term-label[data-term="sym"]');
+    if(label){
+      label.textContent = terms.symbolName;
+      label.style.color = 'var(--green)';
+      label.style.animation = 'fadeIn 0.3s ease';
+    }
+  } else if(selectedAnswer === terms.terms[0].name || selectedAnswer === terms.terms[1].name){
+    // Para suma ambos son Sumando, revelar ambos
+    if(currentOp === 'suma'){
+      document.querySelectorAll('.term-label[data-term="a"], .term-label[data-term="b"]').forEach(label => {
+        label.textContent = 'Sumando';
+        label.style.color = 'var(--green)';
+        label.style.animation = 'fadeIn 0.3s ease';
+      });
+    } else {
+      // Revelar solo el específico
+      const key = selectedAnswer === terms.terms[0].name ? 'a' : 'b';
+      const label = document.querySelector(`.term-label[data-term="${key}"]`);
+      if(label){
+        label.textContent = selectedAnswer;
+        label.style.color = 'var(--green)';
+        label.style.animation = 'fadeIn 0.3s ease';
+      }
+    }
+  } else if(selectedAnswer === terms.terms[2].name){
+    // Revelar el resultado
+    const label = document.querySelector('.term-label[data-term="result"]');
+    if(label){
+      label.textContent = terms.terms[2].name;
+      label.style.color = 'var(--green)';
+      label.style.animation = 'fadeIn 0.3s ease';
+    }
+  }
+}
+
+function startMathQuizCooldown(seconds){
+  mathQuizCooldown = seconds;
+  const btns = document.querySelectorAll('.term-option');
+  btns.forEach(b => b.classList.add('disabled'));
+
+  const timerEl = document.getElementById('mathCooldownTimer');
+  if(timerEl) timerEl.textContent = mathQuizCooldown;
+
+  mathQuizCooldownInterval = setInterval(()=>{
+    mathQuizCooldown--;
+    const timerEl = document.getElementById('mathCooldownTimer');
+    if(timerEl) timerEl.textContent = mathQuizCooldown;
+
+    if(mathQuizCooldown <= 0){
+      clearInterval(mathQuizCooldownInterval);
+      btns.forEach(b => b.classList.remove('disabled'));
+      const cooldownText = document.getElementById('mathQuizCooldownText');
+      if(cooldownText) cooldownText.innerHTML = '👆 <span style="color:var(--green)">¡Intenta de nuevo!</span>';
+    }
+  }, 1000);
+}
+
+function showMathQuizComplete(){
+  sndCorrect();
+  spawnConfetti(15);
+
+  // Mensajes de felicitación por completar el quiz - usar Esmi y Emilio Quintero Tetero (apodo de juego)
+  const quizCompleteMsgs = [
+    `¡${PLAYER.fullName} completó el quiz! ¡Eres increíble!`,
+    `¡${PLAYER.fullName} es un campeón de las matemáticas!`,
+    `¡${PLAYER.fullName} sabe todos los términos! ¡Felicitaciones!`,
+    `¡Ese es ${PLAYER.fullName}! ¡Lo lograste!`,
+    `¡Nadie le gana a ${PLAYER.fullName}!`,
+    `¡${PLAYER.fullName} domina la ${MATH_TERMS[currentOp].opName}!`,
+    `¡Arriba ${PLAYER.fullName}! ¡Eres el mejor!`,
+    `¡Bravo ${PLAYER.nickname}! ¡Aprendiste todos los términos!`,
+    `¡Genial ${PLAYER.nickname}! ¡Lo lograste!`
+  ];
+  const completeMsg = quizCompleteMsgs[Math.floor(Math.random() * quizCompleteMsgs.length)];
+
+  document.getElementById('mathQuizContainer').innerHTML = `
+    <div style="text-align:center;padding:16px">
+      <div style="font-size:3rem;margin-bottom:10px">🏆</div>
+      <div style="font-size:1.2rem;font-weight:800;color:var(--yellow);margin-bottom:8px">¡Excelente, ${PLAYER.nickname}!</div>
+      <div style="font-size:.9rem;color:var(--text)">Ya conoces los términos de la ${MATH_TERMS[currentOp].opName}</div>
+    </div>
+  `;
+
+  // Leer felicitación
+  speakText(completeMsg, null, { rate: 0.88, pitch: 1.0 });
+
+  document.getElementById('mathQuizFeedback').style.display = 'none';
+  document.getElementById('continueBtn').classList.add('show');
+
+  // Update all dots as done
+  document.querySelectorAll('.quiz-dot').forEach(dot => {
+    dot.className = 'quiz-dot done';
+  });
+}
+
+function closeMathReviewAndContinue(){
+  document.getElementById('mathReviewModal').style.display = 'none';
+
+  // Mostrar juego de trivia como premio después de cada módulo
+  showTriviaGame(() => {
+    // Después del trivia, continuar al siguiente paso o mostrar victoria
+    if(currentStep < currentStory.steps.length - 1){
+      currentStep++;
+      loadCurrentStep();
+    } else {
+      showVictory();
+    }
+  });
+}
+
+function loadCurrentStep(){
+  const step = currentStory.steps[currentStep];
+  currentOp = step.op;
+  currentEmoji = step.emoji;
+  currentEmojiB = step.emojiB || step.emoji;
+  currentGroupEmoji = step.groupEmoji || '';
+  generateProblem();
+  sndNewStep();
+
+  // Mostrar modal con quiz de operación ANTES del gameplay
+  showStoryModal();
+}
+
+function generateProblem(){
+  const step = currentStory.steps[currentStep];
+
+  // Si este paso usa el resultado anterior
+  if(step.usePrevAnswer && previousAnswer > 0){
+    numA = previousAnswer;
+    // Para división, encontrar un divisor válido
+    if(currentOp === 'divi'){
+      const divisores = [];
+      for(let d = 2; d <= 4; d++){
+        if(numA % d === 0 && numA / d >= 2 && numA / d <= 6) divisores.push(d);
+      }
+      if(divisores.length > 0){
+        numB = divisores[rand(0, divisores.length-1)];
+        answer = numA / numB;
+      } else {
+        // Fallback si no hay divisor válido
+        numB = 2;
+        answer = Math.ceil(numA / 2);
+        numA = numB * answer;
+      }
+    } else {
+      numB = rand(2, 4);
+      answer = numA + numB; // Para suma
+    }
+  } else {
+    // Generación normal
+    if(currentOp === 'suma'){
+      numA = rand(2,8); numB = rand(2,8);
+      answer = numA + numB;
+    } else if(currentOp === 'resta'){
+      numA = rand(6,12); numB = rand(2, Math.min(numA-2, 6));
+      answer = numA - numB;
+    } else if(currentOp === 'multi'){
+      numA = rand(2,5); numB = rand(2,4);
+      answer = numA * numB;
+    } else {
+      // División: numA cosas ÷ numB grupos = answer por grupo
+      // Más variedad en los números
+      const divisiones = [
+        {grupos: 2, porGrupo: [2,3,4,5]},
+        {grupos: 3, porGrupo: [2,3,4]},
+        {grupos: 4, porGrupo: [2,3]},
+      ];
+      const div = divisiones[rand(0, divisiones.length-1)];
+      numB = div.grupos;
+      answer = div.porGrupo[rand(0, div.porGrupo.length-1)];
+      numA = numB * answer;
+    }
+  }
+}
+
+function rand(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+
+function getStoryText(){
+  const step = currentStory.steps[currentStep];
+  return step.template
+    .replace('{char}', `<span class="highlight">${currentStory.character}</span>`)
+    .replace('{a}', `<span class="number">${numA}</span>`)
+    .replace('{b}', `<span class="number">${numB}</span>`);
+}
+
+// ========== HINTS SYSTEM ==========
+function getHints(){
+  // Generate emoji examples
+  const makeEmojiRow = (count, emoji) => {
+    return `<span style="font-size:1.3rem;letter-spacing:2px">${emoji.repeat(count)}</span>`;
+  };
+
+  // Pistas pedagógicas progresivas - enseñan el concepto con emojis de la historia
+  const hints = {
+    suma: [
+      `<b>💭 ¿Qué es sumar?</b><br>Sumar es <em>juntar</em> cosas. Si tienes ${numA} ${currentEmoji} y llegan ${numB} más, ¿cuántos hay?`,
+      `<b>🎯 ¿Cómo lo hago?</b><br>Haz clic en la zona para agregar ${currentEmoji}. ¡Cuenta mientras agregas!
+       <div style="margin-top:6px">Ejemplo: ${makeEmojiRow(3, currentEmoji)} + ${makeEmojiRow(2, currentEmoji)} = 5</div>`,
+      `<b>✨ Cuenta conmigo:</b><br>${numA}... ${Array.from({length:numB},(_,i)=>numA+i+1).join('... ')} = <b>${answer}</b><br>¡Coloca ${answer} ${currentEmoji}!`
+    ],
+    resta: [
+      `<b>💭 ¿Qué es restar?</b><br>Restar es <em>quitar</em>. Si tienes ${numA} ${currentEmoji} y se van ${numB}, ¿cuántos quedan?`,
+      `<b>🎯 ¿Cómo lo hago?</b><br>Pon los que <b>QUEDAN</b> en ✅ y los que <b>SE VAN</b> en 📤
+       <div style="margin-top:6px">✅ ${makeEmojiRow(3, currentEmoji)} + 📤 ${makeEmojiRow(2, currentEmoji)} = 5 tenías</div>`,
+      `<b>✨ Cuenta hacia atrás:</b><br>${numA}... ${Array.from({length:numB},(_,i)=>numA-i-1).join('... ')} = <b>${answer}</b><br>✅ Quedan: ${answer} | 📤 Se van: ${numB}`
+    ],
+    multi: [
+      `<b>💭 ¿Qué es multiplicar?</b><br>Multiplicar es sumar lo mismo varias veces.<br>${numA} × ${numB} = ${numB} + ${numB} ${numA > 2 ? '+ ' + numB : ''}...`,
+      `<b>🎯 ¿Cómo lo hago?</b><br>Imagina ${numA} ${currentGroupEmoji}, cada uno con ${numB} ${currentEmoji}.
+       <div style="margin-top:6px">${currentGroupEmoji} ${makeEmojiRow(numB, currentEmoji)} × ${numA} = ?</div>`,
+      `<b>✨ Cuenta:</b><br>${Array.from({length:numA},(_,i)=>(i+1)*numB).join(' → ')} = <b>${answer}</b><br>¡Coloca ${answer} ${currentEmoji}!`
+    ],
+    divi: [
+      `<b>💭 ¿Qué es dividir?</b><br>Dividir es <em>repartir igual</em>. Si tienes ${numA} ${currentEmoji} para ${numB} ${currentGroupEmoji}, ¿cuántos le tocan a cada uno?`,
+      `<b>🎯 ¿Cómo lo hago?</b><br>Reparte los ${currentEmoji} entre los ${numB} ${currentGroupEmoji}. ¡Todos deben tener lo mismo!
+       <div style="margin-top:6px">${currentGroupEmoji}1: ${makeEmojiRow(answer, currentEmoji)} | ${currentGroupEmoji}2: ${makeEmojiRow(answer, currentEmoji)}</div>`,
+      `<b>✨ Reparte:</b><br>${numA} ${currentEmoji} ÷ ${numB} ${currentGroupEmoji} = <b>${answer}</b> cada uno<br>¡Pon ${answer} ${currentEmoji} en cada zona!`
+    ]
+  };
+  return hints[currentOp];
+}
+
+// Las pistas se revelan automáticamente al fallar
+
+// ========== RENDER ==========
+function renderScoreBar(){
+  document.getElementById('scoreBar').innerHTML = `
+    <div class="score-item adventures"><div class="val">${score.adventures}</div><div class="lbl">Aventuras</div></div>
+    <div class="score-item streak"><div class="val">🔥${score.streak}</div><div class="lbl">Racha</div></div>
+    <div class="score-item stars"><div class="val">⭐${score.stars}</div><div class="lbl">Estrellas</div></div>
+  `;
+}
+
+function renderStoryPanel(){
+  const step = currentStory.steps[currentStep];
+  let progressHTML = '';
+  for(let i = 0; i < currentStory.steps.length; i++){
+    let cls = i < currentStep ? 'done' : (i === currentStep ? 'current' : '');
+    progressHTML += `<div class="progress-step ${cls}"></div>`;
+  }
+  document.getElementById('storyPanel').innerHTML = `
+    <div class="story-header">
+      <div class="story-avatar">${currentStory.avatar}</div>
+      <div class="story-meta">
+        <div class="story-title">${currentStory.title}</div>
+        <div class="story-chapter">Paso ${currentStep + 1}/4</div>
+      </div>
+    </div>
+    <div class="story-text">${getStoryText()}<br><b>${step.question}</b></div>
+    <div class="progress-bar">${progressHTML}<span class="progress-label">${currentStep + 1}/4</span></div>
+  `;
+}
+
+function renderChallengeCard(){
+  const o = OPS[currentOp];
+  document.getElementById('challengeCard').innerHTML = `
+    <div class="challenge-header">
+      <span class="challenge-title">📝 Operación</span>
+      <span class="challenge-op ${currentOp}">${o.label}</span>
+    </div>
+    <div class="challenge-equation">
+      <span class="num a">${numA}</span>
+      <span class="op-sym">${o.sym}</span>
+      <span class="num b">${numB}</span>
+      <span class="eq">=</span>
+      <span class="result-box" id="resultBox">?</span>
+    </div>
+  `;
+}
+
+function renderHintPanel(){
+  const hints = getHints();
+  let hintsHTML = '';
+
+  for(let i = 0; i < hints.length; i++){
+    const isActive = i < hintLevel;
+    hintsHTML += `<div class="hint-level hint-${i+1} ${isActive ? 'active' : ''}">${hints[i]}</div>`;
+  }
+
+  // Mensajes según el nivel de ayuda
+  let statusMsg = '';
+  if(hintLevel === 0) {
+    statusMsg = '<p style="font-size:.7rem;color:var(--text-dim)">¡Inténtalo! Las pistas aparecerán si las necesitas.</p>';
+  } else if(hintLevel === 1) {
+    statusMsg = '<p style="font-size:.7rem;color:var(--purple)">💜 Piensa en el concepto...</p>';
+  } else if(hintLevel === 2) {
+    statusMsg = '<p style="font-size:.7rem;color:var(--yellow)">💛 Ya casi lo tienes...</p>';
+  } else {
+    statusMsg = '<p style="font-size:.7rem;color:var(--green)">💚 ¡Sigue las instrucciones!</p>';
+  }
+
+  document.getElementById('hintPanel').innerHTML = `
+    <h4>🧠 Aprende</h4>
+    ${statusMsg}
+    ${hintsHTML}
+  `;
+}
+
+function renderSourceArea(){
+  let html = '';
+  const tapHint = isMobile ? '<div class="tap-hint">👆 Arrastra los objetos a las zonas</div>' : '';
+
+  if(currentOp === 'suma'){
+    html = `
+      <div class="source-area">
+        <div class="source-title"><span class="icon">📦</span> Objetos para juntar</div>
+        <div class="source-groups">
+          <div class="source-group" style="border-color:var(--green)">
+            <div class="source-group-label">${numA} ${currentEmoji}</div>
+            <div class="source-items" id="source-A"></div>
+          </div>
+          <div class="source-group" style="border-color:var(--blue)">
+            <div class="source-group-label">${numB} ${currentEmojiB}</div>
+            <div class="source-items" id="source-B"></div>
+          </div>
+        </div>
+        ${tapHint}
+      </div>
+    `;
+  } else if(currentOp === 'resta'){
+    html = `
+      <div class="source-area">
+        <div class="source-title"><span class="icon">🎒</span> Tienes ${numA} ${currentEmoji}</div>
+        <div class="source-groups">
+          <div class="source-group" style="border-color:var(--yellow);min-width:200px">
+            <div class="source-group-label">Separa los objetos</div>
+            <div class="source-items" id="source-main"></div>
+          </div>
+        </div>
+        ${tapHint}
+      </div>
+    `;
+  } else if(currentOp === 'multi'){
+    html = `
+      <div class="source-area">
+        <div class="source-title"><span class="icon">📦</span> ${answer} ${currentEmoji} para ${numA} grupos</div>
+        <div class="source-groups">
+          <div class="source-group" style="border-color:var(--purple);min-width:200px">
+            <div class="source-group-label">Organiza en los ${currentGroupEmoji}</div>
+            <div class="source-items" id="source-main"></div>
+          </div>
+        </div>
+        ${tapHint}
+      </div>
+    `;
+  } else if(currentOp === 'divi'){
+    html = `
+      <div class="source-area">
+        <div class="source-title"><span class="icon">🎁</span> ${numA} ${currentEmoji} para repartir</div>
+        <div class="source-groups">
+          <div class="source-group" style="border-color:var(--pink);min-width:200px">
+            <div class="source-group-label">Reparte entre ${numB} ${currentGroupEmoji}</div>
+            <div class="source-items" id="source-main"></div>
+          </div>
+        </div>
+        ${tapHint}
+      </div>
+    `;
+  }
+
+  return html;
+}
+
+function renderWorkspace(){
+  const ws = document.getElementById('workspace');
+  let zonesHtml = '';
+  let title = '';
+
+  if(currentOp === 'suma'){
+    title = `¡Junta todos para ver el total!`;
+    zonesHtml = `
+      <div class="drop-zones">
+        <div class="drop-zone single-zone" onclick="tapZone('total')" ondrop="dropToZone(event, 'total')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+          <div class="drop-zone-label">🎯 Total</div>
+          <div class="drop-zone-items" id="zone-total"></div>
+        </div>
+      </div>
+    `;
+  } else if(currentOp === 'resta'){
+    title = `Separa: ¿cuántos QUEDAN y cuántos SE VAN?`;
+    zonesHtml = `
+      <div class="drop-zones resta-zones">
+        <div class="drop-zone zone-keep" onclick="tapZone('keep')" ondrop="dropToZone(event, 'keep')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+          <div class="drop-zone-label"><span class="zone-emoji">✅</span> Quedan</div>
+          <div class="drop-zone-items" id="zone-keep"></div>
+        </div>
+        <div class="drop-zone zone-remove" onclick="tapZone('remove')" ondrop="dropToZone(event, 'remove')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+          <div class="drop-zone-label"><span class="zone-emoji">📤</span> Se van</div>
+          <div class="drop-zone-items" id="zone-remove"></div>
+        </div>
+      </div>
+    `;
+  } else if(currentOp === 'multi'){
+    title = `Pon ${numB} ${currentEmoji} en cada ${currentGroupEmoji}`;
+    let groupsHtml = '';
+    for(let i = 0; i < numA; i++){
+      groupsHtml += `
+        <div class="drop-zone multi-group" style="border-color:${ZONE_COLORS[i % ZONE_COLORS.length]};background:${ZONE_COLORS[i % ZONE_COLORS.length]}15"
+             onclick="tapZone('g${i}')" ondrop="dropToZone(event, 'g${i}')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+          <div class="drop-zone-label"><span class="zone-emoji">${currentGroupEmoji}</span> ${i+1}</div>
+          <div class="drop-zone-items" id="zone-g${i}"></div>
+        </div>
+      `;
+    }
+    zonesHtml = `<div class="drop-zones multi-zones">${groupsHtml}</div>`;
+  } else if(currentOp === 'divi'){
+    title = `Reparte igual entre los ${numB} ${currentGroupEmoji}`;
+    let groupsHtml = '';
+    for(let i = 0; i < numB; i++){
+      groupsHtml += `
+        <div class="drop-zone" style="border-color:${ZONE_COLORS[i % ZONE_COLORS.length]};background:${ZONE_COLORS[i % ZONE_COLORS.length]}15"
+             onclick="tapZone('g${i}')" ondrop="dropToZone(event, 'g${i}')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+          <div class="drop-zone-label"><span class="zone-emoji">${currentGroupEmoji}</span> ${i+1}</div>
+          <div class="drop-zone-items" id="zone-g${i}"></div>
+        </div>
+      `;
+    }
+    zonesHtml = `<div class="drop-zones divi-zones">${groupsHtml}</div>`;
+  }
+
+  ws.innerHTML = `
+    ${renderSourceArea()}
+    <div class="workspace-title">${title}</div>
+    ${zonesHtml}
+    <div class="trash-row">
+      <div class="trash-bin" id="trashBin" onclick="tapTrash()" ondragover="trashDragOver(event)" ondragleave="trashDragLeave(event)" ondrop="trashDrop(event)">🗑️</div>
+    </div>
+  `;
+  updateAllDisplays();
+}
+
+function updateAllDisplays(){
+  updateSourceDisplay();
+  updateZoneDisplays();
+  // Mostrar zonas pulsando si hay item seleccionado
+  document.querySelectorAll('.drop-zone').forEach(z => {
+    z.classList.toggle('waiting', selectedItemId !== null);
+  });
+  const trash = document.getElementById('trashBin');
+  if(trash) trash.classList.toggle('waiting', selectedItemId !== null && !selectedFromSource);
+}
+
+function updateSourceDisplay(){
+  // Update source area items
+  if(currentOp === 'suma'){
+    const groupA = sourceItems.filter(i => i.group === 'A');
+    const groupB = sourceItems.filter(i => i.group === 'B');
+
+    const elA = document.getElementById('source-A');
+    const elB = document.getElementById('source-B');
+
+    if(elA){
+      elA.innerHTML = groupA.map(item => `
+        <span class="source-emoji ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onclick="tapSourceItem(${item.id},'${item.emoji}')"
+              ondragstart="dragSourceItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, true, '${item.emoji}')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+      elA.closest('.source-group').classList.toggle('empty', groupA.length === 0);
+    }
+    if(elB){
+      elB.innerHTML = groupB.map(item => `
+        <span class="source-emoji ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onclick="tapSourceItem(${item.id},'${item.emoji}')"
+              ondragstart="dragSourceItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, true, '${item.emoji}')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+      elB.closest('.source-group').classList.toggle('empty', groupB.length === 0);
+    }
+  } else {
+    const items = sourceItems.filter(i => i.group === 'main');
+    const el = document.getElementById('source-main');
+    if(el){
+      el.innerHTML = items.map(item => `
+        <span class="source-emoji ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onclick="tapSourceItem(${item.id},'${item.emoji}')"
+              ondragstart="dragSourceItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, true, '${item.emoji}')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+      el.closest('.source-group').classList.toggle('empty', items.length === 0);
+    }
+  }
+}
+
+function updateZoneDisplays(){
+  // Group placed items by zone
+  const byZone = {};
+  placedItems.forEach(item => {
+    if(!byZone[item.zone]) byZone[item.zone] = [];
+    byZone[item.zone].push(item);
+  });
+
+  // Update each zone
+  document.querySelectorAll('.drop-zone-items').forEach(el => {
+    const zoneId = el.id.replace('zone-', '');
+    const items = byZone[zoneId] || [];
+    el.innerHTML = items.map(item => `
+      <span class="placed-emoji ${selectedItemId === item.id && !selectedFromSource ? 'selected' : ''}"
+            draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+            onclick="tapPlacedItem(${item.id})"
+            ondragstart="dragPlacedItem(event, ${item.id})"
+            ontouchstart="handleTouchStart(event, ${item.id}, false, '${item.emoji}')"
+            ontouchmove="handleTouchMove(event)"
+            ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+    `).join('');
+  });
+}
+
+
+function renderCounters(){
+  const totalPlaced = placedItems.length;
+  const totalSource = sourceItems.length;
+
+  // Count by zone
+  const byZone = {};
+  placedItems.forEach(item => {
+    if(!byZone[item.zone]) byZone[item.zone] = 0;
+    byZone[item.zone]++;
+  });
+
+  let html = '';
+
+  if(currentOp === 'suma'){
+    const total = byZone['total'] || 0;
+    html += `<div class="counter-chip" style="background:rgba(0,214,143,.15);border-color:var(--green)"><span style="color:var(--green)">🎯</span> Juntados: ${total}</div>`;
+    if(totalSource > 0) html += `<div class="counter-chip"><span style="color:var(--text-dim)">📦</span> Por juntar: ${totalSource}</div>`;
+  } else if(currentOp === 'resta'){
+    const keep = byZone['keep'] || 0;
+    const remove = byZone['remove'] || 0;
+    if(keep > 0) html += `<div class="counter-chip" style="background:rgba(0,214,143,.15);border-color:var(--green)"><span style="color:var(--green)">✅</span> Quedan: ${keep}</div>`;
+    if(remove > 0) html += `<div class="counter-chip" style="background:rgba(255,159,67,.15);border-color:var(--orange)"><span style="color:var(--orange)">📤</span> Se van: ${remove}</div>`;
+    if(totalSource > 0) html += `<div class="counter-chip"><span style="color:var(--text-dim)">🎒</span> Sin separar: ${totalSource}</div>`;
+  } else if(currentOp === 'multi'){
+    for(let i = 0; i < numA; i++){
+      const count = byZone['g' + i] || 0;
+      if(count > 0) html += `<div class="counter-chip"><span style="font-size:1rem">${currentGroupEmoji}</span>${i+1}: ${count}/${numB}</div>`;
+    }
+    if(totalSource > 0) html += `<div class="counter-chip"><span style="color:var(--text-dim)">📦</span> Por colocar: ${totalSource}</div>`;
+  } else if(currentOp === 'divi'){
+    for(let i = 0; i < numB; i++){
+      const count = byZone['g' + i] || 0;
+      if(count > 0) html += `<div class="counter-chip"><span style="font-size:1rem">${currentGroupEmoji}</span>${i+1}: ${count}</div>`;
+    }
+    if(totalSource > 0) html += `<div class="counter-chip"><span style="color:var(--text-dim)">🎁</span> Por repartir: ${totalSource}</div>`;
+  }
+
+  if(totalPlaced > 0) html += `<div class="counter-chip" style="background:rgba(255,212,59,.15);border-color:var(--yellow)"><span style="color:var(--yellow)">⭐</span> Colocados: ${totalPlaced}</div>`;
+
+  document.getElementById('counters').innerHTML = html;
+}
+
+function renderActions(){
+  document.getElementById('actions').innerHTML = `
+    <button class="btn btn-check" onclick="checkAnswer()">✅ Verificar</button>
+  `;
+}
+
+function renderResult(data){
+  let attemptsHTML = '';
+  if(attempts > 0 && !hasChecked){
+    attemptsHTML = '<div class="attempts-indicator">';
+    for(let i = 0; i < 3; i++){
+      attemptsHTML += `<div class="attempt-dot ${i < attempts ? 'used' : ''}"></div>`;
+    }
+    attemptsHTML += '</div>';
+  }
+
+  let encouragementHTML = '';
+  if(data.type === 'wrong' && attempts >= 2){
+    encouragementHTML = `<div class="encouragement">${ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]}</div>`;
+  }
+
+  document.getElementById('resultCard').innerHTML = `
+    <h3>📋 Resultado</h3>
+    <div class="feedback ${data.type}">
+      <span class="big-emoji">${data.emoji}</span>
+      ${data.text}
+      ${data.detail ? `<div class="detail">${data.detail}</div>` : ''}
+    </div>
+    ${attemptsHTML}
+    ${encouragementHTML}
+  `;
+}
+
+// ========== INTERACTION ==========
+let draggedItemId = null;
+let draggedFromSource = false;
+let selectedItemId = null;
+let selectedFromSource = false;
+
+// Touch drag state
+let touchDragId = null;
+let touchDragFromSource = false;
+let touchDragEmoji = '';
+let ghostEl = null;
+
+// Detectar si es móvil
+const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+// ===== TOUCH DRAG & DROP =====
+function handleTouchStart(e, id, fromSource, emoji){
+  e.preventDefault();
+  const touch = e.touches[0];
+
+  touchDragId = id;
+  touchDragFromSource = fromSource;
+  touchDragEmoji = emoji;
+
+  // Crear elemento fantasma
+  ghostEl = document.createElement('div');
+  ghostEl.className = 'drag-ghost';
+  ghostEl.textContent = emoji;
+  ghostEl.style.left = touch.clientX + 'px';
+  ghostEl.style.top = touch.clientY + 'px';
+  document.body.appendChild(ghostEl);
+
+  e.target.style.opacity = '0.3';
+  sndClick();
+}
+
+function handleTouchMove(e){
+  if(!ghostEl) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  ghostEl.style.left = touch.clientX + 'px';
+  ghostEl.style.top = touch.clientY + 'px';
+
+  // Highlight zona debajo del dedo
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+  const trashBin = document.getElementById('trashBin');
+  if(trashBin) trashBin.classList.remove('drag-over');
+
+  if(el){
+    const zone = el.closest('.drop-zone');
+    if(zone) zone.classList.add('highlight');
+    if(el.closest('.trash-bin')) trashBin.classList.add('drag-over');
+  }
+}
+
+function handleTouchEnd(e){
+  if(!ghostEl || touchDragId === null) return;
+
+  const touch = e.changedTouches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+
+  // Limpiar ghost
+  ghostEl.remove();
+  ghostEl = null;
+
+  // Restaurar opacidad
+  document.querySelectorAll('.source-emoji, .placed-emoji').forEach(x => x.style.opacity = '1');
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+  const trashBin = document.getElementById('trashBin');
+  if(trashBin) trashBin.classList.remove('drag-over');
+
+  if(el){
+    // Verificar si soltó en una zona
+    const zone = el.closest('.drop-zone');
+    if(zone){
+      const zoneId = zone.querySelector('.drop-zone-items')?.id?.replace('zone-','');
+      if(zoneId !== undefined){
+        dropItemToZone(zoneId);
+        return;
+      }
+    }
+
+    // Verificar si soltó en la basura
+    if(el.closest('.trash-bin')){
+      dropItemToTrash();
+      return;
+    }
+  }
+
+  // No soltó en ningún lugar válido
+  touchDragId = null;
+  touchDragFromSource = false;
+}
+
+function dropItemToZone(zone){
+  if(touchDragId === null) return;
+
+  if(touchDragFromSource){
+    const itemIndex = sourceItems.findIndex(i => i.id === touchDragId);
+    if(itemIndex >= 0){
+      const item = sourceItems.splice(itemIndex, 1)[0];
+      placedItems.push({id: item.id, emoji: item.emoji, zone: zone});
+      sndDrop();
+    }
+  } else {
+    const item = placedItems.find(i => i.id === touchDragId);
+    if(item){
+      item.zone = zone;
+      sndPlace();
+    }
+  }
+
+  touchDragId = null;
+  touchDragFromSource = false;
+  updateAllDisplays();
+  renderCounters();
+}
+
+function dropItemToTrash(){
+  if(touchDragId === null || touchDragFromSource) return;
+
+  const itemIndex = placedItems.findIndex(i => i.id === touchDragId);
+  if(itemIndex >= 0){
+    const item = placedItems.splice(itemIndex, 1)[0];
+    let group = 'main';
+    if(currentOp === 'suma'){
+      group = item.emoji === currentEmoji ? 'A' : 'B';
+    }
+    sourceItems.push({id: item.id, emoji: item.emoji, group: group});
+    sndTrash();
+  }
+
+  touchDragId = null;
+  touchDragFromSource = false;
+  updateAllDisplays();
+  renderCounters();
+}
+
+// Prevenir scroll mientras se arrastra
+document.addEventListener('touchmove', (e) => {
+  if(ghostEl) e.preventDefault();
+}, {passive: false});
+
+// ===== DESKTOP DRAG =====
+function dragSourceItem(e, id){
+  e.stopPropagation();
+  draggedItemId = id;
+  draggedFromSource = true;
+  e.target.classList.add('dragging');
+
+  // Configurar data transfer
+  e.dataTransfer.setData('text/plain', 'source-' + id);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.dropEffect = 'move';
+
+  // Crear imagen de drag personalizada
+  const dragImg = e.target.cloneNode(true);
+  dragImg.style.position = 'absolute';
+  dragImg.style.top = '-1000px';
+  dragImg.style.fontSize = '2.5rem';
+  document.body.appendChild(dragImg);
+  e.dataTransfer.setDragImage(dragImg, 25, 25);
+  setTimeout(() => dragImg.remove(), 0);
+
+  sndClick();
+}
+
+function dragPlacedItem(e, id){
+  e.stopPropagation();
+  draggedItemId = id;
+  draggedFromSource = false;
+  e.target.classList.add('dragging');
+
+  e.dataTransfer.setData('text/plain', 'placed-' + id);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.dropEffect = 'move';
+
+  // Crear imagen de drag personalizada
+  const dragImg = e.target.cloneNode(true);
+  dragImg.style.position = 'absolute';
+  dragImg.style.top = '-1000px';
+  dragImg.style.fontSize = '2.5rem';
+  document.body.appendChild(dragImg);
+  e.dataTransfer.setDragImage(dragImg, 25, 25);
+  setTimeout(() => dragImg.remove(), 0);
+
+  sndClick();
+}
+
+// TAP como fallback (doble propósito)
+function tapSourceItem(id, emoji){
+  if(selectedItemId === id && selectedFromSource){
+    selectedItemId = null;
+    selectedFromSource = false;
+  } else {
+    selectedItemId = id;
+    selectedFromSource = true;
+    sndClick();
+  }
+  updateAllDisplays();
+}
+
+function tapPlacedItem(id){
+  if(selectedItemId === id && !selectedFromSource){
+    selectedItemId = null;
+    selectedFromSource = false;
+  } else {
+    selectedItemId = id;
+    selectedFromSource = false;
+    sndClick();
+  }
+  updateAllDisplays();
+}
+
+function tapZone(zone){
+  if(selectedItemId === null) return;
+
+  if(selectedFromSource){
+    const itemIndex = sourceItems.findIndex(i => i.id === selectedItemId);
+    if(itemIndex >= 0){
+      const item = sourceItems.splice(itemIndex, 1)[0];
+      placedItems.push({id: item.id, emoji: item.emoji, zone: zone});
+      sndDrop();
+    }
+  } else {
+    const item = placedItems.find(i => i.id === selectedItemId);
+    if(item){
+      item.zone = zone;
+      sndPlace();
+    }
+  }
+
+  selectedItemId = null;
+  selectedFromSource = false;
+  updateAllDisplays();
+  renderCounters();
+}
+
+function tapTrash(){
+  if(selectedItemId === null) return;
+
+  if(!selectedFromSource){
+    const itemIndex = placedItems.findIndex(i => i.id === selectedItemId);
+    if(itemIndex >= 0){
+      const item = placedItems.splice(itemIndex, 1)[0];
+      let group = 'main';
+      if(currentOp === 'suma'){
+        group = item.emoji === currentEmoji ? 'A' : 'B';
+      }
+      sourceItems.push({id: item.id, emoji: item.emoji, group: group});
+      sndTrash();
+    }
+  }
+
+  selectedItemId = null;
+  selectedFromSource = false;
+  updateAllDisplays();
+  renderCounters();
+}
+
+function allowDrop(e){
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('highlight');
+}
+
+function handleDragEnter(e){
+  e.preventDefault();
+  if(e.currentTarget && e.currentTarget.classList){
+    e.currentTarget.classList.add('highlight');
+  }
+}
+
+function handleDragLeave(e){
+  e.preventDefault();
+  if(!e.currentTarget || !e.currentTarget.classList) return;
+  // Solo quitar highlight si realmente salió del elemento
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = e.clientX;
+  const y = e.clientY;
+  if(x < rect.left || x > rect.right || y < rect.top || y > rect.bottom){
+    e.currentTarget.classList.remove('highlight');
+  }
+}
+
+function dropToZone(e, zone){
+  e.preventDefault();
+  e.stopPropagation();
+  e.currentTarget.classList.remove('highlight');
+
+  if(draggedItemId === null) return;
+
+  if(draggedFromSource){
+    const itemIndex = sourceItems.findIndex(i => i.id === draggedItemId);
+    if(itemIndex >= 0){
+      const item = sourceItems.splice(itemIndex, 1)[0];
+      placedItems.push({id: item.id, emoji: item.emoji, zone: zone});
+      sndDrop();
+    }
+  } else {
+    const item = placedItems.find(i => i.id === draggedItemId);
+    if(item){
+      item.zone = zone;
+      sndPlace();
+    }
+  }
+
+  draggedItemId = null;
+  draggedFromSource = false;
+  updateAllDisplays();
+  renderCounters();
+
+  // Guardar referencia al elemento antes del timeout
+  const targetEl = e.currentTarget;
+  if(targetEl && targetEl.classList){
+    targetEl.classList.add('pulse');
+    setTimeout(() => {
+      if(targetEl && targetEl.classList) targetEl.classList.remove('pulse');
+    }, 500);
+  }
+}
+
+// Trash bin functions
+function trashDragOver(e){
+  e.preventDefault();
+  if(e.currentTarget && e.currentTarget.classList){
+    e.currentTarget.classList.add('drag-over');
+  }
+}
+
+function trashDragLeave(e){
+  if(e.currentTarget && e.currentTarget.classList){
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+
+function trashDrop(e){
+  e.preventDefault();
+  if(e.currentTarget && e.currentTarget.classList){
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  if(draggedItemId === null) return;
+
+  if(!draggedFromSource){
+    const itemIndex = placedItems.findIndex(i => i.id === draggedItemId);
+    if(itemIndex >= 0){
+      const item = placedItems.splice(itemIndex, 1)[0];
+      let group = 'main';
+      if(currentOp === 'suma'){
+        group = item.emoji === currentEmoji ? 'A' : 'B';
+      }
+      sourceItems.push({id: item.id, emoji: item.emoji, group: group});
+      sndTrash();
+    }
+  }
+
+  draggedItemId = null;
+  draggedFromSource = false;
+  updateAllDisplays();
+  renderCounters();
+}
+
+// Remove highlight when drag leaves
+document.addEventListener('dragleave', (e) => {
+  if(e.target.classList && e.target.classList.contains('drop-zone')){
+    e.target.classList.remove('highlight');
+  }
+});
+
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+  document.querySelectorAll('.source-emoji, .placed-emoji').forEach(e => e.classList.remove('dragging'));
+  const trash = document.getElementById('trashBin');
+  if(trash) trash.classList.remove('drag-over');
+  draggedItemId = null;
+  draggedFromSource = false;
+});
+
+// ========== CHECK ==========
+function checkAnswer(){
+  if(hasChecked) return;
+
+  const totalPlaced = placedItems.length;
+  const totalSource = sourceItems.length;
+
+  // Count by zone
+  const byZone = {};
+  placedItems.forEach(item => {
+    if(!byZone[item.zone]) byZone[item.zone] = 0;
+    byZone[item.zone]++;
+  });
+
+  let correct = false;
+  let explanation = '';
+
+  if(totalPlaced === 0){
+    sndWrong();
+    renderResult({type:'wrong', emoji:'🤔', text:'¡Arrastra los objetos!', detail:`Mueve los ${currentEmoji} desde arriba`});
+    return;
+  }
+
+  attempts++;
+
+  if(currentOp === 'suma'){
+    // Para suma: todos los items deben estar en la zona 'total'
+    const total = byZone['total'] || 0;
+    if(total === answer && totalSource === 0) {
+      correct = true;
+    } else {
+      if(totalSource > 0) {
+        explanation = `¡Aún te faltan ${totalSource} objetos por juntar! Arrastra todos al centro.`;
+      } else if(total !== answer) {
+        explanation = `Juntaste ${total}, pero ${numA} + ${numB} = ${answer}. Revisa bien.`;
+      }
+    }
+  }
+  else if(currentOp === 'resta'){
+    const keep = byZone['keep'] || 0;
+    const remove = byZone['remove'] || 0;
+
+    if(keep === answer && remove === numB && totalSource === 0){
+      correct = true;
+    } else {
+      if(totalSource > 0) {
+        explanation = `¡Aún quedan ${totalSource} ${currentEmoji} sin separar! Decide: ¿se quedan o se van?`;
+      } else if(keep === 0 || remove === 0) {
+        explanation = `Debes poner ${currentEmoji} en AMBAS zonas: los que quedan Y los que se van.`;
+      } else if(keep !== answer) {
+        explanation = `Si tenías ${numA} y se van ${numB}... ¿cuántos QUEDAN? Piensa: ${numA} - ${numB} = ?`;
+      } else {
+        explanation = `Los que se van deben ser ${numB}. Revisa la zona "Se van".`;
+      }
+    }
+  }
+  else if(currentOp === 'multi'){
+    // Multiplicación: numA grupos, cada uno con numB items
+    const groupCounts = [];
+    for(let i = 0; i < numA; i++){
+      groupCounts.push(byZone['g' + i] || 0);
+    }
+    const allCorrect = groupCounts.every(c => c === numB);
+    const usedGroups = groupCounts.filter(c => c > 0).length;
+
+    if(totalPlaced === answer && totalSource === 0 && usedGroups === numA && allCorrect){
+      correct = true;
+    } else {
+      if(totalSource > 0) {
+        explanation = `¡Aún quedan ${totalSource} ${currentEmoji} por organizar! Ponlos en los ${currentGroupEmoji}.`;
+      } else if(usedGroups < numA) {
+        explanation = `Debes llenar TODOS los ${numA} ${currentGroupEmoji}. Te faltan ${numA - usedGroups}.`;
+      } else if(!allCorrect) {
+        explanation = `Cada ${currentGroupEmoji} debe tener exactamente ${numB} ${currentEmoji}.`;
+      }
+    }
+  }
+  else if(currentOp === 'divi'){
+    // División: numA cosas ÷ numB grupos = answer por grupo
+    const zoneCounts = [];
+    for(let i = 0; i < numB; i++){
+      zoneCounts.push(byZone['g' + i] || 0);
+    }
+    const allEqual = zoneCounts.every(c => c === answer);
+    const usedZones = zoneCounts.filter(c => c > 0).length;
+
+    if(totalPlaced === numA && totalSource === 0 && usedZones === numB && allEqual){
+      correct = true;
+    } else {
+      if(totalSource > 0) {
+        explanation = `¡Aún quedan ${totalSource} ${currentEmoji} por repartir! Deben quedar 0 arriba.`;
+      } else if(usedZones !== numB) {
+        explanation = `Debes usar TODOS los ${numB} ${currentGroupEmoji}. Reparte en cada uno.`;
+      } else if(!allEqual) {
+        explanation = `Cada ${currentGroupEmoji} debe recibir la misma cantidad: ${answer} ${currentEmoji}.`;
+      }
+    }
+  }
+
+  // Auto-reveal hints progressively after each failed attempt
+  if(!correct){
+    // Revelar pista automáticamente según intentos
+    if(attempts === 1 && hintLevel < 1){
+      hintLevel = 1; // Primera pista: concepto
+    } else if(attempts === 2 && hintLevel < 2){
+      hintLevel = 2; // Segunda pista: cómo hacerlo
+    } else if(attempts >= 3 && hintLevel < 3){
+      hintLevel = 3; // Tercera pista: la respuesta
+    }
+    renderHintPanel();
+  }
+
+  if(correct){
+    hasChecked = true;
+    sndCorrect();
+
+    // Guardar respuesta para posible uso en siguiente paso
+    previousAnswer = answer;
+
+    // Calculate stars based on attempts and hints used
+    let starsEarned = 3;
+    if(attempts > 1) starsEarned = 2;
+    if(attempts > 2 || hintLevel >= 2) starsEarned = 1;
+
+    score.streak++;
+    score.stars += starsEarned;
+
+    const step = currentStory.steps[currentStep];
+    const successMsg = step.successMsg.replace('{ans}', answer);
+    const starsText = '⭐'.repeat(starsEarned);
+
+    renderResult({type:'correct', emoji:'🎉', text:`¡Correcto! <span class="star-earned">${starsText}</span>`, detail:successMsg});
+
+    // Felicitación hablada personalizada según estrellas ganadas
+    let puzzleMsg = '';
+
+    if(starsEarned === 3){
+      const msgs = [
+        `¡Increíble ${PLAYER.name}! ¡${answer} es correcto! ¡Tres estrellas! ¡A la primera!`,
+        `¡Guau ${PLAYER.nickname}! ¡Perfecto! ¡${answer}! ¡Te ganaste tres estrellas!`,
+        `¡${PLAYER.fullName} es un genio! ¡${answer} correcto a la primera! ¡Tres estrellas para ti!`,
+        `¡Espectacular ${PLAYER.name}! ¡Sin errores! ¡${answer} y tres estrellas!`
+      ];
+      puzzleMsg = msgs[Math.floor(Math.random() * msgs.length)];
+    } else if(starsEarned === 2){
+      const msgs = [
+        `¡Muy bien ${PLAYER.name}! ¡${answer} es correcto! ¡Dos estrellas!`,
+        `¡Excelente ${PLAYER.nickname}! ¡Lo lograste! ¡${answer}! ¡Dos estrellas!`,
+        `¡Bien hecho ${PLAYER.name}! ¡${answer}! ¡Te ganaste dos estrellas!`
+      ];
+      puzzleMsg = msgs[Math.floor(Math.random() * msgs.length)];
+    } else {
+      const msgs = [
+        `¡Bien ${PLAYER.name}! ¡${answer} es correcto! ¡Una estrella! La próxima intenta con menos errores.`,
+        `¡Lo lograste ${PLAYER.nickname}! ¡${answer}! Una estrella. ¡Sigue practicando!`,
+        `¡${PLAYER.name} lo hizo! ¡${answer}! Una estrella. ¡Tú puedes mejorar!`
+      ];
+      puzzleMsg = msgs[Math.floor(Math.random() * msgs.length)];
+    }
+
+    // Calcular tiempo de conteo basado en cantidad de objetos
+    const totalItems = placedItems.length;
+    const countingTime = totalItems * 350 + 800; // 350ms por item + tiempo extra para acorde final
+
+    // Primero hacer la animación del conteo
+    glowAllFilled(true);
+
+    const rb = document.getElementById('resultBox');
+    if(rb){
+      rb.textContent = answer;
+      rb.style.borderStyle = 'solid';
+      rb.style.background = 'rgba(0,214,143,.2)';
+      rb.style.color = '#00d68f';
+    }
+
+    renderScoreBar();
+
+    // Confetti después del conteo
+    setTimeout(() => {
+      spawnConfetti(25);
+      if(starsEarned >= 2) spawnStars(starsEarned);
+    }, countingTime);
+
+    // Felicitación hablada DESPUÉS de que termine el conteo
+    setTimeout(() => {
+      speakText(puzzleMsg, () => {
+        // Después de hablar, mostrar el modal de términos
+        setTimeout(() => {
+          showMathReviewModal();
+        }, 500);
+      }, { rate: 0.88, pitch: 1.0 });
+    }, countingTime + 300); // Esperar a que termine el conteo + pequeña pausa
+
+  } else {
+    sndWrong();
+    score.streak = 0;
+
+    // Calcular diferencia para dar pistas más específicas
+    const placed = placedItems.length;
+    const difference = placed - answer;
+    const needsMore = difference < 0;
+    const howMany = Math.abs(difference);
+
+    // Mensajes de ánimo según intentos - personalizados para Emilio
+    let emoji = '🤔';
+    let title = 'Mmm, no es eso...';
+    let spokenMsg = '';
+
+    if(attempts === 1) {
+      emoji = '🤔';
+      title = `¡Piensa un poco más, ${PLAYER.name}!`;
+
+      // Mensajes específicos según la operación y si puso de más o de menos
+      if(currentOp === 'divi'){
+        // Para división, explicar mejor qué debe poner
+        if(needsMore){
+          spokenMsg = `${PLAYER.nickname}, en la división debes poner cuántos le tocan a cada uno. Pusiste ${placed}, pero la respuesta es más que eso.`;
+        } else {
+          spokenMsg = `${PLAYER.name}, recuerda: en división pones el resultado, no todos los objetos. ${numA} entre ${numB}, ¿cuántos le tocan a cada uno? Es menos de ${placed}.`;
+        }
+      } else if(needsMore){
+        const msgs = [
+          `${PLAYER.nickname}, pusiste ${placed} pero necesitas más. Faltan ${howMany}.`,
+          `${PLAYER.name}, te faltan objetos. Tienes ${placed}, necesitas agregar ${howMany} más.`,
+          `Casi ${PLAYER.nickname}, pero faltan ${howMany}. Agrega más objetos.`
+        ];
+        spokenMsg = msgs[Math.floor(Math.random() * msgs.length)];
+      } else {
+        const msgs = [
+          `${PLAYER.nickname}, pusiste ${placed} pero son demasiados. Quita ${howMany}.`,
+          `${PLAYER.name}, hay de más. Tienes ${placed}, debes quitar ${howMany}.`,
+          `Casi ${PLAYER.nickname}, pero sobran ${howMany}. Manda algunos a la basura.`
+        ];
+        spokenMsg = msgs[Math.floor(Math.random() * msgs.length)];
+      }
+    } else if(attempts === 2) {
+      emoji = '💪';
+      title = `¡Tú puedes, ${PLAYER.nickname}!`;
+
+      // Explicación según la operación
+      const opExplanations = {
+        suma: `${PLAYER.name}, en la suma juntamos todo. ${numA} más ${numB}. Cuenta con los dedos si necesitas.`,
+        resta: `${PLAYER.name}, en la resta quitamos. De ${numA} quita ${numB}. ¿Cuántos quedan?`,
+        multi: `${PLAYER.name}, multiplica es repetir. ${numA} grupos de ${numB}. Cuenta todos.`,
+        divi: `${PLAYER.name}, dividir es repartir igual. ${numA} entre ${numB}. ¿Cuántos le tocan a cada uno?`
+      };
+      spokenMsg = opExplanations[currentOp];
+    } else if(attempts >= 3) {
+      emoji = '📖';
+      title = `${PLAYER.name}, mira la ayuda 👈`;
+
+      // Dar la respuesta parcialmente
+      const hintMsgs = [
+        `${PLAYER.fullName}, te doy una pista grande: la respuesta está entre ${answer - 2} y ${answer + 2}.`,
+        `${PLAYER.name}, mira el panel de la izquierda. La respuesta empieza con ${String(answer)[0]}.`,
+        `Oye ${PLAYER.nickname}, piensa: ${numA} ${currentOp === 'suma' ? 'más' : currentOp === 'resta' ? 'menos' : currentOp === 'multi' ? 'por' : 'entre'} ${numB}. Cuenta despacio.`
+      ];
+      spokenMsg = hintMsgs[Math.floor(Math.random() * hintMsgs.length)];
+    }
+
+    // Hablar el mensaje de ayuda
+    if(spokenMsg) speakText(spokenMsg, null, { rate: 0.88, pitch: 1.0 });
+
+    renderResult({type:'wrong', emoji, text:title, detail:explanation});
+    glowAllFilled(false);
+    renderScoreBar();
+  }
+}
+
+// Diferentes escalas musicales para variedad
+const MUSICAL_SCALES = [
+  // Do Mayor (alegre, clásica)
+  { name: 'major', notes: [262, 294, 330, 349, 392, 440, 494, 523, 587, 659, 698, 784], chord: [523, 659, 784, 1047] },
+  // La Menor (melancólica pero bonita)
+  { name: 'minor', notes: [220, 247, 262, 294, 330, 349, 392, 440, 494, 523, 587, 659], chord: [440, 523, 659, 880] },
+  // Pentatónica Mayor (sonido asiático/alegre)
+  { name: 'pentatonic', notes: [262, 294, 330, 392, 440, 523, 587, 659, 784, 880, 1047, 1175], chord: [523, 659, 784, 1047] },
+  // Escala de Blues (divertida)
+  { name: 'blues', notes: [262, 311, 349, 370, 392, 466, 523, 622, 698, 740, 784, 932], chord: [523, 622, 784, 1047] },
+  // Mixolidia (sonido celta/festivo)
+  { name: 'mixolydian', notes: [262, 294, 330, 349, 392, 440, 466, 523, 587, 659, 698, 784], chord: [523, 659, 784, 932] },
+  // Escala Japonesa (exótica)
+  { name: 'japanese', notes: [262, 278, 330, 392, 415, 523, 554, 659, 784, 831, 1047, 1109], chord: [523, 659, 784, 1047] },
+  // Dórica (sonido medieval)
+  { name: 'dorian', notes: [294, 330, 349, 392, 440, 494, 523, 587, 659, 698, 784, 880], chord: [587, 698, 880, 1175] },
+  // Lidio (sonido mágico/soñador)
+  { name: 'lydian', notes: [262, 294, 330, 370, 392, 440, 494, 523, 587, 659, 740, 784], chord: [523, 659, 784, 1047] }
+];
+
+let currentScale = null;
+
+function getRandomScale(){
+  return MUSICAL_SCALES[Math.floor(Math.random() * MUSICAL_SCALES.length)];
+}
+
+function glowAllFilled(isCorrect){
+  const emojis = document.querySelectorAll('.placed-emoji');
+
+  if(isCorrect){
+    // Elegir una escala aleatoria para esta celebración
+    currentScale = getRandomScale();
+    const scale = currentScale.notes;
+    const delayPerItem = 350; // 350ms entre cada objeto
+
+    emojis.forEach((el, i) => {
+      setTimeout(() => {
+        // Nota musical ascendente (cicla si hay más objetos que notas)
+        const noteIndex = i % scale.length;
+        const freq = scale[noteIndex];
+
+        // Tocar nota musical con duración más larga
+        playCountNote(freq, 0.25);
+
+        // Efecto visual de "contado"
+        el.classList.add('counting');
+        el.style.transform = 'scale(1.4)';
+        el.style.filter = 'drop-shadow(0 0 15px var(--yellow))';
+        el.style.transition = 'all 0.3s ease';
+
+        // Mostrar número de conteo
+        showCountNumber(el, i + 1);
+
+        // Volver a estado normal después
+        setTimeout(() => {
+          el.style.transform = 'scale(1.1)';
+          el.style.filter = 'drop-shadow(0 0 8px var(--green))';
+        }, 250);
+
+      }, i * delayPerItem);
+    });
+
+    // Acorde final después de contar todos
+    const totalTime = emojis.length * delayPerItem + 300;
+    setTimeout(() => {
+      playFinalChord(currentScale.chord);
+      // Efecto de brillo final en todos
+      emojis.forEach(el => {
+        el.classList.add('glow');
+        el.classList.add('bounce');
+      });
+    }, totalTime);
+
+    // Efecto en las zonas después del conteo
+    setTimeout(() => {
+      document.querySelectorAll('.drop-zone').forEach((zone, i) => {
+        setTimeout(() => {
+          zone.classList.add('success');
+          setTimeout(() => zone.classList.remove('success'), 600);
+        }, i * 100);
+      });
+    }, totalTime + 200);
+
+    // Sonido de cierre épico - el gran final
+    setTimeout(() => {
+      playClosingFanfare(currentScale);
+    }, totalTime + 500);
+
+  } else {
+    // Incorrecto - shake rápido
+    emojis.forEach((el, i) => {
+      setTimeout(() => {
+        el.classList.add('shake');
+      }, i * 50);
+    });
+  }
+}
+
+// Nota musical para el conteo
+function playCountNote(freq, dur){
+  if(!soundOn) return;
+  ensureAudio();
+  const o = actx.createOscillator();
+  const g = actx.createGain();
+  o.type = 'sine';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0.15, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.01, actx.currentTime + dur);
+  o.connect(g).connect(actx.destination);
+  o.start();
+  o.stop(actx.currentTime + dur);
+
+  // Añadir armónico para sonido más rico
+  const o2 = actx.createOscillator();
+  const g2 = actx.createGain();
+  o2.type = 'triangle';
+  o2.frequency.value = freq * 2;
+  g2.gain.setValueAtTime(0.05, actx.currentTime);
+  g2.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur * 0.8);
+  o2.connect(g2).connect(actx.destination);
+  o2.start();
+  o2.stop(actx.currentTime + dur);
+}
+
+// Acorde final que usa la escala actual
+function playFinalChord(chordNotes){
+  if(!soundOn) return;
+  ensureAudio();
+  // Usar el acorde pasado o un acorde mayor por defecto
+  const notes = chordNotes || [523, 659, 784, 1047];
+  notes.forEach((freq, i) => {
+    setTimeout(() => {
+      const o = actx.createOscillator();
+      const g = actx.createGain();
+      o.type = 'sine';
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.1, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.6);
+      o.connect(g).connect(actx.destination);
+      o.start();
+      o.stop(actx.currentTime + 0.6);
+
+      // Añadir armónico para más riqueza
+      const o2 = actx.createOscillator();
+      const g2 = actx.createGain();
+      o2.type = 'triangle';
+      o2.frequency.value = freq * 0.5; // Octava abajo
+      g2.gain.setValueAtTime(0.04, actx.currentTime);
+      g2.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.5);
+      o2.connect(g2).connect(actx.destination);
+      o2.start();
+      o2.stop(actx.currentTime + 0.5);
+    }, i * 40);
+  });
+}
+
+// Fanfarria de cierre épica - el gran final con estrellas
+function playClosingFanfare(scale){
+  if(!soundOn) return;
+  ensureAudio();
+
+  // Diferentes finales épicos
+  const finales = [
+    // Final tipo "ta-da!" clásico
+    () => {
+      const baseFreq = scale ? scale.chord[0] : 523;
+      // Redoble ascendente rápido
+      [0, 2, 4, 5, 7].forEach((semitone, i) => {
+        const freq = baseFreq * Math.pow(2, semitone/12);
+        setTimeout(() => playTone(freq, 0.08, 'triangle', 0.08), i * 40);
+      });
+      // Acorde final sostenido con brillo
+      setTimeout(() => {
+        const finalChord = scale ? scale.chord : [523, 659, 784, 1047];
+        finalChord.forEach((f, i) => {
+          setTimeout(() => {
+            // Nota principal
+            playTone(f, 0.8, 'sine', 0.12);
+            // Octava arriba brillante
+            playTone(f * 2, 0.6, 'sine', 0.05);
+            // Shimmer
+            playTone(f * 1.5, 0.5, 'triangle', 0.03);
+          }, i * 25);
+        });
+      }, 220);
+      // Destello final agudo
+      setTimeout(() => {
+        playTone(2093, 0.4, 'sine', 0.06); // Do muy alto
+        playTone(2637, 0.35, 'sine', 0.04); // Mi muy alto
+      }, 500);
+    },
+
+    // Final tipo "cascada de estrellas"
+    () => {
+      const baseNotes = scale ? scale.notes.slice(-6) : [523, 587, 659, 784, 880, 1047];
+      // Cascada descendente brillante
+      baseNotes.reverse().forEach((f, i) => {
+        setTimeout(() => {
+          playTone(f * 2, 0.15, 'sine', 0.07);
+          playTone(f, 0.2, 'triangle', 0.05);
+        }, i * 60);
+      });
+      // Acorde final con reverb simulado
+      setTimeout(() => {
+        const chord = scale ? scale.chord : [523, 659, 784, 1047];
+        chord.forEach(f => {
+          playTone(f, 1.0, 'sine', 0.1);
+          setTimeout(() => playTone(f, 0.8, 'sine', 0.05), 50);
+          setTimeout(() => playTone(f, 0.6, 'triangle', 0.03), 100);
+        });
+        // Brillo final
+        setTimeout(() => playTone(1568, 0.5, 'sine', 0.06), 200);
+        setTimeout(() => playTone(2093, 0.4, 'sine', 0.04), 300);
+      }, 380);
+    },
+
+    // Final tipo "campanas mágicas"
+    () => {
+      const bellNotes = [1047, 1318, 1568, 2093, 1568, 1318, 1047];
+      bellNotes.forEach((f, i) => {
+        setTimeout(() => {
+          playTone(f, 0.3, 'sine', 0.08);
+          playTone(f * 0.5, 0.4, 'triangle', 0.04); // Sub-octava
+        }, i * 70);
+      });
+      // Acorde majestuoso final
+      setTimeout(() => {
+        const chord = scale ? scale.chord : [523, 659, 784, 1047];
+        // Construir el acorde gradualmente
+        chord.forEach((f, i) => {
+          setTimeout(() => {
+            playTone(f, 1.2, 'sine', 0.1);
+            playTone(f * 2, 0.8, 'sine', 0.04);
+          }, i * 60);
+        });
+      }, 520);
+      // Destello de cierre
+      setTimeout(() => {
+        [1568, 2093, 2637].forEach((f, i) => {
+          setTimeout(() => playTone(f, 0.25, 'sine', 0.05 - i*0.01), i * 40);
+        });
+      }, 850);
+    },
+
+    // Final tipo "fuegos artificiales"
+    () => {
+      // Subida rápida como cohete
+      [262, 330, 392, 523, 659, 784, 1047].forEach((f, i) => {
+        setTimeout(() => playTone(f, 0.06, 'sawtooth', 0.04), i * 25);
+      });
+      // Explosión de notas
+      setTimeout(() => {
+        const sparkles = [1047, 1175, 1318, 1397, 1568, 1760, 1976, 2093];
+        sparkles.forEach((f, i) => {
+          setTimeout(() => {
+            playTone(f + Math.random()*50, 0.2, 'sine', 0.06);
+          }, Math.random() * 150);
+        });
+      }, 200);
+      // Acorde final glorioso
+      setTimeout(() => {
+        const chord = scale ? [...scale.chord, scale.chord[0]*2] : [523, 659, 784, 1047, 1047];
+        chord.forEach((f, i) => {
+          playTone(f, 1.0, 'sine', 0.09);
+          playTone(f, 0.7, 'triangle', 0.04);
+        });
+      }, 400);
+      // Brillo de cierre
+      setTimeout(() => {
+        playTone(2093, 0.5, 'sine', 0.05);
+        setTimeout(() => playTone(2349, 0.4, 'sine', 0.04), 80);
+        setTimeout(() => playTone(2637, 0.35, 'sine', 0.03), 150);
+      }, 650);
+    }
+  ];
+
+  // Elegir un final aleatorio
+  const finale = finales[Math.floor(Math.random() * finales.length)];
+  finale();
+}
+
+// ========== SÍNTESIS DE VOZ (TEXT-TO-SPEECH) ==========
+let speechSynth = window.speechSynthesis;
+let currentUtterance = null;
+let isSpeaking = false;
+let voiceReady = false;
+let spanishVoice = null;
+
+// Buscar la mejor voz en español (priorizar voces naturales/premium)
+function findSpanishVoice(){
+  const voices = speechSynth.getVoices();
+  console.log('Voces disponibles:', voices.map(v => `${v.name} (${v.lang}) local:${v.localService}`));
+
+  // Prioridad 1: Voces de red/online (generalmente más naturales)
+  const onlineVoice = voices.find(v =>
+    v.lang.startsWith('es') && v.localService === false
+  );
+  if(onlineVoice){
+    spanishVoice = onlineVoice;
+    console.log('Voz online encontrada:', onlineVoice.name);
+    voiceReady = true;
+    return;
+  }
+
+  // Prioridad 2: Voces premium/naturales de Microsoft, Google o Apple en español
+  const premiumVoices = [
+    // Microsoft Neural voices (Windows 11)
+    'Microsoft Dalia Online', 'Microsoft Jorge Online',
+    // Microsoft estándar
+    'Microsoft Sabina', 'Microsoft Helena', 'Microsoft Laura', 'Microsoft Raul',
+    // Google
+    'Google español', 'Google español de Estados Unidos', 'Google español de México',
+    // Apple macOS/iOS
+    'Paulina', 'Monica', 'Juan', 'Diego', 'Angelica', 'Jimena'
+  ];
+
+  for(const premiumName of premiumVoices){
+    const found = voices.find(v => v.name.includes(premiumName) && v.lang.startsWith('es'));
+    if(found){
+      spanishVoice = found;
+      console.log('Voz premium encontrada:', found.name);
+      voiceReady = true;
+      return;
+    }
+  }
+
+  // Prioridad 2: Cualquier voz que suene más natural (evitar "eSpeak" que es muy robótica)
+  const naturalVoice = voices.find(v =>
+    v.lang.startsWith('es') &&
+    !v.name.toLowerCase().includes('espeak') &&
+    (v.name.includes('Microsoft') || v.name.includes('Google') || v.localService === false)
+  );
+
+  if(naturalVoice){
+    spanishVoice = naturalVoice;
+    console.log('Voz natural encontrada:', naturalVoice.name);
+    voiceReady = true;
+    return;
+  }
+
+  // Prioridad 3: Cualquier voz en español latinoamericano
+  spanishVoice = voices.find(v => v.lang === 'es-MX') ||
+                 voices.find(v => v.lang === 'es-419') ||
+                 voices.find(v => v.lang === 'es-US') ||
+                 voices.find(v => v.lang === 'es-ES') ||
+                 voices.find(v => v.lang.startsWith('es')) ||
+                 voices[0];
+
+  console.log('Voz seleccionada:', spanishVoice?.name || 'ninguna');
+  voiceReady = true;
+}
+
+// Cargar voces (pueden cargarse de forma asíncrona)
+if(speechSynth.onvoiceschanged !== undefined){
+  speechSynth.onvoiceschanged = findSpanishVoice;
+}
+findSpanishVoice();
+
+// Función principal para hablar texto
+function speakText(text, onEnd = null, options = {}){
+  if(!speechSynth) {
+    console.log('Speech synthesis no disponible');
+    if(onEnd) onEnd();
+    return;
+  }
+
+  // Cancelar cualquier habla anterior
+  stopSpeaking();
+
+  // Bug fix para Chrome: necesita un "resume" si está pausado
+  speechSynth.cancel();
+
+  // Recargar voces si no están listas
+  if(!spanishVoice || speechSynth.getVoices().length === 0){
+    findSpanishVoice();
+  }
+
+  // Limpiar HTML del texto y agregar pausas naturales
+  let cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
+  // Agregar pausas más largas después de puntos y signos de exclamación/interrogación
+  // Usamos comas extras que la voz interpreta como pausas
+  // Agregar pausas sutiles entre oraciones (no tan largas)
+  cleanText = cleanText
+    .replace(/\. /g, '. . ')      // Pausa corta después de punto
+    .replace(/! /g, '! . ')       // Pausa después de exclamación
+    .replace(/\? /g, '? . ');     // Pausa después de interrogación
+
+  console.log('Intentando hablar:', cleanText.substring(0, 50) + '...');
+
+  currentUtterance = new SpeechSynthesisUtterance(cleanText);
+
+  // Configurar voz - intentar de nuevo buscar si no hay
+  if(!spanishVoice){
+    const voices = speechSynth.getVoices();
+    spanishVoice = voices.find(v => v.lang.startsWith('es')) || voices[0];
+  }
+
+  if(spanishVoice) {
+    currentUtterance.voice = spanishVoice;
+    console.log('Usando voz:', spanishVoice.name, spanishVoice.lang);
+  }
+
+  currentUtterance.lang = spanishVoice?.lang || 'es-MX';
+
+  // Velocidad intermedia - 0.88 es pausado pero no lento
+  currentUtterance.rate = options.rate || 0.88;
+  currentUtterance.pitch = options.pitch || 1.0;
+  currentUtterance.volume = options.volume || 1;
+
+  isSpeaking = true;
+
+  currentUtterance.onstart = () => {
+    console.log('Voz iniciada');
+  };
+
+  currentUtterance.onend = () => {
+    console.log('Voz terminada');
+    isSpeaking = false;
+    currentUtterance = null;
+    if(onEnd) onEnd();
+  };
+
+  currentUtterance.onerror = (e) => {
+    console.log('Error de voz:', e.error);
+    isSpeaking = false;
+    currentUtterance = null;
+    if(onEnd) onEnd();
+  };
+
+  // Chrome bug fix: usar timeout y resume
+  setTimeout(() => {
+    speechSynth.speak(currentUtterance);
+    // Chrome a veces se pausa solo, forzar resume
+    if(speechSynth.paused){
+      speechSynth.resume();
+    }
+  }, 100);
+
+  // Chrome bug fix: mantener vivo el speech cada 10 segundos
+  const keepAlive = setInterval(() => {
+    if(!isSpeaking){
+      clearInterval(keepAlive);
+      return;
+    }
+    if(speechSynth.paused){
+      speechSynth.resume();
+    }
+  }, 10000);
+}
+
+// Detener lectura
+function stopSpeaking(){
+  if(speechSynth){
+    speechSynth.cancel();
+  }
+  isSpeaking = false;
+  currentUtterance = null;
+}
+
+// Leer el cuento completo (problema + pregunta)
+function readStoryAloud(storyText, question, onComplete){
+  // Construir texto completo
+  const fullText = storyText + '. ' + question;
+
+  // Indicador visual de lectura
+  const storyEl = document.querySelector('.story-modal-text');
+  const questionEl = document.querySelector('.story-modal-question');
+  const voiceBtn = document.querySelector('.voice-btn');
+
+  if(storyEl) storyEl.classList.add('reading');
+  if(voiceBtn) voiceBtn.classList.add('speaking');
+
+  speakText(fullText, () => {
+    // Quitar indicadores visuales
+    if(storyEl) storyEl.classList.remove('reading');
+    if(questionEl) questionEl.classList.remove('reading');
+    if(voiceBtn) voiceBtn.classList.remove('speaking');
+
+    // Activar el quiz
+    if(onComplete) onComplete();
+  }, { rate: 0.88, pitch: 1.0 }); // Tono natural
+
+  // Cambiar highlight de texto a pregunta a mitad de lectura (aproximado)
+  const storyLength = storyText.length;
+  const estimatedStoryTime = storyLength * 50; // ~50ms por carácter a velocidad 0.85
+
+  setTimeout(() => {
+    if(isSpeaking && storyEl && questionEl){
+      storyEl.classList.remove('reading');
+      questionEl.classList.add('reading');
+    }
+  }, estimatedStoryTime);
+}
+
+// Toggle manual de voz
+function toggleVoiceReading(){
+  if(isSpeaking){
+    stopSpeaking();
+    const voiceBtn = document.querySelector('.voice-btn');
+    if(voiceBtn) voiceBtn.classList.remove('speaking');
+    document.querySelectorAll('.reading').forEach(el => el.classList.remove('reading'));
+  } else {
+    // Re-leer el cuento actual
+    const step = currentStory.steps[currentStep];
+    const storyText = step.template
+      .replace('{char}', currentStory.character)
+      .replace('{a}', numA)
+      .replace('{b}', numB);
+
+    readStoryAloud(storyText, step.question, () => {
+      enableQuizSection();
+    });
+  }
+}
+
+// Habilitar sección del quiz
+function enableQuizSection(){
+  const quizSection = document.querySelector('.quiz-section');
+  if(quizSection){
+    quizSection.classList.remove('hidden');
+  }
+  // Pequeño sonido para indicar que puede responder
+  sndClick();
+}
+
+// Mostrar número flotante de conteo
+function showCountNumber(el, num){
+  const rect = el.getBoundingClientRect();
+  const numEl = document.createElement('div');
+  numEl.textContent = num;
+  numEl.style.cssText = `
+    position: fixed;
+    left: ${rect.left + rect.width/2}px;
+    top: ${rect.top - 10}px;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--yellow);
+    text-shadow: 0 0 10px rgba(255,212,59,.8), 0 2px 4px rgba(0,0,0,.5);
+    pointer-events: none;
+    z-index: 9999;
+    animation: countFloat 0.8s ease-out forwards;
+  `;
+  document.body.appendChild(numEl);
+  setTimeout(() => numEl.remove(), 800);
+}
+
+function showVictory(){
+  sndVictory();
+  score.adventures++;
+  score.stars += 3;
+  spawnConfetti(80);
+  spawnStars(8);
+  renderScoreBar();
+
+  // Mensajes de victoria personalizados para Emilio
+  const victoryMessages = [
+    `¡${PLAYER.fullName} lo logró!`,
+    `¡Increíble ${PLAYER.name}! ¡Eres un genio!`,
+    `¡${PLAYER.nickname}, completaste la aventura!`,
+    `¡Felicidades ${PLAYER.name}! ¡Eres el mejor!`,
+    `¡${PLAYER.fullName} es imparable!`
+  ];
+  const victoryMsg = victoryMessages[Math.floor(Math.random() * victoryMessages.length)];
+
+  document.getElementById('celebration').style.display = 'flex';
+  document.getElementById('celebration').innerHTML = `
+    <div class="celebration-content">
+      <div class="stars" style="animation:emojiBounce .6s ease infinite">⭐⭐⭐</div>
+      <h2>${victoryMsg}</h2>
+      <p>Ayudaste a <b>${currentStory.character}</b></p>
+      <p style="color:#ffd43b;font-weight:800;animation:starSparkle 1s ease infinite">+3 estrellas bonus</p>
+      <button class="btn btn-new" onclick="closeCelebration()">🎲 Nueva Aventura</button>
+    </div>
+  `;
+
+  // Leer la felicitación
+  speakText(`${victoryMsg} ¡Ganaste tres estrellas! ¡Eres súper inteligente, ${PLAYER.nickname}!`, null, { rate: 0.88, pitch: 1.0 });
+
+  // Más confetti después de un momento
+  setTimeout(() => spawnConfetti(40), 800);
+  setTimeout(() => spawnStars(5), 1200);
+}
+
+function closeCelebration(){
+  stopSpeaking(); // Detener voz si está hablando
+  document.getElementById('celebration').style.display = 'none';
+  startNewAdventure();
+}
+
+// ========== TRIVIA - JUEGO DE PREMIO ==========
+const TRIVIA_CATEGORIES = {
+  mario: {
+    name: 'Mario Bros',
+    icon: '🍄',
+    color: '#e52521',
+    questions: [
+      { q: '¿De qué color es la gorra de Mario?', img: '🧢', a: 'Roja', options: ['Roja', 'Verde', 'Azul', 'Amarilla'] },
+      { q: '¿Cómo se llama el hermano de Mario?', img: '👨‍👦', a: 'Luigi', options: ['Luigi', 'Wario', 'Toad', 'Bowser'] },
+      { q: '¿Qué princesa rescata Mario?', img: '👸', a: 'Peach', options: ['Peach', 'Daisy', 'Rosalina', 'Zelda'] },
+      { q: '¿Quién es el enemigo principal de Mario?', img: '🐢', a: 'Bowser', options: ['Bowser', 'Wario', 'Donkey Kong', 'Boo'] },
+      { q: '¿Qué come Mario para hacerse grande?', img: '🍄', a: 'Hongo', options: ['Hongo', 'Estrella', 'Flor', 'Moneda'] },
+      { q: '¿Qué le da poderes de fuego a Mario?', img: '🔥', a: 'Flor de fuego', options: ['Flor de fuego', 'Estrella', 'Hongo', 'Pluma'] },
+      { q: '¿Cómo se llama el dinosaurio amigo de Mario?', img: '🦖', a: 'Yoshi', options: ['Yoshi', 'Rex', 'Birdo', 'Koopa'] },
+      { q: '¿Qué recoge Mario para ganar vidas?', img: '💰', a: 'Monedas', options: ['Monedas', 'Estrellas', 'Hongos', 'Diamantes'] },
+      { q: '¿En qué reino vive la Princesa Peach?', img: '🏰', a: 'Reino Champiñón', options: ['Reino Champiñón', 'Reino Koopa', 'Reino Flor', 'Reino Estrella'] },
+      { q: '¿Qué profesión tiene Mario?', img: '🔧', a: 'Plomero', options: ['Plomero', 'Carpintero', 'Doctor', 'Chef'] },
+      { q: '¿De qué color es Luigi?', img: '💚', a: 'Verde', options: ['Verde', 'Rojo', 'Azul', 'Amarillo'] },
+      { q: '¿Qué hace Mario invencible?', img: '⭐', a: 'Estrella', options: ['Estrella', 'Hongo', 'Flor', 'Pluma'] }
+    ]
+  },
+  pokemon: {
+    name: 'Pokémon',
+    icon: '⚡',
+    color: '#ffcb05',
+    questions: [
+      { q: '¿Cómo se llama el Pokémon amarillo eléctrico?', img: '⚡', a: 'Pikachu', options: ['Pikachu', 'Raichu', 'Pichu', 'Jolteon'] },
+      { q: '¿De qué tipo es Charmander?', img: '🔥', a: 'Fuego', options: ['Fuego', 'Agua', 'Planta', 'Eléctrico'] },
+      { q: '¿Quién es el entrenador principal del anime?', img: '🧢', a: 'Ash', options: ['Ash', 'Brock', 'Gary', 'Red'] },
+      { q: '¿En qué evoluciona Charmander al final?', img: '🐉', a: 'Charizard', options: ['Charizard', 'Charmeleon', 'Dragonite', 'Salamence'] },
+      { q: '¿De qué tipo es Squirtle?', img: '💧', a: 'Agua', options: ['Agua', 'Fuego', 'Planta', 'Hielo'] },
+      { q: '¿Cuántos Pokémon tenía la primera generación?', img: '📱', a: '151', options: ['151', '100', '200', '250'] },
+      { q: '¿Qué Pokémon es el número 1 en la Pokédex?', img: '🌱', a: 'Bulbasaur', options: ['Bulbasaur', 'Pikachu', 'Charmander', 'Squirtle'] },
+      { q: '¿Cómo se llama el Pokémon gato que siempre pierde?', img: '🐱', a: 'Meowth', options: ['Meowth', 'Persian', 'Skitty', 'Glameow'] },
+      { q: '¿Qué se usa para atrapar Pokémon?', img: '🔴', a: 'Pokébola', options: ['Pokébola', 'Red', 'Trampa', 'Jaula'] },
+      { q: '¿Quién es el Pokémon legendario de fuego de Kanto?', img: '🔥', a: 'Moltres', options: ['Moltres', 'Entei', 'Ho-Oh', 'Charizard'] },
+      { q: '¿De qué tipo es Bulbasaur?', img: '🌿', a: 'Planta', options: ['Planta', 'Agua', 'Fuego', 'Tierra'] },
+      { q: '¿Cuál es la evolución de Pikachu?', img: '⚡', a: 'Raichu', options: ['Raichu', 'Pichu', 'Jolteon', 'Electabuzz'] }
+    ]
+  },
+  dinos: {
+    name: 'Dinosaurios',
+    icon: '🦕',
+    color: '#4ade80',
+    questions: [
+      { q: '¿Cuál dinosaurio tenía tres cuernos?', img: '🦏', a: 'Triceratops', options: ['Triceratops', 'Stegosaurus', 'Ankylosaurus', 'Pachycephalosaurus'] },
+      { q: '¿Cuál era el dinosaurio carnívoro más famoso?', img: '🦖', a: 'T-Rex', options: ['T-Rex', 'Velociraptor', 'Spinosaurus', 'Allosaurus'] },
+      { q: '¿Qué dinosaurio tenía placas en la espalda?', img: '🔶', a: 'Stegosaurus', options: ['Stegosaurus', 'Ankylosaurus', 'Triceratops', 'Diplodocus'] },
+      { q: '¿Qué dinosaurio volaba?', img: '🦅', a: 'Pterodáctilo', options: ['Pterodáctilo', 'Velociraptor', 'Archaeopteryx', 'T-Rex'] },
+      { q: '¿Cuál dinosaurio tenía cuello muy largo?', img: '🦕', a: 'Brachiosaurus', options: ['Brachiosaurus', 'T-Rex', 'Triceratops', 'Velociraptor'] },
+      { q: '¿Hace cuántos millones de años se extinguieron los dinosaurios?', img: '☄️', a: '65 millones', options: ['65 millones', '100 millones', '10 millones', '200 millones'] },
+      { q: '¿Qué comían los dinosaurios herbívoros?', img: '🌿', a: 'Plantas', options: ['Plantas', 'Carne', 'Pescado', 'Insectos'] },
+      { q: '¿En qué era vivieron los dinosaurios?', img: '🌍', a: 'Mesozoica', options: ['Mesozoica', 'Paleozoica', 'Cenozoica', 'Moderna'] },
+      { q: '¿Cuál dinosaurio era muy rápido y pequeño?', img: '💨', a: 'Velociraptor', options: ['Velociraptor', 'T-Rex', 'Brachiosaurus', 'Triceratops'] },
+      { q: '¿Qué significa dinosaurio?', img: '📖', a: 'Lagarto terrible', options: ['Lagarto terrible', 'Reptil grande', 'Animal antiguo', 'Bestia feroz'] },
+      { q: '¿Cuál dinosaurio tenía una cola con picos?', img: '🔱', a: 'Stegosaurus', options: ['Stegosaurus', 'Ankylosaurus', 'Triceratops', 'Diplodocus'] },
+      { q: '¿Los dinosaurios ponían...?', img: '🥚', a: 'Huevos', options: ['Huevos', 'Crías vivas', 'Semillas', 'Nada'] }
+    ]
+  },
+  capitales: {
+    name: 'Capitales del Mundo',
+    icon: '🌍',
+    color: '#38bdf8',
+    questions: [
+      { q: '¿Cuál es la capital de Colombia?', img: '☕🌺', a: 'Bogotá', options: ['Bogotá', 'Medellín', 'Cali', 'Cartagena'] },
+      { q: '¿Cuál es la capital de Estados Unidos?', img: '🗽🦅', a: 'Washington D.C.', options: ['Washington D.C.', 'Nueva York', 'Los Ángeles', 'Miami'] },
+      { q: '¿Cuál es la capital de Francia?', img: '🗼🥐', a: 'París', options: ['París', 'Lyon', 'Marsella', 'Niza'] },
+      { q: '¿Cuál es la capital de México?', img: '🌮🎺', a: 'Ciudad de México', options: ['Ciudad de México', 'Guadalajara', 'Cancún', 'Monterrey'] },
+      { q: '¿Cuál es la capital de Brasil?', img: '⚽🌴', a: 'Brasilia', options: ['Brasilia', 'Río de Janeiro', 'São Paulo', 'Salvador'] },
+      { q: '¿Cuál es la capital de España?', img: '💃🐂', a: 'Madrid', options: ['Madrid', 'Barcelona', 'Sevilla', 'Valencia'] },
+      { q: '¿Cuál es la capital de Argentina?', img: '🥩⚽', a: 'Buenos Aires', options: ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza'] },
+      { q: '¿Cuál es la capital de Japón?', img: '🗾🍣', a: 'Tokio', options: ['Tokio', 'Osaka', 'Kioto', 'Hiroshima'] },
+      { q: '¿Cuál es la capital de Italia?', img: '🍕🏛️', a: 'Roma', options: ['Roma', 'Milán', 'Venecia', 'Florencia'] },
+      { q: '¿Cuál es la capital de Perú?', img: '🦙🏔️', a: 'Lima', options: ['Lima', 'Cusco', 'Arequipa', 'Trujillo'] },
+      { q: '¿Cuál es la capital de Inglaterra?', img: '🎡👑', a: 'Londres', options: ['Londres', 'Manchester', 'Liverpool', 'Birmingham'] },
+      { q: '¿Cuál es la capital de Alemania?', img: '🍺🏰', a: 'Berlín', options: ['Berlín', 'Múnich', 'Frankfurt', 'Hamburgo'] },
+      { q: '¿Cuál es la capital de Chile?', img: '🏔️🍇', a: 'Santiago', options: ['Santiago', 'Valparaíso', 'Concepción', 'Antofagasta'] },
+      { q: '¿Cuál es la capital de Ecuador?', img: '🌋🍌', a: 'Quito', options: ['Quito', 'Guayaquil', 'Cuenca', 'Manta'] }
+    ]
+  },
+  carros: {
+    name: 'Marcas de Carros',
+    icon: '🚗',
+    color: '#f472b6',
+    questions: [
+      { q: '¿Qué marca tiene un caballo como logo?', img: '🐴🏎️', a: 'Ferrari', options: ['Ferrari', 'Lamborghini', 'Porsche', 'Mustang'] },
+      { q: '¿Qué marca tiene un toro como logo?', img: '🐂🏎️', a: 'Lamborghini', options: ['Lamborghini', 'Ferrari', 'Maserati', 'Alfa Romeo'] },
+      { q: '¿De qué país es Toyota?', img: '🗾🚗', a: 'Japón', options: ['Japón', 'Corea', 'China', 'Alemania'] },
+      { q: '¿Qué marca tiene cuatro aros como logo?', img: '⭕⭕', a: 'Audi', options: ['Audi', 'BMW', 'Mercedes', 'Volkswagen'] },
+      { q: '¿De qué país es BMW?', img: '🏰🚗', a: 'Alemania', options: ['Alemania', 'Italia', 'Francia', 'Japón'] },
+      { q: '¿Qué marca tiene una estrella de tres puntas?', img: '✨🚗', a: 'Mercedes-Benz', options: ['Mercedes-Benz', 'BMW', 'Audi', 'Lexus'] },
+      { q: '¿Qué marca hace el Mustang?', img: '🐎💨', a: 'Ford', options: ['Ford', 'Chevrolet', 'Dodge', 'Jeep'] },
+      { q: '¿Qué marca hace el Corvette?', img: '🏎️💨', a: 'Chevrolet', options: ['Chevrolet', 'Ford', 'Dodge', 'Cadillac'] },
+      { q: '¿De qué país es Hyundai?', img: '🎎🚗', a: 'Corea del Sur', options: ['Corea del Sur', 'Japón', 'China', 'Taiwán'] },
+      { q: '¿Qué marca tiene un león como logo?', img: '🦁🚗', a: 'Peugeot', options: ['Peugeot', 'Renault', 'Citroën', 'Fiat'] },
+      { q: '¿Qué marca hace el Beetle (escarabajo)?', img: '🐞🚙', a: 'Volkswagen', options: ['Volkswagen', 'Fiat', 'Mini', 'Renault'] },
+      { q: '¿De qué país es Ferrari?', img: '🍕🏎️', a: 'Italia', options: ['Italia', 'Alemania', 'Francia', 'España'] },
+      { q: '¿Qué significa Volkswagen en alemán?', img: '🚙👥', a: 'Carro del pueblo', options: ['Carro del pueblo', 'Carro veloz', 'Carro grande', 'Carro lujoso'] }
+    ]
+  }
+};
+
+let currentTriviaCategory = null;
+let currentTriviaQuestion = null;
+let triviaCallback = null;
+
+function showTriviaGame(onComplete){
+  triviaCallback = onComplete;
+
+  // Seleccionar categoría aleatoria
+  const categories = Object.keys(TRIVIA_CATEGORIES);
+  const randomCat = categories[Math.floor(Math.random() * categories.length)];
+  currentTriviaCategory = TRIVIA_CATEGORIES[randomCat];
+
+  // Seleccionar pregunta aleatoria de esa categoría
+  const questions = currentTriviaCategory.questions;
+  currentTriviaQuestion = questions[Math.floor(Math.random() * questions.length)];
+
+  // Mezclar opciones
+  const shuffledOptions = shuffleArray([...currentTriviaQuestion.options]);
+
+  const optionsHTML = shuffledOptions.map(opt => `
+    <button class="trivia-option" onclick="checkTriviaAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</button>
+  `).join('');
+
+  document.getElementById('triviaModal').style.display = 'flex';
+  document.getElementById('triviaModal').innerHTML = `
+    <div class="trivia-content">
+      <div class="trivia-header">
+        <div class="trivia-category">
+          <span class="trivia-category-icon">${currentTriviaCategory.icon}</span>
+          ${currentTriviaCategory.name}
+        </div>
+        <div class="trivia-title">🎁 ¡Pregunta Premio!</div>
+        <div class="trivia-subtitle">Responde correctamente para ganar una estrella extra</div>
+      </div>
+
+      <div class="trivia-question-box">
+        <div class="trivia-image">${currentTriviaQuestion.img}</div>
+        <div class="trivia-question">${currentTriviaQuestion.q}</div>
+      </div>
+
+      <div class="trivia-options">${optionsHTML}</div>
+
+      <div class="trivia-feedback" id="triviaFeedback"></div>
+      <button class="trivia-continue-btn" id="triviaContinueBtn" onclick="closeTriviaGame()">Continuar ➜</button>
+    </div>
+  `;
+
+  // Deshabilitar botones mientras habla
+  document.querySelectorAll('.trivia-option').forEach(b => b.classList.add('disabled'));
+
+  // Anunciar la pregunta con voz
+  const introMsgs = [
+    `¡${PLAYER.nickname}, pregunta premio de ${currentTriviaCategory.name}!`,
+    `¡Hora del premio ${PLAYER.nickname}! Una pregunta de ${currentTriviaCategory.name}.`,
+    `¡${PLAYER.fullName} ganó una pregunta premio! Es de ${currentTriviaCategory.name}.`
+  ];
+  const intro = introMsgs[Math.floor(Math.random() * introMsgs.length)];
+
+  // Leer las opciones en orden
+  const optionsText = shuffledOptions.map((opt, i) => {
+    const letters = ['A', 'B', 'C', 'D'];
+    return `${letters[i]}: ${opt}`;
+  }).join('. . ');
+
+  const fullQuestion = `${intro} . . ${currentTriviaQuestion.q} . . Las opciones son: . ${optionsText}. . ¿Cuál es tu respuesta ${PLAYER.nickname}?`;
+
+  speakText(fullQuestion, () => {
+    // Habilitar botones cuando termine de hablar
+    document.querySelectorAll('.trivia-option').forEach(b => b.classList.remove('disabled'));
+  }, { rate: 0.88, pitch: 1.0 });
+}
+
+function checkTriviaAnswer(selected){
+  const btns = document.querySelectorAll('.trivia-option');
+  const feedback = document.getElementById('triviaFeedback');
+  const correct = currentTriviaQuestion.a;
+
+  // Deshabilitar todos los botones
+  btns.forEach(btn => {
+    btn.classList.add('disabled');
+    if(btn.textContent === correct){
+      btn.classList.add('correct');
+    }
+  });
+
+  const selectedBtn = Array.from(btns).find(b => b.textContent === selected);
+
+  if(selected === correct){
+    // ¡Correcto!
+    sndCorrect();
+    spawnConfetti(20);
+    score.stars++;
+    renderScoreBar();
+
+    feedback.className = 'trivia-feedback success show';
+    feedback.innerHTML = `🎉 ¡Correcto! +1 ⭐`;
+
+    const correctMsgs = [
+      `¡Excelente ${PLAYER.nickname}! ¡Sabías la respuesta!`,
+      `¡${PLAYER.fullName} es un genio! ¡Ganaste una estrella!`,
+      `¡Muy bien ${PLAYER.nickname}! ¡Eso es correcto!`,
+      `¡Increíble ${PLAYER.nickname}! ¡Sabes mucho de ${currentTriviaCategory.name}!`,
+      `¡${PLAYER.fullName} lo sabe todo!`
+    ];
+
+    speakText(correctMsgs[Math.floor(Math.random() * correctMsgs.length)], () => {
+      document.getElementById('triviaContinueBtn').classList.add('show');
+    }, { rate: 0.88, pitch: 1.0 });
+
+  } else {
+    // Incorrecto
+    sndWrong();
+    if(selectedBtn) selectedBtn.classList.add('wrong');
+
+    feedback.className = 'trivia-feedback error show';
+    feedback.innerHTML = `La respuesta era: <b>${correct}</b>`;
+
+    const wrongMsgs = [
+      `No ${PLAYER.name}, la respuesta era ${correct}. . ¡La próxima lo logras!`,
+      `Casi ${PLAYER.name}. . Era ${correct}. . ¡Sigue intentando!`,
+      `${PLAYER.name}, no era esa. . La correcta es ${correct}. . ¡Aprenderás para la próxima!`
+    ];
+
+    speakText(wrongMsgs[Math.floor(Math.random() * wrongMsgs.length)], () => {
+      document.getElementById('triviaContinueBtn').classList.add('show');
+    }, { rate: 0.88, pitch: 1.0 });
+  }
+}
+
+function closeTriviaGame(){
+  stopSpeaking();
+  document.getElementById('triviaModal').style.display = 'none';
+
+  // Ejecutar callback si existe
+  if(triviaCallback){
+    triviaCallback();
+    triviaCallback = null;
+  }
+}
+
+// ========== START ==========
+init();
+</script>
+</body>
+</html>
