@@ -1044,31 +1044,81 @@ const OPS = {
 
 // ========== INIT ==========
 function init(){
-  calculateGridSize();
-  window.addEventListener('resize', calculateGridSize);
-  initGrid();
-  renderScoreBar();
+  try {
+    calculateGridSize();
+    window.addEventListener('resize', calculateGridSize);
+    initGrid();
+    renderScoreBar();
 
-  // Personalizar título con el nombre del jugador
-  document.querySelector('.header h1').innerHTML = `🧩 MateBlocks <span style="font-size:0.7em;color:var(--cyan)">— ${PLAYER.name}</span>`;
+    // Personalizar título con el nombre del jugador
+    document.querySelector('.header h1').innerHTML = `🧩 MateBlocks <span style="font-size:0.7em;color:var(--cyan)">— ${PLAYER.name}</span>`;
 
-  // Saludo inicial
+    // Detectar si es móvil/iOS que requiere interacción para audio
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if(isMobile){
+      // En móvil: mostrar botón de inicio para activar audio
+      showStartButton();
+    } else {
+      // En PC: iniciar directamente
+      startWithGreeting();
+    }
+
+    document.getElementById('soundToggle').addEventListener('click', ()=>{
+      soundOn = !soundOn;
+      document.getElementById('soundToggle').textContent = soundOn ? '🔊' : '🔇';
+      if(soundOn) sndClick();
+    });
+  } catch(e) {
+    console.error('Init error:', e);
+    startNewAdventure();
+  }
+}
+
+function showStartButton(){
+  // Crear overlay de inicio para móviles
+  const overlay = document.createElement('div');
+  overlay.id = 'startOverlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;';
+  overlay.innerHTML = `
+    <div style="text-align:center;padding:20px;">
+      <div style="font-size:4rem;margin-bottom:20px;">🧩</div>
+      <h1 style="color:var(--cyan);font-size:1.8rem;margin-bottom:10px;">MateBlocks</h1>
+      <p style="color:var(--text);font-size:1rem;margin-bottom:30px;">¡Aventuras matemáticas para ${PLAYER.name}!</p>
+      <button id="startGameBtn" style="background:linear-gradient(135deg,var(--green),var(--cyan));color:#000;border:none;border-radius:16px;padding:20px 50px;font-size:1.3rem;font-weight:800;cursor:pointer;animation:pulse 1.5s ease infinite;">
+        🎮 ¡EMPEZAR!
+      </button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('startGameBtn').addEventListener('click', () => {
+    // Inicializar audio con interacción del usuario (requerido en iOS)
+    try {
+      ensureAudio();
+      if(actx && actx.state === 'suspended') actx.resume();
+    } catch(e) { console.log('Audio init:', e); }
+
+    // Remover overlay
+    overlay.remove();
+
+    // Iniciar con saludo
+    startWithGreeting();
+  });
+}
+
+function startWithGreeting(){
   const greetings = [
     `¡Hola ${PLAYER.fullName}! ¡Bienvenido a MateBlocks!`,
     `¡${PLAYER.name}! ¡Qué bueno verte! ¡Vamos a aprender matemáticas!`,
     `¡Hola ${PLAYER.nickname}! ¡Prepárate para una aventura matemática!`
   ];
+
   setTimeout(() => {
     speakText(greetings[Math.floor(Math.random() * greetings.length)], () => {
       startNewAdventure();
     }, { rate: 0.88, pitch: 1.0 });
-  }, 800);
-
-  document.getElementById('soundToggle').addEventListener('click', ()=>{
-    soundOn = !soundOn;
-    document.getElementById('soundToggle').textContent = soundOn ? '🔊' : '🔇';
-    if(soundOn) sndClick();
-  });
+  }, 300);
 }
 
 function calculateGridSize(){
@@ -3580,25 +3630,26 @@ findSpanishVoice();
 
 // Función principal para hablar texto
 function speakText(text, onEnd = null, options = {}){
-  if(!speechSynth) {
-    console.log('Speech synthesis no disponible');
-    if(onEnd) onEnd();
-    return;
-  }
+  try {
+    if(!speechSynth) {
+      console.log('Speech synthesis no disponible');
+      if(onEnd) onEnd();
+      return;
+    }
 
-  // Cancelar cualquier habla anterior
-  stopSpeaking();
+    // Cancelar cualquier habla anterior
+    stopSpeaking();
 
-  // Bug fix para Chrome: necesita un "resume" si está pausado
-  speechSynth.cancel();
+    // Bug fix para Chrome: necesita un "resume" si está pausado
+    speechSynth.cancel();
 
-  // Recargar voces si no están listas
-  if(!spanishVoice || speechSynth.getVoices().length === 0){
-    findSpanishVoice();
-  }
+    // Recargar voces si no están listas
+    if(!spanishVoice || speechSynth.getVoices().length === 0){
+      findSpanishVoice();
+    }
 
-  // Limpiar HTML del texto y agregar pausas naturales
-  let cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    // Limpiar HTML del texto y agregar pausas naturales
+    let cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
   // Agregar pausas más largas después de puntos y signos de exclamación/interrogación
   // Usamos comas extras que la voz interpreta como pausas
@@ -3669,6 +3720,11 @@ function speakText(text, onEnd = null, options = {}){
       speechSynth.resume();
     }
   }, 10000);
+  } catch(e) {
+    console.error('Error en speakText:', e);
+    isSpeaking = false;
+    if(onEnd) onEnd();
+  }
 }
 
 // Detener lectura
