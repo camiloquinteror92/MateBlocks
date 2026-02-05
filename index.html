@@ -3015,12 +3015,21 @@ function checkAnswer(){
     if(totalPlaced === numA && totalSource === 0 && usedZones === numB && allEqual){
       correct = true;
     } else {
+      // Explicación clara de división
+      const zoneCountsList = zoneCounts.filter(c => c > 0);
+      const hasUnequalGroups = zoneCountsList.length > 1 && !zoneCountsList.every(c => c === zoneCountsList[0]);
+
       if(totalSource > 0) {
-        explanation = `¡Aún quedan ${totalSource} ${currentEmoji} por repartir! Deben quedar 0 arriba.`;
+        explanation = `<b>¡Faltan!</b> Aún tienes ${totalSource} ${currentEmoji} arriba. <br>Dividir es <em>repartir TODO</em> en partes iguales. Debes repartir los ${numA} ${currentEmoji} entre los ${numB} ${currentGroupEmoji}.`;
       } else if(usedZones !== numB) {
-        explanation = `Debes usar TODOS los ${numB} ${currentGroupEmoji}. Reparte en cada uno.`;
+        const emptyZones = numB - usedZones;
+        explanation = `<b>¡Hay ${currentGroupEmoji} vacíos!</b> Tienes ${numB} ${currentGroupEmoji} y ${emptyZones} no tienen nada.<br>Dividir es repartir entre TODOS. Cada ${currentGroupEmoji} debe recibir ${answer} ${currentEmoji}.`;
+      } else if(hasUnequalGroups) {
+        // Mostrar cuántos tiene cada grupo
+        const countsText = zoneCounts.map((c, i) => `${currentGroupEmoji}${i+1}: ${c}`).join(', ');
+        explanation = `<b>¡No están iguales!</b> Tienes: ${countsText}.<br>Dividir es repartir <em>en partes IGUALES</em>. Cada ${currentGroupEmoji} debe tener exactamente ${answer} ${currentEmoji}.`;
       } else if(!allEqual) {
-        explanation = `Cada ${currentGroupEmoji} debe recibir la misma cantidad: ${answer} ${currentEmoji}.`;
+        explanation = `<b>¡Cantidad incorrecta!</b> Cada ${currentGroupEmoji} tiene ${zoneCounts[0]}, pero debería tener ${answer}.<br>${numA} ÷ ${numB} = ${answer}. Pon ${answer} ${currentEmoji} en cada ${currentGroupEmoji}.`;
       }
     }
   }
@@ -3140,11 +3149,24 @@ function checkAnswer(){
 
       // Mensajes específicos según la operación y si puso de más o de menos
       if(currentOp === 'divi'){
-        // Para división, explicar mejor qué debe poner
-        if(needsMore){
-          spokenMsg = `${PLAYER.nickname}, en la división debes poner cuántos le tocan a cada uno. Pusiste ${placed}, pero la respuesta es más que eso.`;
+        // Para división, explicar claramente qué es dividir y qué tiene mal
+        // Obtener conteo de cada zona
+        const zoneCounts = [];
+        for(let i = 0; i < numB; i++){
+          zoneCounts.push(byZone['g' + i] || 0);
+        }
+        const usedZones = zoneCounts.filter(c => c > 0).length;
+        const hasUnequalGroups = zoneCounts.filter(c => c > 0).length > 1 &&
+          !zoneCounts.filter(c => c > 0).every(c => c === zoneCounts.filter(c => c > 0)[0]);
+
+        if(totalSource > 0){
+          spokenMsg = `${PLAYER.name}, dividir es repartir TODO. . Aún tienes ${totalSource} objetos arriba. . Reparte los ${numA} entre los ${numB} grupos, poniendo ${answer} en cada uno.`;
+        } else if(usedZones !== numB){
+          spokenMsg = `${PLAYER.name}, hay grupos vacíos. . Dividir es repartir entre TODOS los grupos. . Pon ${answer} objetos en cada uno de los ${numB} grupos.`;
+        } else if(hasUnequalGroups){
+          spokenMsg = `${PLAYER.name}, los grupos no tienen la misma cantidad. . Dividir es repartir en partes IGUALES. . Cada grupo debe tener exactamente ${answer} objetos.`;
         } else {
-          spokenMsg = `${PLAYER.name}, recuerda: en división pones el resultado, no todos los objetos. ${numA} entre ${numB}, ¿cuántos le tocan a cada uno? Es menos de ${placed}.`;
+          spokenMsg = `${PLAYER.name}, la cantidad no es correcta. . ${numA} dividido ${numB} es igual a ${answer}. . Pon ${answer} objetos en cada grupo.`;
         }
       } else if(needsMore){
         const msgs = [
@@ -3166,13 +3188,16 @@ function checkAnswer(){
       title = `¡Tú puedes, ${PLAYER.nickname}!`;
 
       // Explicación según la operación
-      const opExplanations = {
-        suma: `${PLAYER.name}, en la suma juntamos todo. ${numA} más ${numB}. Cuenta con los dedos si necesitas.`,
-        resta: `${PLAYER.name}, en la resta quitamos. De ${numA} quita ${numB}. ¿Cuántos quedan?`,
-        multi: `${PLAYER.name}, multiplica es repetir. ${numA} grupos de ${numB}. Cuenta todos.`,
-        divi: `${PLAYER.name}, dividir es repartir igual. ${numA} entre ${numB}. ¿Cuántos le tocan a cada uno?`
-      };
-      spokenMsg = opExplanations[currentOp];
+      if(currentOp === 'divi'){
+        spokenMsg = `${PLAYER.name}, escucha bien. . Dividir es repartir en partes iguales. . Tienes ${numA} objetos y ${numB} grupos. . Debes poner la misma cantidad en cada grupo. . ${numA} dividido ${numB} es igual a ${answer}. . Pon ${answer} en cada grupo.`;
+      } else {
+        const opExplanations = {
+          suma: `${PLAYER.name}, en la suma juntamos todo. ${numA} más ${numB}. Cuenta con los dedos si necesitas.`,
+          resta: `${PLAYER.name}, en la resta quitamos. De ${numA} quita ${numB}. ¿Cuántos quedan?`,
+          multi: `${PLAYER.name}, multiplica es repetir. ${numA} grupos de ${numB}. Cuenta todos.`
+        };
+        spokenMsg = opExplanations[currentOp];
+      }
     } else if(attempts >= 3) {
       emoji = '📖';
       title = `${PLAYER.name}, mira la ayuda 👈`;
