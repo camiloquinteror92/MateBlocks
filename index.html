@@ -408,6 +408,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .trivia-option.correct{background:rgba(0,214,143,.3);border-color:var(--green);color:var(--green);animation:pulse .3s ease}
 .trivia-option.wrong{background:rgba(255,107,107,.3);border-color:var(--red);color:var(--red)}
 .trivia-option.disabled{pointer-events:none;opacity:.6}
+.trivia-option.reading{background:rgba(255,212,59,.2);border-color:var(--yellow);color:var(--yellow);transform:scale(1.05);box-shadow:0 0 20px rgba(255,212,59,.4);animation:optionReading .8s ease infinite}
+@keyframes optionReading{0%,100%{box-shadow:0 0 10px rgba(255,212,59,.3)}50%{box-shadow:0 0 25px rgba(255,212,59,.6)}}
 .trivia-feedback{margin-top:16px;padding:12px;border-radius:12px;font-weight:700;display:none}
 .trivia-feedback.show{display:block;animation:fadeIn .3s ease}
 .trivia-feedback.success{background:rgba(0,214,143,.2);border:2px solid var(--green);color:var(--green)}
@@ -4082,22 +4084,44 @@ function showTriviaQuestion(){
   `;
 
   // Deshabilitar botones mientras habla
-  document.querySelectorAll('.trivia-option').forEach(b => b.classList.add('disabled'));
+  const allBtns = document.querySelectorAll('.trivia-option');
+  allBtns.forEach(b => b.classList.add('disabled'));
 
-  // Anunciar pregunta
+  // Anunciar pregunta con iluminación de opciones
   const intro = triviaCurrentIndex === 0
     ? `¡${PLAYER.nickname}, tienes ${TRIVIA_TOTAL_QUESTIONS} preguntas premio! Primera pregunta, de ${currentTriviaCategory.name}.`
     : `Pregunta ${triviaCurrentIndex + 1}, de ${currentTriviaCategory.name}.`;
 
-  const optionsText = shuffledOptions.map((opt, i) => {
-    const letters = ['A', 'B', 'C', 'D'];
-    return `${letters[i]}: ${opt}`;
-  }).join('. . ');
+  // Leer intro y pregunta primero
+  speakText(`${intro} . . ${currentTriviaQuestion.q} . . Las opciones son:`, () => {
+    // Ahora leer cada opción iluminándola
+    readOptionsSequentially(shuffledOptions, 0, allBtns);
+  }, { rate: 0.88, pitch: 1.0 });
+}
 
-  const fullQuestion = `${intro} . . ${currentTriviaQuestion.q} . . Las opciones son: . ${optionsText}. . ¿Cuál es tu respuesta?`;
+function readOptionsSequentially(options, index, btns){
+  if(index >= options.length){
+    // Terminó de leer opciones, preguntar cuál es la respuesta
+    btns.forEach(b => b.classList.remove('reading'));
+    speakText('¿Cuál es tu respuesta?', () => {
+      btns.forEach(b => b.classList.remove('disabled'));
+    }, { rate: 0.88, pitch: 1.0 });
+    return;
+  }
 
-  speakText(fullQuestion, () => {
-    document.querySelectorAll('.trivia-option').forEach(b => b.classList.remove('disabled'));
+  const letters = ['A', 'B', 'C', 'D'];
+  const optionText = `${letters[index]}: ${options[index]}`;
+
+  // Iluminar la opción actual
+  btns.forEach(b => b.classList.remove('reading'));
+  if(btns[index]) btns[index].classList.add('reading');
+
+  // Leer esta opción
+  speakText(optionText, () => {
+    // Pequeña pausa y luego siguiente opción
+    setTimeout(() => {
+      readOptionsSequentially(options, index + 1, btns);
+    }, 200);
   }, { rate: 0.88, pitch: 1.0 });
 }
 
