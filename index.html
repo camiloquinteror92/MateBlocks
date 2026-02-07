@@ -340,8 +340,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .terms-quiz-question{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.4}
 .terms-quiz-question .quiz-highlight{color:var(--yellow);font-weight:900;font-size:1.05rem}
 .terms-options{display:grid;grid-template-columns:repeat(2, 1fr);gap:8px}
-.term-option{padding:11px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--text);font-weight:700;font-size:.82rem;cursor:pointer;transition:all .2s;text-align:center}
-.term-option:hover{border-color:rgba(255,255,255,.3);transform:scale(1.02)}
+.term-option{padding:11px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--text);font-weight:700;font-size:.82rem;cursor:pointer;transition:all .2s;text-align:center;-webkit-tap-highlight-color:transparent;outline:none}
+@media(hover:hover){.term-option:hover{border-color:rgba(255,255,255,.3);transform:scale(1.02)}}
 .term-option.correct{border-color:var(--green)!important;background:rgba(0,214,143,.2)!important;animation:correctPulse .4s ease}
 .term-option.wrong{border-color:var(--red)!important;background:rgba(255,71,87,.15)!important;animation:wrongShake .4s ease}
 .term-option.disabled{opacity:.6;pointer-events:none}
@@ -408,8 +408,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .trivia-question{font-size:1.1rem;font-weight:700;color:#fff;line-height:1.4}
 .trivia-image{font-size:4rem;margin-bottom:12px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
 .trivia-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.trivia-option{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 12px;font-size:.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all .2s ease}
-.trivia-option:hover{background:rgba(255,255,255,.15);border-color:var(--cyan);transform:scale(1.02)}
+.trivia-option{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 12px;font-size:.95rem;font-weight:700;color:#fff;cursor:pointer;transition:all .2s ease;-webkit-tap-highlight-color:transparent;outline:none}
+@media(hover:hover){.trivia-option:hover{background:rgba(255,255,255,.15);border-color:var(--cyan);transform:scale(1.02)}}
 .trivia-option.correct{background:rgba(0,214,143,.3);border-color:var(--green);color:var(--green);animation:pulse .3s ease}
 .trivia-option.wrong{background:rgba(255,107,107,.3);border-color:var(--red);color:var(--red)}
 .trivia-option.disabled{pointer-events:none;opacity:.6}
@@ -459,8 +459,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .desafio-equation .desafio-op{color:var(--cyan)}
 .desafio-equation .desafio-q{color:var(--yellow);text-shadow:0 0 12px rgba(255,212,59,.5)}
 .desafio-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.desafio-option{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:16px 12px;font-size:1.3rem;font-weight:900;color:#fff;cursor:pointer;transition:all .2s ease}
-.desafio-option:hover{background:rgba(255,255,255,.15);border-color:var(--cyan);transform:scale(1.02)}
+.desafio-option{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:16px 12px;font-size:1.3rem;font-weight:900;color:#fff;cursor:pointer;transition:all .2s ease;-webkit-tap-highlight-color:transparent;outline:none}
+@media(hover:hover){.desafio-option:hover{background:rgba(255,255,255,.15);border-color:var(--cyan);transform:scale(1.02)}}
 .desafio-option.correct{background:rgba(0,214,143,.3);border-color:var(--green);color:var(--green);animation:pulse .3s ease}
 .desafio-option.wrong{background:rgba(255,107,107,.3);border-color:var(--red);color:var(--red)}
 .desafio-option.disabled{pointer-events:none;opacity:.6}
@@ -4519,8 +4519,10 @@ function showTriviaQuestion(){
     ? `¡${PLAYER.nickname}, tienes ${TRIVIA_TOTAL_QUESTIONS} preguntas premio! Primera pregunta, de ${currentTriviaCategory.name}.`
     : `Pregunta ${triviaCurrentIndex + 1}, de ${currentTriviaCategory.name}.`;
 
-  // Leer intro y pregunta primero
-  speakText(`${intro} . . ${currentTriviaQuestion.q} . . Las opciones son:`, () => {
+  // Leer intro y pregunta primero (con tiempo mínimo para evitar skip en móviles)
+  const introText = `${intro} . . ${currentTriviaQuestion.q} . . Las opciones son:`;
+  const introMinTime = Math.max(2000, introText.length * 70);
+  safeSpeakWithMinTime(introText, introMinTime, () => {
     // Ahora leer cada opción iluminándola
     readOptionsSequentially(shuffledOptions, 0, allBtns);
   }, { rate: 0.88, pitch: 1.0 });
@@ -4530,7 +4532,7 @@ function readOptionsSequentially(options, index, btns){
   if(index >= options.length){
     // Terminó de leer opciones, preguntar cuál es la respuesta
     btns.forEach(b => b.classList.remove('reading'));
-    speakText('¿Cuál es tu respuesta?', () => {
+    safeSpeakWithMinTime('¿Cuál es tu respuesta?', 800, () => {
       btns.forEach(b => b.classList.remove('disabled'));
     }, { rate: 0.88, pitch: 1.0 });
     return;
@@ -4543,13 +4545,34 @@ function readOptionsSequentially(options, index, btns){
   btns.forEach(b => b.classList.remove('reading'));
   if(btns[index]) btns[index].classList.add('reading');
 
-  // Leer esta opción
-  speakText(optionText, () => {
+  // Tiempo mínimo estimado: ~80ms por carácter a rate 0.88
+  const minTime = Math.max(800, optionText.length * 80);
+
+  // Leer esta opción con tiempo mínimo para evitar que móviles la salten
+  safeSpeakWithMinTime(optionText, minTime, () => {
     // Pequeña pausa y luego siguiente opción
     setTimeout(() => {
       readOptionsSequentially(options, index + 1, btns);
     }, 200);
   }, { rate: 0.88, pitch: 1.0 });
+}
+
+// Wrapper que garantiza un tiempo mínimo antes de llamar al callback
+// Evita que en móviles el onend se dispare instantáneamente sin hablar
+function safeSpeakWithMinTime(text, minMs, onEnd, options){
+  const startTime = Date.now();
+  let callbackFired = false;
+  function safeCallback(){
+    if(callbackFired) return;
+    callbackFired = true;
+    const elapsed = Date.now() - startTime;
+    if(elapsed < minMs){
+      setTimeout(() => { if(onEnd) onEnd(); }, minMs - elapsed);
+    } else {
+      if(onEnd) onEnd();
+    }
+  }
+  speakText(text, safeCallback, options);
 }
 
 function checkTriviaAnswer(selected){
@@ -5388,32 +5411,116 @@ function closeModuleResults(){
   startNewAdventure();
 }
 
-// DEBUG: Ctrl+Shift+M para forzar reporte de módulo (QUITAR DESPUÉS)
+// DEBUG: Ctrl+Shift+M para forzar reporte de módulo con escenarios variados
+let debugScenario = 0;
+const DEBUG_SCENARIOS = [
+  {
+    name: 'Mixto (bueno en suma/multi, mal en resta/divi)',
+    setup(){
+      resetModuleTracker();
+      ['suma','resta','multi','divi'].forEach(op => moduleTracker.opsCompleted.add(op));
+      // Suma: excelente
+      Object.assign(moduleTracker.performance.suma, {
+        stepCount:3, quizCorrect:3, quizErrors:0, dragAttempts:3, hintsUsed:0,
+        starsEarned:8, termsCorrect:4, termsErrors:0, practiceErrors:0
+      });
+      // Multi: bien
+      Object.assign(moduleTracker.performance.multi, {
+        stepCount:2, quizCorrect:2, quizErrors:0, dragAttempts:5, hintsUsed:1,
+        starsEarned:5, termsCorrect:3, termsErrors:1, practiceErrors:0
+      });
+      // Resta: regular
+      Object.assign(moduleTracker.performance.resta, {
+        stepCount:2, quizCorrect:1, quizErrors:2, dragAttempts:7, hintsUsed:2,
+        starsEarned:3, termsCorrect:2, termsErrors:3, practiceErrors:2
+      });
+      // Divi: muy mal
+      Object.assign(moduleTracker.performance.divi, {
+        stepCount:2, quizCorrect:0, quizErrors:3, dragAttempts:10, hintsUsed:4,
+        starsEarned:1, termsCorrect:1, termsErrors:4, practiceErrors:3
+      });
+      moduleTracker.totalDesafioCorrect = 14; moduleTracker.totalDesafioTotal = 20;
+      moduleTracker.totalTriviaCorrect = 5; moduleTracker.totalTriviaTotal = 6;
+      moduleTracker.adventuresInModule = 3;
+    }
+  },
+  {
+    name: 'Todos excelente',
+    setup(){
+      resetModuleTracker();
+      ['suma','resta','multi','divi'].forEach(op => {
+        moduleTracker.opsCompleted.add(op);
+        Object.assign(moduleTracker.performance[op], {
+          stepCount:2, quizCorrect:2, quizErrors:0, dragAttempts:2, hintsUsed:0,
+          starsEarned:6, termsCorrect:4, termsErrors:0, practiceErrors:0
+        });
+      });
+      moduleTracker.totalDesafioCorrect = 18; moduleTracker.totalDesafioTotal = 20;
+      moduleTracker.totalTriviaCorrect = 6; moduleTracker.totalTriviaTotal = 6;
+      moduleTracker.adventuresInModule = 2;
+    }
+  },
+  {
+    name: 'Todos mal (necesita reforzar todo)',
+    setup(){
+      resetModuleTracker();
+      ['suma','resta','multi','divi'].forEach(op => {
+        moduleTracker.opsCompleted.add(op);
+        Object.assign(moduleTracker.performance[op], {
+          stepCount:2, quizCorrect:0, quizErrors:3, dragAttempts:12, hintsUsed:5,
+          starsEarned:1, termsCorrect:1, termsErrors:4, practiceErrors:3
+        });
+      });
+      moduleTracker.totalDesafioCorrect = 5; moduleTracker.totalDesafioTotal = 20;
+      moduleTracker.totalTriviaCorrect = 1; moduleTracker.totalTriviaTotal = 6;
+      moduleTracker.adventuresInModule = 4;
+    }
+  },
+  {
+    name: 'Solo 1 mala (divi), resto perfecto',
+    setup(){
+      resetModuleTracker();
+      ['suma','resta','multi'].forEach(op => {
+        moduleTracker.opsCompleted.add(op);
+        Object.assign(moduleTracker.performance[op], {
+          stepCount:2, quizCorrect:2, quizErrors:0, dragAttempts:2, hintsUsed:0,
+          starsEarned:6, termsCorrect:4, termsErrors:0, practiceErrors:0
+        });
+      });
+      moduleTracker.opsCompleted.add('divi');
+      Object.assign(moduleTracker.performance.divi, {
+        stepCount:3, quizCorrect:1, quizErrors:4, dragAttempts:15, hintsUsed:6,
+        starsEarned:2, termsCorrect:0, termsErrors:4, practiceErrors:4
+      });
+      moduleTracker.totalDesafioCorrect = 12; moduleTracker.totalDesafioTotal = 20;
+      moduleTracker.totalTriviaCorrect = 4; moduleTracker.totalTriviaTotal = 6;
+      moduleTracker.adventuresInModule = 3;
+    }
+  },
+  {
+    name: 'Vocabulario problema (bien en ejercicios, mal en términos)',
+    setup(){
+      resetModuleTracker();
+      ['suma','resta','multi','divi'].forEach(op => {
+        moduleTracker.opsCompleted.add(op);
+        Object.assign(moduleTracker.performance[op], {
+          stepCount:2, quizCorrect:2, quizErrors:0, dragAttempts:3, hintsUsed:0,
+          starsEarned:5, termsCorrect:1, termsErrors:3, practiceErrors:0
+        });
+      });
+      moduleTracker.totalDesafioCorrect = 15; moduleTracker.totalDesafioTotal = 20;
+      moduleTracker.totalTriviaCorrect = 3; moduleTracker.totalTriviaTotal = 6;
+      moduleTracker.adventuresInModule = 2;
+    }
+  }
+];
 document.addEventListener('keydown', (e) => {
   if(e.ctrlKey && e.shiftKey && e.key === 'M'){
-    // Simular datos de las 4 operaciones
-    ['suma','resta','multi','divi'].forEach(op => {
-      moduleTracker.opsCompleted.add(op);
-      moduleTracker.performance[op].stepCount = 2;
-      moduleTracker.performance[op].quizCorrect = 1;
-      moduleTracker.performance[op].starsEarned = 5;
-      moduleTracker.performance[op].dragAttempts = 3;
-    });
-    // Simular algunos errores para ver el análisis
-    moduleTracker.performance.resta.quizErrors = 2;
-    moduleTracker.performance.resta.practiceErrors = 2;
-    moduleTracker.performance.resta.termsErrors = 3;
-    moduleTracker.performance.divi.quizErrors = 3;
-    moduleTracker.performance.divi.practiceErrors = 3;
-    moduleTracker.performance.divi.hintsUsed = 4;
-    moduleTracker.performance.divi.termsErrors = 4;
-    moduleTracker.performance.divi.starsEarned = 2;
-    moduleTracker.totalDesafioCorrect = 14;
-    moduleTracker.totalDesafioTotal = 20;
-    moduleTracker.totalTriviaCorrect = 5;
-    moduleTracker.totalTriviaTotal = 6;
-    moduleTracker.adventuresInModule = 3;
+    const scenario = DEBUG_SCENARIOS[debugScenario % DEBUG_SCENARIOS.length];
+    console.log(`%c[DEBUG] Escenario ${debugScenario + 1}/${DEBUG_SCENARIOS.length}: ${scenario.name}`, 'color:magenta;font-weight:bold');
+    scenario.setup();
     showModuleResults();
+    debugScenario++;
   }
 });
 
