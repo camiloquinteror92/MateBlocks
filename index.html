@@ -95,7 +95,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .source-emoji.selected{transform:scale(1.2);filter:drop-shadow(0 0 8px var(--yellow));animation:selectedPulse 1s ease infinite}
 
 /* Trash bin */
-.trash-row{display:flex;justify-content:center;margin-top:10px}
+.trash-row{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:10px}
 .trash-bin{width:50px;height:50px;border-radius:12px;background:rgba(255,71,87,.1);border:2px dashed var(--red);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:all .2s;opacity:.6;cursor:pointer}
 .trash-bin:hover{opacity:1;transform:scale(1.05)}
 .trash-bin.drag-over{opacity:1;transform:scale(1.15);background:rgba(255,71,87,.25);border-style:solid;box-shadow:0 0 20px rgba(255,71,87,.4)}
@@ -389,6 +389,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
   .term-option{padding:10px 8px;font-size:.78rem;border-radius:8px}
   .terms-quiz-feedback{padding:8px 10px;font-size:.75rem}
   .continue-btn{padding:12px 24px;font-size:.9rem}
+  /* Fracción de división mobile */
+  .fraction-top .value,.fraction-bottom .value{font-size:1.4rem;width:42px;height:42px;border-radius:10px}
+  .fraction-top .label,.fraction-bottom .label{font-size:.48rem}
+  .fraction-line{width:55px;height:3px}
+  .fraction-symbol-label{font-size:.45rem}
 }
 
 /* Trivia Modal - Juego de Premio */
@@ -432,6 +437,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .trivia-summary .summary-score b{color:var(--cyan)}
 .trivia-summary .summary-stars{font-size:2.5rem;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(255,212,59,.4))}
 .trivia-summary .summary-message{font-size:.95rem;color:var(--text-dim);margin-bottom:20px;line-height:1.5}
+
+/* Desafío Relámpago Modal */
+.desafio-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;z-index:998;padding:20px;overflow:auto}
+.desafio-content{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:24px;padding:28px;text-align:center;max-width:500px;width:100%;border:3px solid var(--cyan);box-shadow:0 0 60px rgba(34,211,238,.4);animation:modalAppear .5s ease;overflow:hidden}
+.desafio-header{margin-bottom:16px}
+.desafio-title{font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:4px}
+.desafio-subtitle{font-size:.85rem;color:var(--text-dim)}
+.desafio-progress{display:flex;justify-content:center;gap:12px;margin-bottom:12px}
+.desafio-dot{font-size:1.2rem;color:var(--text-dim);transition:all .3s ease}
+.desafio-dot.done{color:var(--green);transform:scale(1.1)}
+.desafio-dot.wrong-dot{color:var(--red);transform:scale(1.1)}
+.desafio-dot.current{color:var(--cyan);animation:desafioDotPulse 1s ease infinite;transform:scale(1.2)}
+@keyframes desafioDotPulse{0%,100%{opacity:1;transform:scale(1.2)}50%{opacity:.7;transform:scale(1.4)}}
+.desafio-track{position:relative;width:50px;height:200px;background:linear-gradient(to top,var(--panel),rgba(34,211,238,.08),rgba(255,212,59,.15));border-radius:25px;border:2px solid rgba(255,255,255,.15);margin:0 auto 16px;overflow:visible}
+.desafio-rocket{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);font-size:2rem;transition:bottom .6s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 0 8px var(--yellow))}
+.desafio-checkpoint{position:absolute;left:50%;transform:translateX(-50%);font-size:1rem;opacity:.3;transition:all .4s ease}
+.desafio-checkpoint.reached{opacity:1;filter:drop-shadow(0 0 6px var(--yellow))}
+.desafio-equation-box{background:rgba(0,0,0,.4);border-radius:16px;padding:20px;margin-bottom:20px;border:2px solid rgba(255,255,255,.1)}
+.desafio-equation{font-size:2rem;font-weight:900;color:#fff;letter-spacing:4px}
+.desafio-equation .desafio-op{color:var(--cyan)}
+.desafio-equation .desafio-q{color:var(--yellow);text-shadow:0 0 12px rgba(255,212,59,.5)}
+.desafio-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.desafio-option{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:16px 12px;font-size:1.3rem;font-weight:900;color:#fff;cursor:pointer;transition:all .2s ease}
+.desafio-option:hover{background:rgba(255,255,255,.15);border-color:var(--cyan);transform:scale(1.02)}
+.desafio-option.correct{background:rgba(0,214,143,.3);border-color:var(--green);color:var(--green);animation:pulse .3s ease}
+.desafio-option.wrong{background:rgba(255,107,107,.3);border-color:var(--red);color:var(--red)}
+.desafio-option.disabled{pointer-events:none;opacity:.6}
+.desafio-combo{margin-top:12px;font-size:1rem;font-weight:800;color:var(--orange);min-height:28px;transition:all .3s ease}
+.desafio-combo.active{animation:comboPulse .5s ease;color:var(--orange);text-shadow:0 0 12px rgba(255,159,67,.5)}
+@keyframes comboPulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.desafio-timer{font-size:.8rem;color:var(--text-dim);margin-top:4px}
+.desafio-summary{text-align:center;padding:20px}
+.desafio-summary h3{font-size:1.4rem;font-weight:900;color:var(--cyan);margin-bottom:8px}
+.desafio-summary .summary-score{font-size:1.1rem;color:var(--text);margin-bottom:16px}
+.desafio-summary .summary-score b{color:var(--cyan)}
+.desafio-summary .summary-stars{font-size:2rem;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(34,211,238,.4));word-break:break-word;line-height:1.4}
+.desafio-summary .summary-message{font-size:.95rem;color:var(--text-dim);margin-bottom:20px;line-height:1.5}
+.desafio-continue-btn{margin-top:16px;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#000;border:none;border-radius:12px;padding:14px 32px;font-size:1rem;font-weight:800;cursor:pointer;display:inline-block;animation:bounceIn .4s ease}
+@keyframes rocketShake{0%,100%{transform:translateX(-50%) rotate(0deg)}25%{transform:translateX(-50%) rotate(-5deg)}75%{transform:translateX(-50%) rotate(5deg)}}
 
 .confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000;overflow:hidden}
 .confetti-piece{position:absolute;width:8px;height:8px;top:-20px;animation:confettiFall linear forwards}
@@ -498,7 +542,98 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
   .feedback .big-emoji{font-size:2rem;margin-bottom:8px}
   .feedback .detail{font-size:.8rem}
   .result-card h3{font-size:.85rem}
+  /* Desafío Relámpago mobile */
+  .desafio-track{height:150px;width:44px}
+  .desafio-rocket{font-size:1.6rem}
+  .desafio-equation{font-size:1.6rem}
+  .desafio-option{padding:14px 10px;font-size:1.2rem}
+  .desafio-content{padding:20px}
+  /* Header y score bar mobile */
+  .header{padding:4px 8px;gap:8px}
+  .header h1{font-size:1rem}
+  .score-bar{gap:8px}
+  .score-item{padding:3px 8px;border-radius:6px}
+  .score-item .val{font-size:.85rem}
+  .score-item .lbl{font-size:.5rem}
+  /* Trivia mobile */
+  .trivia-content{padding:16px;border-radius:16px;max-width:100%}
+  .trivia-title{font-size:1.1rem}
+  .trivia-image{font-size:2.8rem;margin-bottom:8px}
+  .trivia-question-box{padding:14px;margin-bottom:14px}
+  .trivia-question{font-size:.95rem}
+  .trivia-options{grid-template-columns:1fr;gap:8px}
+  .trivia-option{padding:12px 10px;font-size:.9rem;border-radius:10px}
+  .trivia-continue-btn{padding:12px 24px;font-size:.9rem}
+  .trivia-category{padding:6px 12px;font-size:.8rem}
+  .trivia-category-icon{font-size:1.2rem}
+  .trivia-summary .summary-stars{font-size:2rem}
+  /* Module report mobile */
+  .module-content{padding:14px;border-radius:16px;max-width:100%;max-height:85vh}
+  .module-title{font-size:1.1rem}
+  .module-op-card{padding:8px 10px}
+  .module-op-name{font-size:.8rem}
+  .module-op-detail{font-size:.7rem}
+  .module-global-stats{padding:10px}
+  .module-global-stats-text{font-size:.8rem}
+  .module-overall{font-size:.85rem}
+  .module-btn{padding:12px 24px;font-size:.9rem}
+  .module-stat-label{font-size:.65rem}
+  .module-stat-value{font-size:.65rem;min-width:30px}
+  .module-big-stat-icon{font-size:1.2rem}
+  .module-big-stat-title{font-size:.75rem}
+  .module-big-stat-detail{font-size:.65rem}
+  .module-big-stat-pct{font-size:1rem}
+  /* Celebration mobile */
+  .celebration-content{max-width:90%;padding:20px}
+  .celebration h2{font-size:1.2rem}
+  .celebration p{font-size:.82rem}
+  .celebration .stars{font-size:1.6rem}
 }
+
+/* ========== MODULE RESULTS MODAL ========== */
+.module-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;overflow:auto}
+.module-content{background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:24px;padding:28px;text-align:center;max-width:520px;width:100%;border:3px solid var(--purple);box-shadow:0 0 60px rgba(167,139,250,.4);animation:modalAppear .5s ease;max-height:90vh;overflow-y:auto}
+.module-title{font-size:1.4rem;font-weight:900;color:var(--yellow);margin-bottom:4px}
+.module-subtitle{font-size:.85rem;color:var(--text-dim);margin-bottom:20px}
+.module-section{margin-bottom:16px;text-align:left}
+.module-section-title{font-size:.85rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.module-section-title.strong{color:var(--green)}
+.module-section-title.practice{color:var(--yellow)}
+.module-section-title.weak{color:var(--red)}
+.module-op-card{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 14px;margin-bottom:8px;border-left:3px solid rgba(255,255,255,.1)}
+.module-op-card.strong{border-left-color:var(--green)}
+.module-op-card.practice{border-left-color:var(--yellow)}
+.module-op-card.weak{border-left-color:var(--red)}
+.module-op-name{font-weight:800;font-size:.9rem;margin-bottom:4px}
+.module-op-detail{font-size:.75rem;color:var(--text-dim);line-height:1.4}
+.module-global-stats{background:rgba(167,139,250,.1);border-radius:12px;padding:14px;margin-top:16px;border:1px solid rgba(167,139,250,.2)}
+.module-global-stats-text{font-size:.85rem;color:var(--text);line-height:1.5}
+.module-overall{margin-top:16px;font-size:1rem;font-weight:700;color:var(--purple);line-height:1.5}
+.module-btn{margin-top:20px;padding:14px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-weight:800;font-size:1rem;cursor:pointer;transition:all .2s;display:inline-block}
+.module-btn:hover{transform:scale(1.05);box-shadow:0 4px 20px rgba(167,139,250,.4)}
+/* Reporte detallado */
+.module-stat-row{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;margin-bottom:6px}
+.module-stat-label{color:var(--text-dim);font-weight:600;flex:0 0 auto;margin-right:8px}
+.module-stat-bar-bg{flex:1;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin:0 8px;overflow:hidden}
+.module-stat-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.module-stat-bar.green{background:var(--green)}
+.module-stat-bar.yellow{background:var(--yellow)}
+.module-stat-bar.red{background:var(--red)}
+.module-stat-bar.cyan{background:var(--cyan)}
+.module-stat-bar.purple{background:var(--purple)}
+.module-stat-value{color:#fff;font-weight:800;font-size:.75rem;min-width:36px;text-align:right}
+.module-op-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.module-op-score{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:8px;min-width:42px;text-align:center}
+.module-op-score.high{background:rgba(0,214,143,.2);color:var(--green)}
+.module-op-score.mid{background:rgba(255,212,59,.2);color:var(--yellow)}
+.module-op-score.low{background:rgba(255,71,87,.2);color:var(--red)}
+.module-big-stat{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.module-big-stat:last-child{border-bottom:none}
+.module-big-stat-icon{font-size:1.5rem}
+.module-big-stat-info{flex:1}
+.module-big-stat-title{font-size:.8rem;font-weight:700;color:var(--text)}
+.module-big-stat-detail{font-size:.7rem;color:var(--text-dim)}
+.module-big-stat-pct{font-size:1.2rem;font-weight:900;min-width:50px;text-align:right}
 </style>
 </head>
 <body>
@@ -532,13 +667,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 <div class="story-modal" id="storyModal" style="display:none"></div>
 <div class="math-review-modal" id="mathReviewModal" style="display:none"></div>
 <div class="trivia-modal" id="triviaModal" style="display:none"></div>
+<div class="desafio-modal" id="desafioModal" style="display:none"></div>
+<div class="module-modal" id="moduleModal" style="display:none"></div>
 
 <script>
 // ========== CONFIGURACIÓN DEL JUGADOR ==========
 const PLAYER = {
   name: 'Emilio',           // Nombre real - para llamar la atención cuando se equivoca
   nickname: 'Esmi',         // Apodo cariñoso - para felicitar
-  fullName: 'Emilio Quintero Tetero',  // Apodo de juego - para celebraciones especiales
+  fullName: 'Emilio Quintero Ocampo',  // Apodo de juego - para celebraciones especiales
   // Mensajes de ánimo personalizados - usar Esmi
   encouragements: [
     '¡Tú puedes, {nickname}!',
@@ -581,7 +718,7 @@ const PLAYER = {
     '¡{nickname} lo logró! ¡Muy bien!',
     '¡Perfecto {nickname}!'
   ],
-  // Mensajes especiales de celebración grande - usar Emilio Quintero Tetero (apodo de juego)
+  // Mensajes especiales de celebración grande - usar Emilio Quintero Ocampo (apodo de juego)
   specialMessages: [
     '¡{fullName} es el mejor matemático!',
     '¡{fullName} es súper inteligente!',
@@ -855,151 +992,148 @@ const ENCOURAGEMENTS = [
 
 // ========== STORIES ==========
 const STORIES = [
-  // === HISTORIAS BALANCEADAS (suma, resta, multi, divi) ===
   {
     title: "La Granja de Lucas", avatar: "🧑‍🌾", character: "Lucas",
     steps: [
-      { op: 'suma', template: '{char} tiene {a} gallinas y llegan {b} más.', question: '¿Cuántas gallinas tiene ahora?', successMsg: '¡{ans} gallinas!', emoji: '🐔', emojiB: '🐔' },
-      { op: 'multi', template: '{char} tiene {a} gallinas. Cada una pone {b} huevos.', question: '¿Cuántos huevos hay?', successMsg: '¡{ans} huevos!', emoji: '🥚', groupEmoji: '🐔' },
-      { op: 'resta', template: '{char} tenía {a} huevos. Vendió {b}.', question: '¿Cuántos le quedan?', successMsg: '¡{ans} huevos!', emoji: '🥚', emojiB: '🥚' }
+      { op: 'suma', template: 'Imagina que estás en una granja con mucho sol y olor a pasto. {char} está en su corral con {a} gallinas picoteando el suelo. De pronto, por el camino de tierra, llegan caminando {b} gallinas que se habían escapado al campo. Las gallinas se meten al corral con las otras.', question: '¿Cuántas gallinas hay ahora en el corral?', successMsg: '¡{ans} gallinas!', emoji: '🐔', emojiB: '🐔' },
+      { op: 'multi', template: 'Ahora {char} entra al gallinero a recoger huevos. Tiene {a} gallinas, y cada una puso {b} huevos en su nido esta mañana. Va a necesitar una canasta grande para llevar todos los huevos a la cocina.', question: '¿Cuántos huevos tiene que recoger {char} en total?', successMsg: '¡{ans} huevos!', emoji: '🥚', groupEmoji: '🐔' },
+      { op: 'resta', template: '{char} guarda los huevos en la cocina. Tenía {a} huevos en la canasta, pero llega un vecino y le compra {b} huevos. Se los entrega y se despide con una sonrisa.', question: '¿Cuántos huevos le quedan a {char} en la canasta?', successMsg: '¡{ans} huevos!', emoji: '🥚', emojiB: '🥚' },
+      { op: 'divi', template: 'Al final del día, {char} recoge {a} manzanas del huerto. Quiere repartirlas en partes iguales entre sus {b} caballos para que cada uno coma lo mismo.', question: '¿Cuántas manzanas le tocan a cada caballo?', successMsg: '¡{ans} manzanas!', emoji: '🍎', groupEmoji: '🐴' }
     ]
   },
   {
-    title: "La Pastelería Mágica", avatar: "👨‍🍳", character: "Chef María",
+    title: "La Pastelería Mágica", avatar: "👨‍🍳", character: "María",
     steps: [
-      { op: 'suma', template: '{char} horneó {a} cupcakes de chocolate y {b} de fresa.', question: '¿Cuántos cupcakes hay?', successMsg: '¡{ans} cupcakes!', emoji: '🧁', emojiB: '🧁' },
-      { op: 'resta', template: '{char} tenía {a} donas. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} donas!', emoji: '🍩', emojiB: '🍩' },
-      { op: 'divi', template: '{char} tiene {a} galletas para {b} cajas.', question: '¿Cuántas van en cada caja?', successMsg: '¡{ans} por caja!', emoji: '🍪', groupEmoji: '📦' }
+      { op: 'suma', template: 'Imagina una pastelería que huele a chocolate caliente. {char}, la chef pastelera, se levantó temprano y horneó {a} cupcakes de chocolate. Le quedaron tan bonitos que decidió hacer {b} cupcakes de fresa también. Ahora la mesa está llena de cupcakes de los dos sabores.', question: '¿Cuántos cupcakes hay en la mesa?', successMsg: '¡{ans} cupcakes!', emoji: '🧁', emojiB: '🧁' },
+      { op: 'resta', template: 'La vitrina de {char} brilla con {a} donas glaseadas. Llegan los primeros clientes del día y compran {b} donas. Ella las empaca con cuidado y se las entrega con una sonrisa.', question: '¿Cuántas donas quedan en la vitrina?', successMsg: '¡{ans} donas!', emoji: '🍩', emojiB: '🍩' },
+      { op: 'multi', template: '{char} prepara {a} bandejas de brownies para un pedido especial. En cada bandeja acomoda {b} brownies perfectamente cortados. Todas las bandejas llevan la misma cantidad.', question: '¿Cuántos brownies preparó {char} en total?', successMsg: '¡{ans} brownies!', emoji: '🍫', groupEmoji: '🍽️' },
+      { op: 'divi', template: '{char} horneó {a} galletas de vainilla y quiere armar cajas de regalo. Tiene {b} cajas vacías y quiere que cada caja lleve exactamente la misma cantidad de galletas, sin que sobre ninguna.', question: '¿Cuántas galletas va a poner en cada caja?', successMsg: '¡{ans} por caja!', emoji: '🍪', groupEmoji: '📦' }
     ]
   },
   {
-    title: "El Tesoro Pirata", avatar: "🏴‍☠️", character: "Capitán Pedro",
+    title: "El Tesoro Pirata", avatar: "🏴‍☠️", character: "el Capitán Pedro",
     steps: [
-      { op: 'suma', template: '{char} encontró {a} monedas y luego {b} más.', question: '¿Cuántas monedas tiene?', successMsg: '¡{ans} monedas!', emoji: '🪙', emojiB: '🪙' },
-      { op: 'multi', template: '{char} tiene {a} cofres con {b} diamantes cada uno.', question: '¿Cuántos diamantes hay?', successMsg: '¡{ans} diamantes!', emoji: '💎', groupEmoji: '📦' },
-      { op: 'resta', template: '{char} tenía {a} joyas. Regaló {b}.', question: '¿Cuántas le quedan?', successMsg: '¡{ans} joyas!', emoji: '💎', emojiB: '💎' }
+      { op: 'suma', template: 'Imagina que estás en una isla misteriosa con palmeras y arena dorada. {char} entra a una cueva oscura y encuentra {a} monedas de oro escondidas detrás de una roca. Emocionado, corre a otra cueva cercana y encuentra {b} monedas más entre las piedras. Ahora quiere juntar todo su botín.', question: '¿Cuántas monedas de oro encontró en total?', successMsg: '¡{ans} monedas!', emoji: '🪙', emojiB: '🪙' },
+      { op: 'multi', template: '{char} sube al barco y abre la bodega. Ahí tiene {a} cofres viejos con candado. Los abre uno por uno y descubre que cada cofre tiene {b} diamantes adentro. Todos los cofres guardan la misma cantidad.', question: '¿Cuántos diamantes tiene contando los de todos los cofres?', successMsg: '¡{ans} diamantes!', emoji: '💎', groupEmoji: '📦' },
+      { op: 'resta', template: '{char} reúne a su tripulación en la cubierta del barco. Tiene {a} joyas brillantes y decide regalarle {b} joyas a sus marineros como premio por el viaje. Los marineros las reciben contentísimos.', question: '¿Cuántas joyas le quedan al Capitán?', successMsg: '¡{ans} joyas!', emoji: '💎', emojiB: '💎' },
+      { op: 'divi', template: '{char} encuentra {a} perlas en una ostra gigante. Quiere repartirlas entre sus {b} marineros más valientes para que cada uno reciba la misma cantidad.', question: '¿Cuántas perlas le tocan a cada marinero?', successMsg: '¡{ans} perlas!', emoji: '🫧', groupEmoji: '🧑‍✈️' }
     ]
   },
   {
     title: "La Fiesta de Cumpleaños", avatar: "🎂", character: "Carlos",
     steps: [
-      { op: 'suma', template: '{char} infló {a} globos rojos y {b} azules.', question: '¿Cuántos globos hay?', successMsg: '¡{ans} globos!', emoji: '🎈', emojiB: '🎈' },
-      { op: 'divi', template: '{char} tiene {a} dulces para {b} amigos.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} dulces cada uno!', emoji: '🍬', groupEmoji: '👦' },
-      { op: 'resta', template: '{char} tenía {a} rebanadas de pastel. Se comieron {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} rebanadas!', emoji: '🍰', emojiB: '🍰' }
+      { op: 'suma', template: 'Imagina una casa decorada con serpentinas y música. {char} está preparando su fiesta de cumpleaños. Infló {a} globos rojos y los amarró en la sala. Su mamá lo ayudó e infló {b} globos azules que puso en el comedor. La casa se llenó de color.', question: '¿Cuántos globos hay en la casa entre los dos?', successMsg: '¡{ans} globos!', emoji: '🎈', emojiB: '🎈' },
+      { op: 'multi', template: '{char} preparó {a} bolsas de sorpresas para sus invitados. En cada bolsa metió {b} juguetitos pequeños. Todas las bolsas tienen lo mismo.', question: '¿Cuántos juguetitos necesitó {char} en total?', successMsg: '¡{ans} juguetitos!', emoji: '🎁', groupEmoji: '🛍️' },
+      { op: 'divi', template: 'Llegan los invitados y {char} saca una bolsa con {a} dulces. Mira a sus {b} amigos y quiere ser justo: todos deben recibir exactamente lo mismo, ni uno más ni uno menos.', question: '¿Cuántos dulces le tocan a cada amigo?', successMsg: '¡{ans} dulces cada uno!', emoji: '🍬', groupEmoji: '👦' },
+      { op: 'resta', template: 'El pastel se ve delicioso. Lo cortaron en {a} rebanadas perfectas. Los invitados hambrientos se comieron {b} rebanadas. {char} mira el plato para ver cuántas sobrevivieron.', question: '¿Cuántas rebanadas de pastel quedaron?', successMsg: '¡{ans} rebanadas!', emoji: '🍰', emojiB: '🍰' }
     ]
   },
   {
-    title: "El Espacio Sideral", avatar: "🚀", character: "Astronauta Ana",
+    title: "El Espacio Sideral", avatar: "🚀", character: "la Astronauta Ana",
     steps: [
-      { op: 'multi', template: '{char} visitó {a} planetas con {b} meteoritos cada uno.', question: '¿Cuántos meteoritos encontró?', successMsg: '¡{ans} meteoritos!', emoji: '☄️', groupEmoji: '🪐' },
-      { op: 'suma', template: '{char} descubrió {a} estrellas y luego {b} más.', question: '¿Cuántas estrellas hay?', successMsg: '¡{ans} estrellas!', emoji: '⭐', emojiB: '⭐' },
-      { op: 'resta', template: '{char} tenía {a} cristales. Perdió {b}.', question: '¿Cuántos le quedan?', successMsg: '¡{ans} cristales!', emoji: '💎', emojiB: '💎' }
+      { op: 'multi', template: 'Imagina que flotas en el espacio dentro de un cohete plateado. {char} viajó a {a} planetas diferentes en su misión espacial. En la superficie de cada planeta recogió muestras y encontró {b} meteoritos brillantes. Lo curioso es que en todos los planetas encontró la misma cantidad.', question: '¿Cuántos meteoritos recogió en toda su misión?', successMsg: '¡{ans} meteoritos!', emoji: '☄️', groupEmoji: '🪐' },
+      { op: 'suma', template: 'Desde su nave, {char} mira por el telescopio. En una galaxia lejana descubre {a} estrellas que nadie había visto. Apunta el telescopio hacia otra galaxia y descubre {b} estrellas nuevas también. Quiere anotar todas sus estrellas en el reporte.', question: '¿Cuántas estrellas descubrió en total?', successMsg: '¡{ans} estrellas!', emoji: '⭐', emojiB: '⭐' },
+      { op: 'resta', template: 'De regreso a la Tierra, {char} revisa su colección de {a} cristales espaciales. Pero durante una turbulencia, {b} cristales se cayeron por una compuerta y se perdieron en el espacio.', question: '¿Cuántos cristales le quedan a Ana?', successMsg: '¡{ans} cristales!', emoji: '💎', emojiB: '💎' },
+      { op: 'divi', template: '{char} trae {a} muestras de roca lunar y debe enviarlas a {b} laboratorios de la Tierra. Cada laboratorio debe recibir exactamente la misma cantidad para analizarlas.', question: '¿Cuántas muestras le tocan a cada laboratorio?', successMsg: '¡{ans} muestras!', emoji: '🪨', groupEmoji: '🔬' }
     ]
   },
   {
-    title: "El Gran Reparto de Pizza", avatar: "🍕", character: "Pizzero Tony",
+    title: "El Gran Reparto de Pizza", avatar: "🍕", character: "Tony",
     steps: [
-      { op: 'suma', template: '{char} horneó {a} pizzas en la mañana y {b} en la tarde.', question: '¿Cuántas pizzas hay?', successMsg: '¡{ans} pizzas!', emoji: '🍕', emojiB: '🍕' },
-      { op: 'multi', template: '{char} tiene {a} mesas con {b} clientes cada una.', question: '¿Cuántos clientes hay?', successMsg: '¡{ans} clientes!', emoji: '😊', groupEmoji: '🪑' },
-      { op: 'divi', template: '{char} tiene {a} refrescos para {b} niños.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} refrescos!', emoji: '🥤', groupEmoji: '👦' }
+      { op: 'suma', template: 'Imagina una pizzería con un horno gigante de ladrillos. {char}, el mejor pizzero del barrio, trabajó toda la mañana y sacó del horno {a} pizzas humeantes. Por la tarde siguió cocinando y sacó {b} pizzas más. La cocina huele increíble.', question: '¿Cuántas pizzas hizo en todo el día?', successMsg: '¡{ans} pizzas!', emoji: '🍕', emojiB: '🍕' },
+      { op: 'resta', template: '{char} tenía {a} ingredientes frescos en la cocina. Durante el día usó {b} ingredientes para preparar las órdenes de los clientes.', question: '¿Cuántos ingredientes le quedan a {char}?', successMsg: '¡{ans} ingredientes!', emoji: '🧅', emojiB: '🧅' },
+      { op: 'multi', template: 'Es hora de la cena y el restaurante está lleno. {char} mira el salón: hay {a} mesas ocupadas y en cada mesa están sentados {b} clientes esperando su orden. Todas las mesas tienen la misma cantidad de personas.', question: '¿Cuántos clientes hay en el restaurante?', successMsg: '¡{ans} clientes!', emoji: '😊', groupEmoji: '🪑' },
+      { op: 'divi', template: 'Un grupo de {b} niños entra corriendo al restaurante. {char} tiene {a} refrescos fríos y quiere darle la misma cantidad a cada niño para que nadie se queje.', question: '¿Cuántos refrescos le tocan a cada niño?', successMsg: '¡{ans} refrescos!', emoji: '🥤', groupEmoji: '👦' }
     ]
   },
   {
-    title: "El Zoológico Feliz", avatar: "🦁", character: "Cuidador Max",
+    title: "El Zoológico Feliz", avatar: "🦁", character: "Max",
     steps: [
-      { op: 'divi', template: '{char} tiene {a} pescados para {b} focas.', question: '¿Cuántos come cada foca?', successMsg: '¡{ans} pescados!', emoji: '🐟', groupEmoji: '🦭' },
-      { op: 'suma', template: 'Llegaron {a} conejos nuevos y ya había {b}.', question: '¿Cuántos conejos hay?', successMsg: '¡{ans} conejos!', emoji: '🐰', emojiB: '🐰' },
-      { op: 'multi', template: '{char} tiene {a} jaulas con {b} pájaros cada una.', question: '¿Cuántos pájaros hay?', successMsg: '¡{ans} pájaros!', emoji: '🐦', groupEmoji: '🏠' }
+      { op: 'divi', template: 'Imagina un zoológico enorme con animales por todos lados. Es la hora de la comida y {char}, el cuidador, llega con un balde de {a} pescados frescos. Las {b} focas lo ven y empiezan a aplaudir con sus aletas. {char} sabe que debe darle a cada foca exactamente lo mismo o se ponen celosas.', question: '¿Cuántos pescados le tocan a cada foca?', successMsg: '¡{ans} pescados!', emoji: '🐟', groupEmoji: '🦭' },
+      { op: 'suma', template: 'Un camión llega al zoológico con {a} conejos nuevos que rescataron de un parque. {char} los lleva a la jaula donde ya había {b} conejos viviendo tranquilos. Los conejos nuevos entran y se juntan con los otros.', question: '¿Cuántos conejos hay ahora en la jaula?', successMsg: '¡{ans} conejos!', emoji: '🐰', emojiB: '🐰' },
+      { op: 'resta', template: '{char} tenía {a} bolsas de alimento en la bodega. Durante la semana usó {b} bolsas para darle de comer a todos los animales.', question: '¿Cuántas bolsas de alimento le quedan?', successMsg: '¡{ans} bolsas!', emoji: '🛍️', emojiB: '🛍️' },
+      { op: 'multi', template: 'Después, {char} camina hacia el aviario. Ahí tiene {a} jaulas grandes, y cuando se asoma, ve que en cada jaula hay {b} pájaros cantando. Todas las jaulas tienen la misma cantidad de pájaros.', question: '¿Cuántos pájaros hay en todo el aviario?', successMsg: '¡{ans} pájaros!', emoji: '🐦', groupEmoji: '🏠' }
     ]
   },
   {
-    title: "La Escuelita de Arte", avatar: "🎨", character: "Maestra Luna",
+    title: "La Escuelita de Arte", avatar: "🎨", character: "la Maestra Luna",
     steps: [
-      { op: 'multi', template: '{char} tiene {a} mesas con {b} crayones cada una.', question: '¿Cuántos crayones necesita?', successMsg: '¡{ans} crayones!', emoji: '🖍️', groupEmoji: '🪑' },
-      { op: 'resta', template: '{char} tenía {a} pinceles. Se dañaron {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} pinceles!', emoji: '🖌️', emojiB: '🖌️' },
-      { op: 'divi', template: '{char} tiene {a} stickers para {b} estudiantes.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} stickers!', emoji: '⭐', groupEmoji: '👧' }
+      { op: 'suma', template: 'Imagina un salón de arte lleno de pinturas y colores. {char} tenía {a} hojas de papel en el estante. Llegó el director y le trajo {b} hojas más para la clase de hoy.', question: '¿Cuántas hojas tiene ahora {char}?', successMsg: '¡{ans} hojas!', emoji: '📄', emojiB: '📄' },
+      { op: 'multi', template: '{char} está preparando la clase. Tiene {a} mesas y en cada mesa coloca {b} crayones para que los niños puedan dibujar. En todas las mesas pone exactamente lo mismo.', question: '¿Cuántos crayones necesita en total?', successMsg: '¡{ans} crayones!', emoji: '🖍️', groupEmoji: '🪑' },
+      { op: 'resta', template: 'Durante la clase, los niños pintaron con mucha energía. {char} tenía {a} pinceles al inicio, pero {b} se dañaron porque los niños apretaron muy fuerte. Ya no sirven.', question: '¿Cuántos pinceles buenos le quedan?', successMsg: '¡{ans} pinceles!', emoji: '🖌️', emojiB: '🖌️' },
+      { op: 'divi', template: 'Al final de la clase, {char} saca una bolsa con {a} stickers de estrella como premio. Los {b} estudiantes la miran con ojos brillantes. Quiere que todos reciban exactamente lo mismo.', question: '¿Cuántos stickers le tocan a cada estudiante?', successMsg: '¡{ans} stickers!', emoji: '⭐', groupEmoji: '👧' }
     ]
   },
   {
-    title: "El Huerto Mágico", avatar: "🌻", character: "Jardinera Lily",
+    title: "El Huerto Mágico", avatar: "🌻", character: "Lily",
     steps: [
-      { op: 'suma', template: '{char} cosechó {a} tomates rojos y {b} verdes.', question: '¿Cuántos tomates hay?', successMsg: '¡{ans} tomates!', emoji: '🍅', emojiB: '🍅' },
-      { op: 'resta', template: '{char} tenía {a} zanahorias. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} zanahorias!', emoji: '🥕', emojiB: '🥕' },
-      { op: 'multi', template: '{char} tiene {a} surcos con {b} lechugas cada uno.', question: '¿Cuántas lechugas hay?', successMsg: '¡{ans} lechugas!', emoji: '🥬', groupEmoji: '🌱' }
+      { op: 'suma', template: 'Imagina un huerto con tierra húmeda y mariposas volando. {char}, la jardinera, camina entre las plantas y cosecha {a} tomates rojos de un lado. Luego cruza al otro lado del huerto y cosecha {b} tomates más que estaban maduros. Los pone todos en la misma canasta.', question: '¿Cuántos tomates tiene en su canasta?', successMsg: '¡{ans} tomates!', emoji: '🍅', emojiB: '🍅' },
+      { op: 'resta', template: '{char} tiene una canasta con {a} zanahorias naranjas y bonitas. Llega un vecino y le compra {b} zanahorias. Se las da y guarda el dinero en su bolsillo.', question: '¿Cuántas zanahorias le quedan en la canasta?', successMsg: '¡{ans} zanahorias!', emoji: '🥕', emojiB: '🥕' },
+      { op: 'multi', template: '{char} mira su huerto con orgullo. Tiene {a} surcos largos de tierra, y en cada surco plantó {b} lechugas verdes en fila. Cada surco tiene exactamente la misma cantidad.', question: '¿Cuántas lechugas hay en todo el huerto?', successMsg: '¡{ans} lechugas!', emoji: '🥬', groupEmoji: '🌱' },
+      { op: 'divi', template: '{char} cosechó {a} fresas maduras y quiere llenar {b} canastitas para vender en el mercado. Cada canastita debe llevar la misma cantidad.', question: '¿Cuántas fresas van en cada canastita?', successMsg: '¡{ans} fresas!', emoji: '🍓', groupEmoji: '🧺' }
     ]
   },
   {
-    title: "La Tienda de Mascotas", avatar: "🐾", character: "Veterinaria Ana",
+    title: "La Tienda de Mascotas", avatar: "🐾", character: "Ana",
     steps: [
-      { op: 'divi', template: '{char} tiene {a} premios para {b} perritos.', question: '¿Cuántos recibe cada perrito?', successMsg: '¡{ans} premios!', emoji: '🦴', groupEmoji: '🐕' },
-      { op: 'suma', template: 'Llegaron {a} gatitos nuevos y ya había {b}.', question: '¿Cuántos gatitos hay?', successMsg: '¡{ans} gatitos!', emoji: '🐱', emojiB: '🐱' },
-      { op: 'resta', template: '{char} tenía {a} hámsters. Vendió {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} hámsters!', emoji: '🐹', emojiB: '🐹' }
+      { op: 'divi', template: 'Imagina una tienda de mascotas con ladridos y maullidos. {char}, la veterinaria, abre una caja con {a} premios de hueso. Los {b} perritos de la tienda mueven la cola emocionados. Sabe que debe darle a cada perrito exactamente lo mismo o empiezan a pelear.', question: '¿Cuántos premios le tocan a cada perrito?', successMsg: '¡{ans} premios!', emoji: '🦴', groupEmoji: '🐕' },
+      { op: 'suma', template: 'Una camioneta se estaciona frente a la tienda. Traen {a} gatitos que encontraron en la calle. {char} los lleva adentro donde ya había {b} gatitos esperando ser adoptados. Todos los gatitos se juntan en el mismo espacio.', question: '¿Cuántos gatitos hay ahora en la tienda?', successMsg: '¡{ans} gatitos!', emoji: '🐱', emojiB: '🐱' },
+      { op: 'multi', template: '{char} acomoda las peceras de la tienda. Tiene {a} peceras y en cada pecera nadan {b} peces de colores. Todas tienen la misma cantidad.', question: '¿Cuántos peces hay en la tienda?', successMsg: '¡{ans} peces!', emoji: '🐠', groupEmoji: '🏠' },
+      { op: 'resta', template: 'Es un buen día de ventas. {char} tenía {a} hámsters en las jaulas. Llegaron varias familias durante el día y compraron {b} hámsters para llevar a casa.', question: '¿Cuántos hámsters quedan en la tienda?', successMsg: '¡{ans} hámsters!', emoji: '🐹', emojiB: '🐹' }
     ]
   },
   {
-    title: "El Mercado de Frutas", avatar: "🍊", character: "Don Frutero",
+    title: "El Mercado de Frutas", avatar: "🍊", character: "Don Pancho",
     steps: [
-      { op: 'suma', template: '{char} tiene {a} naranjas y compró {b} más.', question: '¿Cuántas naranjas hay?', successMsg: '¡{ans} naranjas!', emoji: '🍊', emojiB: '🍊' },
-      { op: 'resta', template: '{char} tenía {a} manzanas. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} manzanas!', emoji: '🍎', emojiB: '🍎' },
-      { op: 'divi', template: '{char} tiene {a} plátanos para {b} clientes.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} plátanos!', emoji: '🍌', groupEmoji: '🧑' }
+      { op: 'suma', template: 'Imagina un mercado ruidoso con colores por todos lados. {char}, el frutero del barrio, abre su puesto y acomoda sus {a} naranjas en la mesa. Pero no son suficientes, así que va corriendo al mayorista y compra {b} naranjas más. Regresa y las pone junto a las que ya tenía.', question: '¿Cuántas naranjas tiene ahora en su puesto?', successMsg: '¡{ans} naranjas!', emoji: '🍊', emojiB: '🍊' },
+      { op: 'multi', template: '{char} recibe una entrega grande. Le trajeron {a} cajas de mangos y cada caja trae {b} mangos adentro. Todas las cajas traen lo mismo.', question: '¿Cuántos mangos recibió {char} en total?', successMsg: '¡{ans} mangos!', emoji: '🥭', groupEmoji: '📦' },
+      { op: 'resta', template: '{char} tiene {a} manzanas rojas y brillantes en su canasta. A lo largo de la mañana, los clientes se acercan y le compran {b} manzanas.', question: '¿Cuántas manzanas le quedan?', successMsg: '¡{ans} manzanas!', emoji: '🍎', emojiB: '🍎' },
+      { op: 'divi', template: 'Al final del día, a {char} le quedan {a} plátanos maduros. Llegan {b} clientes al mismo tiempo y todos quieren plátanos. Decide darle a cada uno exactamente la misma cantidad para que sea justo.', question: '¿Cuántos plátanos le tocan a cada cliente?', successMsg: '¡{ans} plátanos!', emoji: '🍌', groupEmoji: '🧑' }
     ]
   },
   {
-    title: "La Fábrica de Juguetes", avatar: "🏭", character: "Jefe de Elfos",
+    title: "La Fábrica de Juguetes", avatar: "🏭", character: "el Jefe de los Elfos",
     steps: [
-      { op: 'multi', template: 'Los elfos hicieron {a} cajas con {b} muñecos cada una.', question: '¿Cuántos muñecos hay?', successMsg: '¡{ans} muñecos!', emoji: '🧸', groupEmoji: '📦' },
-      { op: 'resta', template: 'Había {a} pelotas. Se vendieron {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} pelotas!', emoji: '⚽', emojiB: '⚽' },
-      { op: 'divi', template: 'Hay {a} rompecabezas para {b} tiendas.', question: '¿Cuántos van a cada tienda?', successMsg: '¡{ans} rompecabezas!', emoji: '🧩', groupEmoji: '🏪' }
+      { op: 'suma', template: 'Imagina una fábrica mágica donde los elfos trabajan sin parar. {char} cuenta los robots que armaron: ya había {a} robots en la línea de producción. Los elfos del turno de la tarde armaron {b} robots más.', question: '¿Cuántos robots hay ahora en total?', successMsg: '¡{ans} robots!', emoji: '🤖', emojiB: '🤖' },
+      { op: 'multi', template: '{char} revisa la producción del día: los elfos armaron {a} cajas grandes. Abre una para verificar y cuenta {b} muñecos de peluche adentro. Revisa las demás y todas tienen exactamente lo mismo.', question: '¿Cuántos muñecos fabricaron en total?', successMsg: '¡{ans} muñecos!', emoji: '🧸', groupEmoji: '📦' },
+      { op: 'resta', template: 'En la bodega hay {a} pelotas de fútbol listas para enviar. Llega un camión de una juguetería y se lleva {b} pelotas. Los elfos las cargan al camión y el camión se va.', question: '¿Cuántas pelotas quedan en la bodega?', successMsg: '¡{ans} pelotas!', emoji: '⚽', emojiB: '⚽' },
+      { op: 'divi', template: '{char} tiene {a} rompecabezas empacados y listos. Necesita enviarlos a {b} tiendas distintas, y cada tienda debe recibir exactamente la misma cantidad.', question: '¿Cuántos rompecabezas va a enviar a cada tienda?', successMsg: '¡{ans} rompecabezas!', emoji: '🧩', groupEmoji: '🏪' }
     ]
   },
   {
-    title: "El Campamento Aventura", avatar: "⛺", character: "Guía Tomás",
+    title: "El Campamento Aventura", avatar: "⛺", character: "Tomás",
     steps: [
-      { op: 'suma', template: '{char} tiene {a} linternas y encontró {b} más.', question: '¿Cuántas linternas hay?', successMsg: '¡{ans} linternas!', emoji: '🔦', emojiB: '🔦' },
-      { op: 'multi', template: '{char} tiene {a} carpas con {b} exploradores cada una.', question: '¿Cuántos exploradores hay?', successMsg: '¡{ans} exploradores!', emoji: '🧑‍🤝‍🧑', groupEmoji: '⛺' },
-      { op: 'divi', template: '{char} tiene {a} malvaviscos para {b} niños.', question: '¿Cuántos le tocan a cada uno?', successMsg: '¡{ans} malvaviscos!', emoji: '🍡', groupEmoji: '👦' }
+      { op: 'suma', template: 'Imagina un bosque con árboles enormes y el sonido de un río. {char}, el guía del campamento, está preparando todo para la noche. Revisa la bodega y encuentra {a} linternas. Luego busca en el almacén del fondo y aparecen {b} linternas más que habían guardado el año pasado.', question: '¿Cuántas linternas tiene para el campamento?', successMsg: '¡{ans} linternas!', emoji: '🔦', emojiB: '🔦' },
+      { op: 'resta', template: '{char} llevó {a} botellas de agua para la excursión. Los exploradores se fueron tomando el agua durante la caminata y se acabaron {b} botellas.', question: '¿Cuántas botellas de agua quedan?', successMsg: '¡{ans} botellas!', emoji: '💧', emojiB: '💧' },
+      { op: 'multi', template: 'Ya está oscureciendo y {char} termina de armar {a} carpas en el claro del bosque. Los exploradores se organizan y en cada carpa entran {b} personas con sus sleeping bags. Todas las carpas tienen la misma cantidad de exploradores.', question: '¿Cuántos exploradores hay en el campamento?', successMsg: '¡{ans} exploradores!', emoji: '🧑‍🤝‍🧑', groupEmoji: '⛺' },
+      { op: 'divi', template: 'Antes de dormir, {char} enciende la fogata. Saca una bolsa con {a} malvaviscos y mira a los {b} niños sentados alrededor del fuego. Quiere que cada niño ase exactamente la misma cantidad.', question: '¿Cuántos malvaviscos le tocan a cada niño?', successMsg: '¡{ans} malvaviscos!', emoji: '🍡', groupEmoji: '👦' }
     ]
   },
   {
-    title: "La Panadería del Pueblo", avatar: "🥖", character: "Panadero Juan",
+    title: "La Panadería del Pueblo", avatar: "🥖", character: "Don Juan",
     steps: [
-      { op: 'multi', template: '{char} hornea {a} tandas con {b} panes cada una.', question: '¿Cuántos panes hay?', successMsg: '¡{ans} panes!', emoji: '🍞', groupEmoji: '🔥' },
-      { op: 'resta', template: '{char} tenía {a} donas. Vendió {b}.', question: '¿Cuántas quedan?', successMsg: '¡{ans} donas!', emoji: '🍩', emojiB: '🍩' },
-      { op: 'suma', template: '{char} hizo {a} croissants y luego {b} más.', question: '¿Cuántos croissants hay?', successMsg: '¡{ans} croissants!', emoji: '🥐', emojiB: '🥐' }
+      { op: 'suma', template: 'Por la mañana, {char} preparó {a} croissants con mantequilla. Se vendieron tan rápido que por la tarde decidió hornear {b} croissants más para los clientes que vendrán después.', question: '¿Cuántos croissants hizo en total entre mañana y tarde?', successMsg: '¡{ans} croissants!', emoji: '🥐', emojiB: '🥐' },
+      { op: 'multi', template: 'Imagina una panadería calientita con olor a pan recién hecho. {char}, el panadero del pueblo, estuvo toda la mañana frente al horno. Metió {a} tandas de pan, y cada tanda traía {b} panes doraditos. Todas las tandas eran del mismo tamaño.', question: '¿Cuántos panes horneó en total?', successMsg: '¡{ans} panes!', emoji: '🍞', groupEmoji: '🔥' },
+      { op: 'resta', template: '{char} acomoda {a} donas con glaseado en la vitrina del mostrador. Los clientes empiezan a llegar y durante la mañana se venden {b} donas. La vitrina se va vaciando poco a poco.', question: '¿Cuántas donas quedan en la vitrina?', successMsg: '¡{ans} donas!', emoji: '🍩', emojiB: '🍩' },
+      { op: 'divi', template: '{char} horneó {a} conchas y quiere armar charolas para {b} cafeterías del pueblo. Cada charola debe llevar la misma cantidad de conchas.', question: '¿Cuántas conchas van en cada charola?', successMsg: '¡{ans} conchas!', emoji: '🥐', groupEmoji: '☕' }
     ]
   },
   {
-    title: "El Día de Campo", avatar: "🧺", character: "Familia García",
+    title: "El Día de Campo", avatar: "🧺", character: "la Familia García",
     steps: [
-      { op: 'suma', template: '{char} preparó {a} sándwiches de jamón y {b} de queso.', question: '¿Cuántos sándwiches hay?', successMsg: '¡{ans} sándwiches!', emoji: '🥪', emojiB: '🥪' },
-      { op: 'resta', template: 'Había {a} jugos. Se tomaron {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} jugos!', emoji: '🧃', emojiB: '🧃' },
-      { op: 'divi', template: 'Hay {a} galletas para {b} niños.', question: '¿Cuántas le tocan a cada uno?', successMsg: '¡{ans} galletas!', emoji: '🍪', groupEmoji: '👧' }
+      { op: 'suma', template: 'Imagina un parque verde con árboles y un lago. {char} se fue de día de campo. Mamá preparó {a} sándwiches de jamón y papá hizo {b} sándwiches de queso. Los guardaron todos juntos en la misma canasta grande.', question: '¿Cuántos sándwiches llevan en la canasta?', successMsg: '¡{ans} sándwiches!', emoji: '🥪', emojiB: '🥪' },
+      { op: 'multi', template: 'Los niños juegan a atrapar mariposas. Encontraron {a} arbustos con flores y en cada arbusto había {b} mariposas revoloteando. Todos los arbustos tenían la misma cantidad.', question: '¿Cuántas mariposas vieron en total?', successMsg: '¡{ans} mariposas!', emoji: '🦋', groupEmoji: '🌺' },
+      { op: 'resta', template: 'Hace calor y la hielera tiene {a} jugos bien fríos. Durante el paseo por el parque, la familia se va tomando los jugos poco a poco y se acaban {b}.', question: '¿Cuántos jugos quedan en la hielera?', successMsg: '¡{ans} jugos!', emoji: '🧃', emojiB: '🧃' },
+      { op: 'divi', template: 'Después de jugar, sacan {a} galletas de postre. Los {b} niños de la familia se sientan en círculo y quieren que cada quien reciba exactamente lo mismo, sin pelear.', question: '¿Cuántas galletas le tocan a cada niño?', successMsg: '¡{ans} galletas!', emoji: '🍪', groupEmoji: '👧' }
     ]
   },
   {
-    title: "La Biblioteca Mágica", avatar: "📚", character: "Bibliotecaria Sara",
+    title: "La Biblioteca Mágica", avatar: "📚", character: "Sara",
     steps: [
-      { op: 'suma', template: '{char} recibió {a} libros nuevos y {b} donados.', question: '¿Cuántos libros hay?', successMsg: '¡{ans} libros!', emoji: '📕', emojiB: '📕' },
-      { op: 'multi', template: '{char} tiene {a} estantes con {b} libros cada uno.', question: '¿Cuántos libros hay en total?', successMsg: '¡{ans} libros!', emoji: '📕', groupEmoji: '📚' },
-      { op: 'resta', template: '{char} tenía {a} lápices. Prestó {b}.', question: '¿Cuántos quedan?', successMsg: '¡{ans} lápices!', emoji: '✏️', emojiB: '✏️' }
-    ]
-  },
-  {
-    title: "El Circo Mágico", avatar: "🎪", character: "Payaso Pipo",
-    steps: [
-      { op: 'suma', template: '{char} tiene {a} pelotas rojas y {b} pelotas amarillas.', question: '¿Cuántas pelotas tiene para malabares?', successMsg: '¡{ans} pelotas!', emoji: '🔴', emojiB: '🟡' },
-      { op: 'divi', template: 'Reparte las {a} pelotas entre {b} payasos.', question: '¿Cuántas pelotas recibe cada payaso?', successMsg: '¡{ans} pelotas cada uno!', emoji: '🔴', groupEmoji: '🤡', usePrevAnswer: true },
-      { op: 'divi', template: 'Tiene {a} globos para {b} niños del público.', question: '¿Cuántos globos recibe cada niño?', successMsg: '¡{ans} globos cada uno!', emoji: '🎈', groupEmoji: '👧' },
-      { op: 'multi', template: 'Hace {a} trucos. Cada truco usa {b} cartas.', question: '¿Cuántas cartas usó en total?', successMsg: '¡{ans} cartas mágicas!', emoji: '🃏', groupEmoji: '🎩' }
-    ]
-  },
-  {
-    title: "El Castillo Medieval", avatar: "🏰", character: "Princesa Elena",
-    steps: [
-      { op: 'divi', template: '{char} tiene {a} coronas para {b} princesas invitadas.', question: '¿Cuántas coronas recibe cada princesa?', successMsg: '¡{ans} coronas cada una!', emoji: '👑', groupEmoji: '👸' },
-      { op: 'divi', template: 'Reparte {a} escudos entre {b} caballeros.', question: '¿Cuántos escudos recibe cada caballero?', successMsg: '¡{ans} escudos cada uno!', emoji: '🛡️', groupEmoji: '🤴' },
-      { op: 'suma', template: 'El castillo tiene {a} torres grandes y {b} torres pequeñas.', question: '¿Cuántas torres tiene en total?', successMsg: '¡{ans} torres!', emoji: '🗼', emojiB: '🗼' },
-      { op: 'divi', template: '{char} tiene {a} banderas para las {b} torres.', question: '¿Cuántas banderas van en cada torre?', successMsg: '¡{ans} banderas por torre!', emoji: '🚩', groupEmoji: '🗼' }
+      { op: 'suma', template: 'Imagina una biblioteca enorme con estantes hasta el techo. {char}, la bibliotecaria, recibe un paquete con {a} libros nuevos que compraron para la colección. Al rato, llega una señora de la comunidad que dona {b} libros más. {char} los pone todos juntos en la mesa para catalogarlos.', question: '¿Cuántos libros nuevos tiene que catalogar?', successMsg: '¡{ans} libros!', emoji: '📕', emojiB: '📕' },
+      { op: 'multi', template: '{char} camina entre los pasillos acomodando libros. Tiene {a} estantes y en cada estante colocó {b} libros, bien organizados por color. Todos los estantes tienen exactamente la misma cantidad.', question: '¿Cuántos libros hay en esos estantes?', successMsg: '¡{ans} libros!', emoji: '📕', groupEmoji: '📚' },
+      { op: 'resta', template: 'En el escritorio de {char} hay {a} lápices de colores. Unos estudiantes le piden prestado material y ella les da {b} lápices. Los estudiantes se van a estudiar con sus lápices.', question: '¿Cuántos lápices le quedan en el escritorio?', successMsg: '¡{ans} lápices!', emoji: '✏️', emojiB: '✏️' },
+      { op: 'divi', template: '{char} organizó una lectura grupal y tiene {a} marcapáginas para repartir entre {b} niños que vinieron. Quiere que cada niño reciba la misma cantidad.', question: '¿Cuántos marcapáginas le tocan a cada niño?', successMsg: '¡{ans} marcapáginas!', emoji: '🔖', groupEmoji: '👧' }
     ]
   }
 ];
@@ -1013,6 +1147,40 @@ let currentStep = 0;
 let numA = 0, numB = 0, answer = 0;
 let currentOp = 'suma';
 let score = { adventures: 0, streak: 0, stars: 0 };
+
+// ========== MODULE TRACKING ==========
+let moduleTracker = {
+  opsCompleted: new Set(),
+  performance: {
+    suma:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+    resta: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+    multi: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+    divi:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 }
+  },
+  totalDesafioCorrect: 0,
+  totalDesafioTotal: 0,
+  totalTriviaCorrect: 0,
+  totalTriviaTotal: 0,
+  adventuresInModule: 0
+};
+
+function resetModuleTracker(){
+  moduleTracker = {
+    opsCompleted: new Set(),
+    performance: {
+      suma:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+      resta: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+      multi: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+      divi:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 }
+    },
+    totalDesafioCorrect: 0,
+    totalDesafioTotal: 0,
+    totalTriviaCorrect: 0,
+    totalTriviaTotal: 0,
+    adventuresInModule: 0
+  };
+}
+
 let hasChecked = false;
 let attempts = 0;
 let hintLevel = 0;
@@ -1174,7 +1342,12 @@ function clearGrid(){
 
 // ========== STORY ==========
 function startNewAdventure(){
-  currentStory = STORIES[Math.floor(Math.random() * STORIES.length)];
+  const original = STORIES[Math.floor(Math.random() * STORIES.length)];
+  // Mezclar el orden de los pasos para que no siempre empiece con la misma operación
+  currentStory = {
+    ...original,
+    steps: shuffleArray([...original.steps])
+  };
   currentStep = 0;
   previousAnswer = 0;
 
@@ -1187,15 +1360,126 @@ let quizCooldown = 0;
 let quizCooldownInterval = null;
 let quizWrongAttempts = 0;
 
-// Explicaciones habladas para cada operación (más naturales para voz)
+// Guardar cuento original cuando se equivoca y debe practicar con otro
+let originalStory = null;
+let originalStep = 0;
+let originalNumA = 0, originalNumB = 0, originalAnswer = 0;
+let isPracticeRound = false;
+
+// Cuentos cortos de práctica para cuando se equivoca (uno por operación, variados)
+const PRACTICE_STORIES = {
+  suma: [
+    { character: 'Pedro', avatar: '👦', template: '{char} estaba jugando en el patio con {a} canicas azules. Su mejor amigo llegó corriendo y le regaló {b} canicas rojas. Las juntó todas en su bolsa.', question: '¿Cuántas canicas tiene ahora en su bolsa?', emoji: '🔵', emojiB: '🔴' },
+    { character: 'Sofía', avatar: '👧', template: '{char} tiene un florero con {a} flores de colores. Salió al jardín, cortó {b} flores más y las metió en el florero con las otras.', question: '¿Cuántas flores hay ahora en el florero?', emoji: '🌸', emojiB: '🌺' },
+    { character: 'Diego', avatar: '🧒', template: '{char} colecciona estampas de animales. Ya tenía {a} estampas en su álbum. Su amigo llegó y le regaló {b} estampas nuevas que le sobraban.', question: '¿Cuántas estampas tiene ahora en su álbum?', emoji: '📇', emojiB: '📇' },
+    { character: 'Camila', avatar: '👧', template: '{char} estuvo toda la tarde haciendo figuras de plastilina. Primero armó {a} figuras de animales. Le gustó tanto que siguió y armó {b} figuras más de comida.', question: '¿Cuántas figuras hizo en total?', emoji: '🎨', emojiB: '🎨' },
+  ],
+  resta: [
+    { character: 'Miguel', avatar: '👦', template: '{char} tenía {a} chocolates guardados en su cajón. Pero le dieron ganas de comer y se fue comiendo {b} chocolates mientras veía la tele.', question: '¿Cuántos chocolates le quedan en el cajón?', emoji: '🍫', emojiB: '🍫' },
+    { character: 'Valentina', avatar: '👧', template: '{char} estaba caminando con {a} globos amarrados en su mano. De pronto, el viento sopló fuerte y se le reventaron {b} globos.', question: '¿Cuántos globos le quedan en la mano?', emoji: '🎈', emojiB: '🎈' },
+    { character: 'Mateo', avatar: '🧒', template: '{char} tenía {a} carritos de juguete en su cuarto. Su hermanito pequeño entró y {char} le regaló {b} carritos para que jugara.', question: '¿Cuántos carritos le quedan a {char}?', emoji: '🚗', emojiB: '🚗' },
+    { character: 'Isabella', avatar: '👧', template: '{char} llevó {a} colores a la escuela en su estuche. Durante el recreo se le cayeron {b} colores y no los encontró.', question: '¿Cuántos colores le quedan en su estuche?', emoji: '🖍️', emojiB: '🖍️' },
+  ],
+  multi: [
+    { character: 'Andrés', avatar: '👦', template: '{char} fue a la dulcería y compró {a} bolsas de dulces. Cuando las abrió, vio que cada bolsa traía {b} dulces adentro. Todas traían lo mismo.', question: '¿Cuántos dulces tiene en total?', emoji: '🍬', groupEmoji: '🛍️' },
+    { character: 'Lucía', avatar: '👧', template: '{char} recibió {a} cajas de colores para su cumpleaños. Abrió cada caja y encontró {b} colores dentro. Todas las cajas traían la misma cantidad.', question: '¿Cuántos colores tiene en total?', emoji: '🖍️', groupEmoji: '📦' },
+    { character: 'Samuel', avatar: '🧒', template: '{char} preparó la merienda. Sacó {a} platos y en cada plato puso {b} galletas. Todos los platos quedaron iguales.', question: '¿Cuántas galletas puso en total?', emoji: '🍪', groupEmoji: '🍽️' },
+    { character: 'Mariana', avatar: '👧', template: 'En el salón de {char} hay {a} filas de sillas para un evento. Ella cuenta y cada fila tiene {b} sillas. Todas las filas son iguales.', question: '¿Cuántas sillas hay en el salón?', emoji: '🪑', groupEmoji: '➡️' },
+  ],
+  divi: [
+    { character: 'Tomás', avatar: '👦', template: '{char} ganó {a} stickers de estrella en un concurso. Quiere compartirlos con sus {b} amigos para que todos tengan lo mismo, sin que sobre ninguno.', question: '¿Cuántos stickers le tocan a cada amigo?', emoji: '⭐', groupEmoji: '👦' },
+    { character: 'Emma', avatar: '👧', template: '{char} compró {a} bombones para hacer bolsitas de regalo. Tiene {b} bolsitas vacías y quiere que cada una lleve exactamente la misma cantidad.', question: '¿Cuántos bombones van en cada bolsita?', emoji: '🍬', groupEmoji: '🛍️' },
+    { character: 'Nicolás', avatar: '🧒', template: 'La maestra le dio a {char} {a} crayones para que los reparta entre los {b} niños de su mesa. Cada niño debe recibir lo mismo.', question: '¿Cuántos crayones le tocan a cada niño?', emoji: '🖍️', groupEmoji: '👧' },
+    { character: 'Paula', avatar: '👧', template: '{char} hizo {a} galletas para la cena. Saca {b} platos y quiere poner la misma cantidad en cada plato para que se vea bonito.', question: '¿Cuántas galletas van en cada plato?', emoji: '🍪', groupEmoji: '🍽️' },
+  ]
+};
+
+// Explicaciones habladas para cada operación - VARIADAS para que no repita lo mismo
 function getOperationExplanation(op){
   const explanations = {
-    suma: 'juntar cosas, cuando llegan más o agregas algo',
-    resta: 'quitar cosas, cuando algo se va, se vende o se pierde',
-    multi: 'cuando tienes grupos iguales, como varias cajas con lo mismo adentro',
-    divi: 'repartir en partes iguales, como dividir entre varias personas'
+    suma: [
+      'juntar cosas, cuando llegan más o agregas algo',
+      'unir dos cantidades, cuando algo se suma a lo que ya tenías',
+      'cuando tienes algo y te dan más, y ahora tienes más que antes',
+      'poner todo junto para saber el total'
+    ],
+    resta: [
+      'quitar cosas, cuando algo se va, se vende o se pierde',
+      'cuando tenías algo y ahora tienes menos porque algo se fue',
+      'separar una parte de lo que tenías, te quedan menos',
+      'cuando pierdes, regalas, vendes o se rompe algo y te quedan menos'
+    ],
+    multi: [
+      'cuando tienes grupos iguales, como varias cajas con lo mismo adentro',
+      'repetir una cantidad varias veces, como sumar lo mismo muchas veces',
+      'cuando tienes varios grupos y todos tienen la misma cantidad',
+      'contar cuánto hay en total cuando tienes varios grupos del mismo tamaño'
+    ],
+    divi: [
+      'repartir en partes iguales, como dividir entre varias personas',
+      'cuando tienes algo y lo quieres separar en grupos iguales',
+      'dar la misma cantidad a cada uno, que sea parejo para todos',
+      'separar algo en partes del mismo tamaño para que sea justo'
+    ]
   };
-  return explanations[op] || '';
+  const arr = explanations[op] || [''];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Explicaciones detalladas de POR QUÉ NO es cierta operación (variadas)
+function getWrongExplanationDetail(wrongOp, correctOp, problemText){
+  const wrongExplanations = {
+    suma: [
+      `La suma es cuando juntas cosas y tienes MÁS. Pero fíjate bien en el cuento, aquí no se está juntando nada.`,
+      `Sumar es agregar, poner más. Pero en este problema no están llegando cosas nuevas ni se están juntando.`,
+      `Para que sea suma, el cuento debería decir que "llegan más" o que "juntan". Lee bien, no dice eso.`
+    ],
+    resta: [
+      `La resta es cuando quitas cosas y te quedan MENOS. Pero fíjate, aquí no se está quitando nada.`,
+      `Restar es perder, vender, regalar o quitar algo. Pero en este cuento no se va nada.`,
+      `Para que sea resta, alguien debería perder algo o quedarse con menos. Lee el cuento otra vez.`
+    ],
+    multi: [
+      `La multiplicación es cuando tienes GRUPOS IGUALES, como cajas con lo mismo. Pero aquí no hay grupos con la misma cantidad.`,
+      `Multiplicar es repetir una cantidad varias veces. Pero en este problema no se repite nada.`,
+      `Para que sea multiplicación, el cuento debería decir "cada uno tiene" o "en cada" algo. No es el caso aquí.`
+    ],
+    divi: [
+      `La división es REPARTIR en partes iguales. Pero fíjate, aquí no se está repartiendo nada entre personas o grupos.`,
+      `Dividir es dar la misma cantidad a cada uno. Pero en este cuento nadie está repartiendo.`,
+      `Para que sea división, deberían estar separando algo "entre" varios. Lee el cuento, no dice eso.`
+    ]
+  };
+  const arr = wrongExplanations[wrongOp] || [''];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Explicaciones de POR QUÉ SÍ es la operación correcta (variadas)
+function getCorrectExplanationDetail(correctOp){
+  const correctExplanations = {
+    suma: [
+      `La pista es que dice "juntar", "llegan más" o "en total". Cuando se agregan cosas, ¡es una suma!`,
+      `Fíjate que en el cuento hay dos cantidades que se unen. Cuando pones todo junto, siempre es suma.`,
+      `Mira las palabras: "y", "más", "juntar", "en total". Esas palabras te dicen que es suma.`
+    ],
+    resta: [
+      `La pista es que dice "vendió", "se fueron", "perdió" o "le quedan". Cuando algo se va, ¡es resta!`,
+      `Fíjate que en el cuento alguien pierde algo o se queda con menos. Eso siempre es resta.`,
+      `Mira las palabras: "quedan", "vendió", "perdió", "se van". Esas palabras te dicen que es resta.`
+    ],
+    multi: [
+      `La pista es que dice "cada uno tiene" o "en cada" hay la misma cantidad. Grupos iguales siempre es multiplicación.`,
+      `Fíjate que hay varios grupos y todos tienen lo mismo adentro. Eso es multiplicar.`,
+      `Mira las palabras: "cada", "grupos de", "por cada uno". Cuando se repite la misma cantidad, es multiplicación.`
+    ],
+    divi: [
+      `La pista es que dice "repartir", "entre" o "a cada uno". Cuando separas algo en partes iguales, ¡es división!`,
+      `Fíjate que están dando la misma cantidad a cada persona o grupo. Repartir parejo siempre es dividir.`,
+      `Mira las palabras: "repartir", "entre", "partes iguales", "a cada uno". Esas palabras te dicen que es división.`
+    ]
+  };
+  const arr = correctExplanations[correctOp] || [''];
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 const OPERATION_TIPS = {
@@ -1231,15 +1515,15 @@ function showStoryModal(){
 
   // Texto con HTML para mostrar
   const storyTextHTML = step.template
-    .replace('{char}', `<span class="highlight">${currentStory.character}</span>`)
-    .replace('{a}', `<span class="number">${numA}</span>`)
-    .replace('{b}', `<span class="number">${numB}</span>`);
+    .replaceAll('{char}', `<span class="highlight">${currentStory.character}</span>`)
+    .replaceAll('{a}', `<span class="number">${numA}</span>`)
+    .replaceAll('{b}', `<span class="number">${numB}</span>`);
 
   // Texto limpio para lectura en voz alta
   const storyTextClean = step.template
-    .replace('{char}', currentStory.character)
-    .replace('{a}', numA)
-    .replace('{b}', numB);
+    .replaceAll('{char}', currentStory.character)
+    .replaceAll('{a}', numA)
+    .replaceAll('{b}', numB);
 
   document.getElementById('storyModal').innerHTML = `
     <div class="story-modal-content">
@@ -1259,7 +1543,7 @@ function showStoryModal(){
       </div>
 
       <div class="story-modal-text" id="storyText">${storyTextHTML}</div>
-      <div class="story-modal-question" id="storyQuestion">❓ ${step.question}</div>
+      <div class="story-modal-question" id="storyQuestion">❓ ${step.question.replaceAll('{char}', currentStory.character)}</div>
 
       <div class="quiz-section hidden" id="quizSection">
         <div class="quiz-label">🧠 ¿Qué operación necesitas para resolver esto?</div>
@@ -1292,7 +1576,7 @@ function showStoryModal(){
 
   // Guardar texto limpio para lectura
   window.currentStoryTextClean = storyTextClean;
-  window.currentStoryQuestion = step.question;
+  window.currentStoryQuestion = step.question.replaceAll('{char}', currentStory.character);
 }
 
 // Iniciar lectura del cuento (llamado por botón)
@@ -1348,29 +1632,55 @@ function checkOperationQuiz(selectedOp){
     feedback.className = 'quiz-feedback show';
     feedback.style.background = 'rgba(0,214,143,.15)';
     feedback.style.border = '2px solid var(--green)';
-    feedback.innerHTML = `<span style="color:var(--green);font-weight:800">🎉 ${correctMessage}</span><br>Es una <b>${OPERATION_TIPS[correctOp].name}</b> (${OPERATION_TIPS[correctOp].sym})`;
 
-    // Leer felicitación con su nombre y esperar a que termine antes de continuar
-    speakText(`${correctMessage} Es una ${OPERATION_TIPS[correctOp].name}. ¡Ahora vamos a resolverlo!`, () => {
-      // Cuando termina de hablar, continuar
-      setTimeout(() => {
-        closeStoryModal();
-        startGameplay();
-      }, 500); // Pequeña pausa después de que termine de hablar
-    }, { rate: 0.88, pitch: 1.0 });
+    if(isPracticeRound){
+      // Acertó en ronda de práctica — volver al cuento original
+      feedback.innerHTML = `<span style="color:var(--green);font-weight:800">🎉 ${correctMessage}</span><br>¡Es ${OPERATION_TIPS[correctOp].name}! Ahora volvamos al cuento anterior.`;
+
+      speakText(`${correctMessage} ¡Muy bien! Es una ${OPERATION_TIPS[correctOp].name}. ¡Ahora sí, volvamos al cuento que estábamos haciendo, ${PLAYER.name}!`, () => {
+        setTimeout(() => {
+          // Restaurar cuento original
+          currentStory = originalStory;
+          currentStep = originalStep;
+          numA = originalNumA;
+          numB = originalNumB;
+          answer = originalAnswer;
+          currentOp = currentStory.steps[currentStep].op;
+          currentEmoji = currentStory.steps[currentStep].emoji;
+          currentEmojiB = currentStory.steps[currentStep].emojiB || currentStory.steps[currentStep].emoji;
+          currentGroupEmoji = currentStory.steps[currentStep].groupEmoji || '';
+          isPracticeRound = false;
+          originalStory = null;
+
+          // Mostrar de nuevo el cuento original
+          document.getElementById('storyModal').style.display = 'none';
+          showStoryModal();
+        }, 800);
+      }, { rate: 0.88, pitch: 1.0 });
+    } else {
+      // Acertó en el cuento real — continuar al gameplay
+      moduleTracker.performance[correctOp].quizCorrect++;
+      feedback.innerHTML = `<span style="color:var(--green);font-weight:800">🎉 ${correctMessage}</span><br>Es una <b>${OPERATION_TIPS[correctOp].name}</b> (${OPERATION_TIPS[correctOp].sym})`;
+
+      speakText(`${correctMessage} Es una ${OPERATION_TIPS[correctOp].name}. ¡Ahora vamos a resolverlo!`, () => {
+        setTimeout(() => {
+          closeStoryModal();
+          startGameplay();
+        }, 500);
+      }, { rate: 0.88, pitch: 1.0 });
+    }
 
   } else {
     // Incorrecto
     sndWrong();
     quizWrongAttempts++;
+    moduleTracker.performance[correctOp].quizErrors++;
+    moduleTracker.performance[correctOp].practiceErrors++;
     selectedBtn.classList.add('wrong');
     setTimeout(() => selectedBtn.classList.remove('wrong'), 500);
 
     const feedback = document.getElementById('quizFeedback');
     feedback.className = 'quiz-feedback wrong show';
-
-    // Cooldown fijo de 3 segundos (la voz ya explica suficiente)
-    let cooldownTime = 3;
 
     // Mostrar pista específica del error y de la operación correcta
     const wrongTip = OPERATION_TIPS[selectedOp];
@@ -1379,56 +1689,99 @@ function checkOperationQuiz(selectedOp){
     // Mensaje personalizado para Emilio
     const personalMessage = getPlayerMessage('wrong', quizWrongAttempts);
 
+    const wrongDetail = getWrongExplanationDetail(selectedOp, correctOp);
+    const correctDetail = getCorrectExplanationDetail(correctOp);
+
     feedback.innerHTML = `
       <span class="feedback-title">❌ ${personalMessage}</span>
       <div class="tip-box">
-        No es ${wrongTip.name}. ${wrongTip.tip}
+        <b>No es ${wrongTip.name}.</b> ${wrongDetail}
       </div>
       <div class="tip-box" style="margin-top:8px;border-left:3px solid var(--green)">
-        <b style="color:var(--green)">💡 Pista:</b> Busca palabras como: <b>"${correctTip.keywords.slice(0,3).join('", "')}"</b>
+        <b style="color:var(--green)">💡 La respuesta era ${correctTip.name} (${correctTip.sym})</b><br>
+        ${correctDetail}
+      </div>
+      <div class="tip-box" style="margin-top:8px;border-left:3px solid var(--red)">
+        <b style="color:var(--red)">🚫 No puedes avanzar hasta que identifiques bien la operación.</b><br>
+        Vamos a practicar con otro cuento...
       </div>
     `;
 
-    // Deshabilitar botones mientras habla
-    const btns = document.querySelectorAll('.op-btn');
+    // Deshabilitar TODOS los botones permanentemente (no hay segundo intento)
     btns.forEach(b => b.classList.add('disabled'));
 
-    // Leer la explicación en voz alta con su nombre - cooldown empieza después de hablar
-    // Incluir el problema para que lo escuche de nuevo
-    const problemText = window.currentStoryTextClean || '';
-    const questionText = window.currentStoryQuestion || '';
+    // Frases variadas para avisar que no puede avanzar
+    const cantAdvanceMsgs = [
+      `No puedes avanzar hasta que aprendas a identificar la operación, ${PLAYER.name}. Vamos a practicar con otro cuento.`,
+      `${PLAYER.name}, no te voy a dejar pasar hasta que aciertes. Vamos a leer otro cuento para que practiques.`,
+      `Todavía no puedes seguir, ${PLAYER.nickname}. Primero tienes que demostrar que puedes identificar la operación. Vamos con otro cuento.`,
+      `${PLAYER.name}, aquí no se adivina. Tienes que pensar bien. Vamos a practicar con otro problema hasta que lo logres.`,
+    ];
+    const cantAdvanceMsg = cantAdvanceMsgs[Math.floor(Math.random() * cantAdvanceMsgs.length)];
 
+    // Explicar por qué estaba mal y cuál era la correcta
     const explanationText = `${personalMessage}. ` +
-      `No es ${wrongTip.name}. La ${wrongTip.name} se usa para ${getOperationExplanation(selectedOp)}. . ` +
-      `Escucha de nuevo el problema: . ${problemText}. . ${questionText}. . ` +
-      `Pista: busca palabras como "${correctTip.keywords.slice(0,2).join('" o "')}". . ` +
-      `¿Qué operación necesitas para resolver este problema, ${PLAYER.name}?`;
+      `No es ${wrongTip.name}. ${wrongDetail} . . ` +
+      `La respuesta correcta era ${correctTip.name}. ${correctDetail} . . ` +
+      `${cantAdvanceMsg} ¡Pon mucha atención!`;
 
     speakText(explanationText, () => {
-      // Iniciar cooldown DESPUÉS de que termine de hablar
-      startQuizCooldown(cooldownTime);
+      // Guardar cuento original si no estamos ya en práctica
+      if(!isPracticeRound){
+        originalStory = currentStory;
+        originalStep = currentStep;
+        originalNumA = numA;
+        originalNumB = numB;
+        originalAnswer = answer;
+      }
+      // Después de explicar, generar cuento de práctica con operación ALEATORIA
+      setTimeout(() => {
+        launchPracticeRound();
+      }, 800);
     }, { rate: 0.88, pitch: 1.0 });
   }
 }
 
-function startQuizCooldown(seconds){
-  quizCooldown = seconds;
-  const btns = document.querySelectorAll('.op-btn');
-  btns.forEach(b => b.classList.add('disabled'));
+function launchPracticeRound(){
+  isPracticeRound = true;
 
-  document.getElementById('quizCooldown').style.display = 'block';
-  document.getElementById('cooldownTimer').textContent = quizCooldown;
+  // Elegir operación ALEATORIA (puede ser cualquiera)
+  const ops = ['suma', 'resta', 'multi', 'divi'];
+  const practiceOp = ops[Math.floor(Math.random() * ops.length)];
 
-  quizCooldownInterval = setInterval(()=>{
-    quizCooldown--;
-    document.getElementById('cooldownTimer').textContent = quizCooldown;
+  // Elegir cuento de práctica aleatorio para esa operación
+  const practiceStories = PRACTICE_STORIES[practiceOp];
+  const practice = practiceStories[Math.floor(Math.random() * practiceStories.length)];
 
-    if(quizCooldown <= 0){
-      clearInterval(quizCooldownInterval);
-      document.getElementById('quizCooldown').style.display = 'none';
-      btns.forEach(b => b.classList.remove('disabled'));
-    }
-  }, 1000);
+  // Generar números nuevos
+  currentOp = practiceOp;
+  currentEmoji = practice.emoji;
+  currentEmojiB = practice.emojiB || practice.emoji;
+  currentGroupEmoji = practice.groupEmoji || '';
+  generateProblem();
+
+  // Armar cuento temporal para el modal
+  const tempStory = {
+    title: '📖 Cuento de Práctica',
+    avatar: practice.avatar,
+    character: practice.character,
+    steps: [{
+      op: practiceOp,
+      template: practice.template,
+      question: practice.question,
+      successMsg: '¡Correcto!',
+      emoji: practice.emoji,
+      emojiB: practice.emojiB || practice.emoji,
+      groupEmoji: practice.groupEmoji || ''
+    }]
+  };
+
+  currentStory = tempStory;
+  currentStep = 0;
+
+  // Cerrar modal actual y mostrar nuevo
+  document.getElementById('storyModal').style.display = 'none';
+  showStoryModal();
 }
 
 function closeStoryModal(){
@@ -1871,6 +2224,7 @@ function checkMathQuizAnswer(selected, correct){
   if(isCorrect){
     // ¡Correcto! Avanza a la siguiente pregunta
     sndCorrect();
+    moduleTracker.performance[currentOp].termsCorrect++;
 
     btns.forEach(btn => btn.classList.add('disabled'));
     if(selectedBtn) selectedBtn.classList.add('correct');
@@ -1904,6 +2258,7 @@ function checkMathQuizAnswer(selected, correct){
   } else {
     // Incorrecto - debe esperar y leer la explicación
     sndWrong();
+    moduleTracker.performance[currentOp].termsErrors++;
     if(selectedBtn) selectedBtn.classList.add('wrong');
     setTimeout(() => { if(selectedBtn) selectedBtn.classList.remove('wrong'); }, 500);
 
@@ -2063,7 +2418,7 @@ function showMathQuizComplete(){
   sndCorrect();
   spawnConfetti(15);
 
-  // Mensajes de felicitación por completar el quiz - usar Esmi y Emilio Quintero Tetero (apodo de juego)
+  // Mensajes de felicitación por completar el quiz - usar Esmi y Emilio Quintero Ocampo (apodo de juego)
   const quizCompleteMsgs = [
     `¡${PLAYER.fullName} completó el quiz! ¡Eres increíble!`,
     `¡${PLAYER.fullName} es un campeón de las matemáticas!`,
@@ -2113,15 +2468,17 @@ function closeMathReviewAndContinue(){
 
   document.getElementById('mathReviewModal').style.display = 'none';
 
-  // Mostrar juego de trivia como premio después de cada módulo
-  showTriviaGame(() => {
-    // Después del trivia, continuar al siguiente paso o mostrar victoria
-    if(currentStep < currentStory.steps.length - 1){
-      currentStep++;
-      loadCurrentStep();
-    } else {
-      showVictory();
-    }
+  // Desafío Relámpago después del vocabulario, luego trivia
+  showDesafioRelampago(() => {
+    showTriviaGame(() => {
+      // Después del trivia, continuar al siguiente paso o mostrar victoria
+      if(currentStep < currentStory.steps.length - 1){
+        currentStep++;
+        loadCurrentStep();
+      } else {
+        showVictory();
+      }
+    });
   });
 }
 
@@ -2195,9 +2552,9 @@ function rand(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
 function getStoryText(){
   const step = currentStory.steps[currentStep];
   return step.template
-    .replace('{char}', `<span class="highlight">${currentStory.character}</span>`)
-    .replace('{a}', `<span class="number">${numA}</span>`)
-    .replace('{b}', `<span class="number">${numB}</span>`);
+    .replaceAll('{char}', `<span class="highlight">${currentStory.character}</span>`)
+    .replaceAll('{a}', `<span class="number">${numA}</span>`)
+    .replaceAll('{b}', `<span class="number">${numB}</span>`);
 }
 
 // ========== HINTS SYSTEM ==========
@@ -2208,30 +2565,40 @@ function getHints(){
   };
 
   // Pistas pedagógicas progresivas - enseñan el concepto con emojis de la historia
+  // Ejemplos con números DIFERENTES a los del problema para no revelar la respuesta
+  const exSuma = { a: numA <= 3 ? 4 : 2, b: numA <= 3 ? 3 : 3 };
+  exSuma.r = exSuma.a + exSuma.b;
+  const exResta = { a: numA <= 4 ? 7 : 5, b: numA <= 4 ? 3 : 2 };
+  exResta.r = exResta.a - exResta.b;
+  const exMulti = { a: numA <= 2 ? 3 : 2, b: numB <= 3 ? 4 : 3 };
+  exMulti.r = exMulti.a * exMulti.b;
+  const exDivi = { a: numA <= 6 ? 8 : 6, b: numB <= 2 ? 4 : 2 };
+  exDivi.r = exDivi.a / exDivi.b;
+
   const hints = {
     suma: [
-      `<b>💭 ¿Qué es sumar?</b><br>Sumar es <em>juntar</em> cosas. Si tienes ${numA} ${currentEmoji} y llegan ${numB} más, ¿cuántos hay?`,
+      `<b>💭 ¿Qué es sumar?</b><br>Sumar es <em>juntar</em> cosas. Si tienes ${numA} ${currentEmoji} y llegan ${numB} más, ¿cuántos hay en total?`,
       `<b>🎯 ¿Cómo lo hago?</b><br>Haz clic en la zona para agregar ${currentEmoji}. ¡Cuenta mientras agregas!
-       <div style="margin-top:6px">Ejemplo: ${makeEmojiRow(3, currentEmoji)} + ${makeEmojiRow(2, currentEmoji)} = 5</div>`,
-      `<b>✨ Cuenta conmigo:</b><br>${numA}... ${Array.from({length:numB},(_,i)=>numA+i+1).join('... ')} = <b>${answer}</b><br>¡Coloca ${answer} ${currentEmoji}!`
+       <div style="margin-top:6px">Ejemplo: ${makeEmojiRow(exSuma.a, currentEmoji)} + ${makeEmojiRow(exSuma.b, currentEmoji)} = ${exSuma.r}</div>`,
+      `<b>✨ Cuenta conmigo:</b><br>Empieza en ${numA} y cuenta ${numB} más con los dedos:<br>${numA}... y sumas uno por uno. ¿A qué número llegas?`
     ],
     resta: [
       `<b>💭 ¿Qué es restar?</b><br>Restar es <em>quitar</em>. Si tienes ${numA} ${currentEmoji} y se van ${numB}, ¿cuántos quedan?`,
       `<b>🎯 ¿Cómo lo hago?</b><br>Pon los que <b>QUEDAN</b> en ✅ y los que <b>SE VAN</b> en 📤
-       <div style="margin-top:6px">✅ ${makeEmojiRow(3, currentEmoji)} + 📤 ${makeEmojiRow(2, currentEmoji)} = 5 tenías</div>`,
-      `<b>✨ Cuenta hacia atrás:</b><br>${numA}... ${Array.from({length:numB},(_,i)=>numA-i-1).join('... ')} = <b>${answer}</b><br>✅ Quedan: ${answer} | 📤 Se van: ${numB}`
+       <div style="margin-top:6px">Ejemplo: de ${exResta.a} quitas ${exResta.b} → quedan ${exResta.r}</div>`,
+      `<b>✨ Cuenta hacia atrás:</b><br>Empieza en ${numA} y cuenta hacia atrás ${numB} veces.<br>${numA}... y quitas uno por uno. ¿A qué número llegas?`
     ],
     multi: [
       `<b>💭 ¿Qué es multiplicar?</b><br>Multiplicar es sumar lo mismo varias veces.<br>${numA} × ${numB} = ${numB} + ${numB} ${numA > 2 ? '+ ' + numB : ''}...`,
       `<b>🎯 ¿Cómo lo hago?</b><br>Imagina ${numA} ${currentGroupEmoji}, cada uno con ${numB} ${currentEmoji}.
-       <div style="margin-top:6px">${currentGroupEmoji} ${makeEmojiRow(numB, currentEmoji)} × ${numA} = ?</div>`,
-      `<b>✨ Cuenta:</b><br>${Array.from({length:numA},(_,i)=>(i+1)*numB).join(' → ')} = <b>${answer}</b><br>¡Coloca ${answer} ${currentEmoji}!`
+       <div style="margin-top:6px">Ejemplo: ${exMulti.a} × ${exMulti.b} = ${exMulti.a} grupos de ${exMulti.b} = ${exMulti.r}</div>`,
+      `<b>✨ Cuenta de ${numB} en ${numB}:</b><br>Cuenta ${numA} veces de ${numB} en ${numB}:<br>${numB}, ${numB*2}... ¡Sigue contando hasta completar ${numA} grupos!`
     ],
     divi: [
       `<b>💭 ¿Qué es dividir?</b><br>Dividir es <em>repartir igual</em>. Si tienes ${numA} ${currentEmoji} para ${numB} ${currentGroupEmoji}, ¿cuántos le tocan a cada uno?`,
       `<b>🎯 ¿Cómo lo hago?</b><br>Reparte los ${currentEmoji} entre los ${numB} ${currentGroupEmoji}. ¡Todos deben tener lo mismo!
-       <div style="margin-top:6px">${currentGroupEmoji}1: ${makeEmojiRow(answer, currentEmoji)} | ${currentGroupEmoji}2: ${makeEmojiRow(answer, currentEmoji)}</div>`,
-      `<b>✨ Reparte:</b><br>${numA} ${currentEmoji} ÷ ${numB} ${currentGroupEmoji} = <b>${answer}</b> cada uno<br>¡Pon ${answer} ${currentEmoji} en cada zona!`
+       <div style="margin-top:6px">Ejemplo: ${exDivi.a} entre ${exDivi.b} → pon 1 en cada grupo, luego otro, hasta acabar</div>`,
+      `<b>✨ Reparte paso a paso:</b><br>Pon 1 ${currentEmoji} en cada ${currentGroupEmoji}, luego otro en cada uno, y así.<br>¿Cuántas rondas puedes hacer con ${numA} ${currentEmoji} y ${numB} ${currentGroupEmoji}?`
     ]
   };
   return hints[currentOp];
@@ -2441,6 +2808,7 @@ function renderWorkspace(){
     ${zonesHtml}
     <div class="trash-row">
       <div class="trash-bin" id="trashBin" onclick="tapTrash()" ondragover="trashDragOver(event)" ondragleave="trashDragLeave(event)" ondrop="trashDrop(event)">🗑️</div>
+      <button class="btn btn-check" id="verifyBtn" onclick="checkAnswer()">✅ Verificar</button>
     </div>
   `;
   updateAllDisplays();
@@ -2580,9 +2948,7 @@ function renderCounters(){
 }
 
 function renderActions(){
-  document.getElementById('actions').innerHTML = `
-    <button class="btn btn-check" id="verifyBtn" onclick="checkAnswer()">✅ Verificar</button>
-  `;
+  document.getElementById('actions').innerHTML = '';
 }
 
 function renderResult(data){
@@ -2757,6 +3123,8 @@ document.addEventListener('touchmove', (e) => {
 }, {passive: false});
 
 // ===== DESKTOP DRAG =====
+let currentDragImg = null;
+
 function dragSourceItem(e, id){
   e.stopPropagation();
   isDragging = true;
@@ -2764,19 +3132,20 @@ function dragSourceItem(e, id){
   draggedFromSource = true;
   e.target.classList.add('dragging');
 
-  // Configurar data transfer
   e.dataTransfer.setData('text/plain', 'source-' + id);
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.dropEffect = 'move';
 
-  // Crear imagen de drag personalizada
+  // Crear imagen de drag personalizada (se limpia en dragend)
+  if(currentDragImg) currentDragImg.remove();
   const dragImg = e.target.cloneNode(true);
   dragImg.style.position = 'absolute';
   dragImg.style.top = '-1000px';
+  dragImg.style.left = '-1000px';
   dragImg.style.fontSize = '2.5rem';
   document.body.appendChild(dragImg);
   e.dataTransfer.setDragImage(dragImg, 25, 25);
-  setTimeout(() => dragImg.remove(), 0);
+  currentDragImg = dragImg;
 
   sndClick();
 }
@@ -2792,14 +3161,16 @@ function dragPlacedItem(e, id){
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.dropEffect = 'move';
 
-  // Crear imagen de drag personalizada
+  // Crear imagen de drag personalizada (se limpia en dragend)
+  if(currentDragImg) currentDragImg.remove();
   const dragImg = e.target.cloneNode(true);
   dragImg.style.position = 'absolute';
   dragImg.style.top = '-1000px';
+  dragImg.style.left = '-1000px';
   dragImg.style.fontSize = '2.5rem';
   document.body.appendChild(dragImg);
   e.dataTransfer.setDragImage(dragImg, 25, 25);
-  setTimeout(() => dragImg.remove(), 0);
+  currentDragImg = dragImg;
 
   sndClick();
 }
@@ -3005,11 +3376,18 @@ document.addEventListener('dragleave', (e) => {
   }
 });
 
+// Permitir drag en toda la página para evitar icono de prohibido
+document.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+});
+
 document.addEventListener('dragend', () => {
   document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
   document.querySelectorAll('.source-emoji, .placed-emoji').forEach(e => e.classList.remove('dragging'));
   const trash = document.getElementById('trashBin');
   if(trash) trash.classList.remove('drag-over');
+  if(currentDragImg){ currentDragImg.remove(); currentDragImg = null; }
   draggedItemId = null;
   draggedFromSource = false;
 });
@@ -3046,9 +3424,11 @@ function checkAnswer(){
       correct = true;
     } else {
       if(totalSource > 0) {
-        explanation = `¡Aún te faltan ${totalSource} objetos por juntar! Arrastra todos al centro.`;
-      } else if(total !== answer) {
-        explanation = `Juntaste ${total}, pero ${numA} + ${numB} = ${answer}. Revisa bien.`;
+        explanation = `¡Aún te faltan objetos por juntar! Arrastra todos al centro.`;
+      } else if(total > answer) {
+        explanation = `Pusiste demasiados ${currentEmoji}. Recuerda: ${numA} + ${numB}. ¡Cuenta de nuevo con los dedos!`;
+      } else if(total < answer) {
+        explanation = `Te faltan ${currentEmoji}. Piensa: ${numA} + ${numB}. ¡Cuenta de nuevo despacio!`;
       }
     }
   }
@@ -3063,10 +3443,10 @@ function checkAnswer(){
         explanation = `¡Aún quedan ${totalSource} ${currentEmoji} sin separar! Decide: ¿se quedan o se van?`;
       } else if(keep === 0 || remove === 0) {
         explanation = `Debes poner ${currentEmoji} en AMBAS zonas: los que quedan Y los que se van.`;
+      } else if(remove !== numB) {
+        explanation = `Recuerda que se van ${numB} ${currentEmoji}. Pon esa cantidad en "Se van" y lo que sobra en "Quedan". ¡Piénsalo!`;
       } else if(keep !== answer) {
-        explanation = `Si tenías ${numA} y se van ${numB}... ¿cuántos QUEDAN? Piensa: ${numA} - ${numB} = ?`;
-      } else {
-        explanation = `Los que se van deben ser ${numB}. Revisa la zona "Se van".`;
+        explanation = `Si tenías ${numA} y se van ${numB}... ¿cuántos quedan? Cuenta con los dedos: ${numA} menos ${numB}.`;
       }
     }
   }
@@ -3085,9 +3465,10 @@ function checkAnswer(){
       if(totalSource > 0) {
         explanation = `¡Aún quedan ${totalSource} ${currentEmoji} por organizar! Ponlos en los ${currentGroupEmoji}.`;
       } else if(usedGroups < numA) {
-        explanation = `Debes llenar TODOS los ${numA} ${currentGroupEmoji}. Te faltan ${numA - usedGroups}.`;
+        explanation = `Debes llenar TODOS los ${numA} ${currentGroupEmoji}. Hay ${numA - usedGroups} vacíos. ¡Cada uno necesita la misma cantidad!`;
       } else if(!allCorrect) {
-        explanation = `Cada ${currentGroupEmoji} debe tener exactamente ${numB} ${currentEmoji}.`;
+        const ejemplo = groupCounts.map((c, i) => `${currentGroupEmoji}${i+1}: ${c}`).join(', ');
+        explanation = `Los grupos no están iguales: ${ejemplo}. Recuerda que CADA ${currentGroupEmoji} debe tener la misma cantidad. ¡Reorganiza!`;
       }
     }
   }
@@ -3103,21 +3484,20 @@ function checkAnswer(){
     if(totalPlaced === numA && totalSource === 0 && usedZones === numB && allEqual){
       correct = true;
     } else {
-      // Explicación clara de división
+      // Explicación sin dar la respuesta exacta
       const zoneCountsList = zoneCounts.filter(c => c > 0);
       const hasUnequalGroups = zoneCountsList.length > 1 && !zoneCountsList.every(c => c === zoneCountsList[0]);
 
       if(totalSource > 0) {
-        explanation = `<b>¡Faltan!</b> Aún tienes ${totalSource} ${currentEmoji} arriba. <br>Dividir es <em>repartir TODO</em> en partes iguales. Debes repartir los ${numA} ${currentEmoji} entre los ${numB} ${currentGroupEmoji}.`;
+        explanation = `<b>¡Faltan!</b> Aún tienes ${totalSource} ${currentEmoji} arriba. <br>Dividir es <em>repartir TODO</em>. Debes repartir los ${numA} ${currentEmoji} entre los ${numB} ${currentGroupEmoji}. ¡No puede quedar ninguno arriba!`;
       } else if(usedZones !== numB) {
         const emptyZones = numB - usedZones;
-        explanation = `<b>¡Hay ${currentGroupEmoji} vacíos!</b> Tienes ${numB} ${currentGroupEmoji} y ${emptyZones} no tienen nada.<br>Dividir es repartir entre TODOS. Cada ${currentGroupEmoji} debe recibir ${answer} ${currentEmoji}.`;
+        explanation = `<b>¡Hay ${currentGroupEmoji} vacíos!</b> Tienes ${numB} ${currentGroupEmoji} y ${emptyZones} no tienen nada.<br>Dividir es repartir entre TODOS. ¡Ningún ${currentGroupEmoji} puede quedar vacío!`;
       } else if(hasUnequalGroups) {
-        // Mostrar cuántos tiene cada grupo
         const countsText = zoneCounts.map((c, i) => `${currentGroupEmoji}${i+1}: ${c}`).join(', ');
-        explanation = `<b>¡No están iguales!</b> Tienes: ${countsText}.<br>Dividir es repartir <em>en partes IGUALES</em>. Cada ${currentGroupEmoji} debe tener exactamente ${answer} ${currentEmoji}.`;
+        explanation = `<b>¡No están iguales!</b> Tienes: ${countsText}.<br>Dividir es repartir <em>en partes IGUALES</em>. Todos los ${currentGroupEmoji} deben tener la misma cantidad. ¡Mueve algunos!`;
       } else if(!allEqual) {
-        explanation = `<b>¡Cantidad incorrecta!</b> Cada ${currentGroupEmoji} tiene ${zoneCounts[0]}, pero debería tener ${answer}.<br>${numA} ÷ ${numB} = ${answer}. Pon ${answer} ${currentEmoji} en cada ${currentGroupEmoji}.`;
+        explanation = `<b>¡Esa cantidad no es correcta!</b> Piensa: si tienes ${numA} ${currentEmoji} y los repartes entre ${numB} ${currentGroupEmoji}... ¿cuántos le tocan a cada uno? ¡Cuenta bien!`;
       }
     }
   }
@@ -3156,6 +3536,13 @@ function checkAnswer(){
 
     score.streak++;
     score.stars += starsEarned;
+
+    // Module tracking
+    moduleTracker.performance[currentOp].dragAttempts += attempts;
+    moduleTracker.performance[currentOp].hintsUsed += hintLevel;
+    moduleTracker.performance[currentOp].starsEarned += starsEarned;
+    moduleTracker.performance[currentOp].stepCount++;
+    moduleTracker.opsCompleted.add(currentOp);
 
     const step = currentStory.steps[currentStep];
     const successMsg = step.successMsg.replace('{ans}', answer);
@@ -3255,26 +3642,26 @@ function checkAnswer(){
           !zoneCounts.filter(c => c > 0).every(c => c === zoneCounts.filter(c => c > 0)[0]);
 
         if(totalSource > 0){
-          spokenMsg = `${PLAYER.name}, dividir es repartir TODO. . Aún tienes ${totalSource} objetos arriba. . Reparte los ${numA} entre los ${numB} grupos, poniendo ${answer} en cada uno.`;
+          spokenMsg = `${PLAYER.name}, dividir es repartir TODO. . Aún tienes ${totalSource} objetos arriba. . Reparte todos los ${numA} entre los ${numB} grupos. ¡No puede quedar ninguno arriba!`;
         } else if(usedZones !== numB){
-          spokenMsg = `${PLAYER.name}, hay grupos vacíos. . Dividir es repartir entre TODOS los grupos. . Pon ${answer} objetos en cada uno de los ${numB} grupos.`;
+          spokenMsg = `${PLAYER.name}, hay grupos vacíos. . Dividir es repartir entre TODOS los grupos. . Ningún grupo puede quedar vacío. ¡Reparte en todos!`;
         } else if(hasUnequalGroups){
-          spokenMsg = `${PLAYER.name}, los grupos no tienen la misma cantidad. . Dividir es repartir en partes IGUALES. . Cada grupo debe tener exactamente ${answer} objetos.`;
+          spokenMsg = `${PLAYER.name}, los grupos no tienen la misma cantidad. . Dividir es repartir en partes IGUALES. . Mueve algunos de un grupo a otro hasta que todos tengan lo mismo.`;
         } else {
-          spokenMsg = `${PLAYER.name}, la cantidad no es correcta. . ${numA} dividido ${numB} es igual a ${answer}. . Pon ${answer} objetos en cada grupo.`;
+          spokenMsg = `${PLAYER.name}, la cantidad no es correcta. . Piensa: si tienes ${numA} objetos y los repartes entre ${numB} grupos iguales, ¿cuántos le tocan a cada uno? . Cuenta con los dedos.`;
         }
       } else if(needsMore){
         const msgs = [
-          `${PLAYER.nickname}, pusiste ${placed} pero necesitas más. Faltan ${howMany}.`,
-          `${PLAYER.name}, te faltan objetos. Tienes ${placed}, necesitas agregar ${howMany} más.`,
-          `Casi ${PLAYER.nickname}, pero faltan ${howMany}. Agrega más objetos.`
+          `${PLAYER.nickname}, pusiste ${placed} pero necesitas más. . Piensa: ${numA} ${currentOp === 'suma' ? 'más' : currentOp === 'resta' ? 'menos' : currentOp === 'multi' ? 'por' : 'entre'} ${numB}. ¡Cuenta bien!`,
+          `${PLAYER.name}, te faltan objetos. . Vuelve a contar con los dedos despacio.`,
+          `Casi ${PLAYER.nickname}, pero necesitas agregar más. . ¡Inténtalo de nuevo!`
         ];
         spokenMsg = msgs[Math.floor(Math.random() * msgs.length)];
       } else {
         const msgs = [
-          `${PLAYER.nickname}, pusiste ${placed} pero son demasiados. Quita ${howMany}.`,
-          `${PLAYER.name}, hay de más. Tienes ${placed}, debes quitar ${howMany}.`,
-          `Casi ${PLAYER.nickname}, pero sobran ${howMany}. Manda algunos a la basura.`
+          `${PLAYER.nickname}, pusiste ${placed} pero son demasiados. . Quita algunos y vuelve a contar.`,
+          `${PLAYER.name}, hay de más. . Cuenta de nuevo despacio, tienes más de los que necesitas.`,
+          `Casi ${PLAYER.nickname}, pero sobran algunos. . Manda unos cuantos a la basura y cuenta otra vez.`
         ];
         spokenMsg = msgs[Math.floor(Math.random() * msgs.length)];
       }
@@ -3284,12 +3671,12 @@ function checkAnswer(){
 
       // Explicación según la operación
       if(currentOp === 'divi'){
-        spokenMsg = `${PLAYER.name}, escucha bien. . Dividir es repartir en partes iguales. . Tienes ${numA} objetos y ${numB} grupos. . Debes poner la misma cantidad en cada grupo. . ${numA} dividido ${numB} es igual a ${answer}. . Pon ${answer} en cada grupo.`;
+        spokenMsg = `${PLAYER.name}, escucha bien. . Dividir es repartir en partes iguales. . Tienes ${numA} objetos y ${numB} grupos. . Debes poner la misma cantidad en cada grupo. . Piensa: ve poniendo uno en cada grupo, luego otro en cada grupo, y así hasta que se acaben. ¡Inténtalo!`;
       } else {
         const opExplanations = {
-          suma: `${PLAYER.name}, en la suma juntamos todo. ${numA} más ${numB}. Cuenta con los dedos si necesitas.`,
-          resta: `${PLAYER.name}, en la resta quitamos. De ${numA} quita ${numB}. ¿Cuántos quedan?`,
-          multi: `${PLAYER.name}, multiplica es repetir. ${numA} grupos de ${numB}. Cuenta todos.`
+          suma: `${PLAYER.name}, en la suma juntamos todo. ${numA} más ${numB}. Cuenta con los dedos si necesitas. . Por ejemplo, si tienes 2 manzanas y llegan 3 más, cuentas: 3, 4, 5. ¡Haz lo mismo aquí!`,
+          resta: `${PLAYER.name}, en la resta quitamos. De ${numA} quita ${numB}. . Imagina que tienes los ${numA} y cuentas hacia atrás ${numB} veces. ¿Cuántos quedan?`,
+          multi: `${PLAYER.name}, multiplicar es repetir. ${numA} grupos de ${numB}. . Cuenta de ${numB} en ${numB}: ${numB}, ${numB*2}... ¡Sigue contando!`
         };
         spokenMsg = opExplanations[currentOp];
       }
@@ -3297,11 +3684,12 @@ function checkAnswer(){
       emoji = '📖';
       title = `${PLAYER.name}, mira la ayuda 👈`;
 
-      // Dar la respuesta parcialmente
+      // Dar guía sin revelar la respuesta
+      const opVerb = currentOp === 'suma' ? 'más' : currentOp === 'resta' ? 'menos' : currentOp === 'multi' ? 'por' : 'entre';
       const hintMsgs = [
-        `${PLAYER.fullName}, te doy una pista grande: la respuesta está entre ${answer - 2} y ${answer + 2}.`,
-        `${PLAYER.name}, mira el panel de la izquierda. La respuesta empieza con ${String(answer)[0]}.`,
-        `Oye ${PLAYER.nickname}, piensa: ${numA} ${currentOp === 'suma' ? 'más' : currentOp === 'resta' ? 'menos' : currentOp === 'multi' ? 'por' : 'entre'} ${numB}. Cuenta despacio.`
+        `${PLAYER.fullName}, piensa paso a paso. . ${numA} ${opVerb} ${numB}. . Usa los dedos para contar despacio.`,
+        `${PLAYER.name}, mira el panel de la izquierda. . Ahí tienes pistas que te ayudan. ¡Léelas con atención!`,
+        `Oye ${PLAYER.nickname}, no te rindas. . Piensa: ${numA} ${opVerb} ${numB}. . Cuenta despacio, sin prisa. ¡Tú puedes!`
       ];
       spokenMsg = hintMsgs[Math.floor(Math.random() * hintMsgs.length)];
     }
@@ -3660,10 +4048,15 @@ function findSpanishVoice(){
                  voices.find(v => v.lang === 'es-419') ||
                  voices.find(v => v.lang === 'es-US') ||
                  voices.find(v => v.lang === 'es-ES') ||
-                 voices.find(v => v.lang.startsWith('es')) ||
-                 voices[0];
+                 voices.find(v => v.lang.startsWith('es'));
 
-  console.log('Voz seleccionada:', spanishVoice?.name || 'ninguna');
+  // Solo usar voz no-española como último recurso absoluto
+  if(!spanishVoice && voices.length > 0){
+    console.warn('⚠️ No se encontró voz en español, usando fallback:', voices[0].name, voices[0].lang);
+    spanishVoice = voices[0];
+  }
+
+  console.log('Voz seleccionada:', spanishVoice?.name || 'ninguna', spanishVoice?.lang || '');
   voiceReady = true;
 }
 
@@ -3695,6 +4088,12 @@ function speakText(text, onEnd = null, options = {}){
 
     // Limpiar HTML del texto y agregar pausas naturales
     let cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+
+    // Normalizar Unicode NFC para que acentos como ó no se lean como "o acento agudo"
+    if(cleanText.normalize) cleanText = cleanText.normalize('NFC');
+
+    // Limpiar emojis que la voz podría intentar describir
+    cleanText = cleanText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1FFFF}]/gu, '');
 
   // Agregar pausas más largas después de puntos y signos de exclamación/interrogación
   // Usamos comas extras que la voz interpreta como pausas
@@ -3748,6 +4147,7 @@ function speakText(text, onEnd = null, options = {}){
 
   // Chrome bug fix: usar timeout y resume
   setTimeout(() => {
+    if(!currentUtterance) return;
     speechSynth.speak(currentUtterance);
     // Chrome a veces se pausa solo, forzar resume
     if(speechSynth.paused){
@@ -3827,9 +4227,9 @@ function toggleVoiceReading(){
     // Re-leer el cuento actual
     const step = currentStory.steps[currentStep];
     const storyText = step.template
-      .replace('{char}', currentStory.character)
-      .replace('{a}', numA)
-      .replace('{b}', numB);
+      .replaceAll('{char}', currentStory.character)
+      .replaceAll('{a}', numA)
+      .replaceAll('{b}', numB);
 
     readStoryAloud(storyText, step.question, () => {
       enableQuizSection();
@@ -3873,6 +4273,7 @@ function showVictory(){
   sndVictory();
   score.adventures++;
   score.stars += 3;
+  moduleTracker.adventuresInModule++;
   spawnConfetti(80);
   spawnStars(8);
   renderScoreBar();
@@ -3892,7 +4293,7 @@ function showVictory(){
     <div class="celebration-content">
       <div class="stars" style="animation:emojiBounce .6s ease infinite">⭐⭐⭐</div>
       <h2>${victoryMsg}</h2>
-      <p>Ayudaste a <b>${currentStory.character}</b></p>
+      <p>${currentStory.character.startsWith('el ') ? 'Ayudaste al' : 'Ayudaste a'} <b>${currentStory.character.replace(/^(el |la )/i, '')}</b></p>
       <p style="color:#ffd43b;font-weight:800;animation:starSparkle 1s ease infinite">+3 estrellas bonus</p>
       <button class="btn btn-new" onclick="closeCelebration()">🎲 Nueva Aventura</button>
     </div>
@@ -3907,9 +4308,13 @@ function showVictory(){
 }
 
 function closeCelebration(){
-  stopSpeaking(); // Detener voz si está hablando
+  stopSpeaking();
   document.getElementById('celebration').style.display = 'none';
-  startNewAdventure();
+  if(moduleTracker.opsCompleted.size >= 4){
+    showModuleResults();
+  } else {
+    startNewAdventure();
+  }
 }
 
 // ========== TRIVIA - JUEGO DE PREMIO ==========
@@ -4017,21 +4422,21 @@ const TRIVIA_CATEGORIES = {
     icon: '🎤',
     color: '#a78bfa',
     questions: [
-      { q: 'El gato con botas, comía _____', img: '🐱👢', a: 'zanahorias', options: ['zanahorias', 'manzanas', 'pescados', 'galletas'] },
-      { q: 'Había una vez un pato, que usaba un _____', img: '🦆', a: 'zapato', options: ['zapato', 'sombrero', 'pantalón', 'vestido'] },
-      { q: 'La abeja Lucía, volaba con _____', img: '🐝', a: 'alegría', options: ['alegría', 'tristeza', 'pereza', 'fuerza'] },
-      { q: 'En el mar había un pez, que contaba hasta _____', img: '🐟', a: 'diez', options: ['diez', 'cien', 'tres', 'seis'] },
-      { q: 'El ratón Ramón, tocaba el _____', img: '🐭🎵', a: 'trombón', options: ['trombón', 'piano', 'tambor', 'violín'] },
-      { q: 'La rana cantaba, mientras _____', img: '🐸🎤', a: 'saltaba', options: ['saltaba', 'dormía', 'comía', 'nadaba'] },
-      { q: 'El oso Mateo, ganó el _____', img: '🐻🏆', a: 'trofeo', options: ['trofeo', 'premio', 'juego', 'torneo'] },
-      { q: 'La estrella Estela, brillaba en la _____', img: '⭐🌙', a: 'escuela', options: ['escuela', 'ventana', 'cocina', 'calle'] },
-      { q: 'El león Simón, comía _____', img: '🦁🍉', a: 'melón', options: ['melón', 'manzana', 'naranja', 'fresa'] },
-      { q: 'El perro Beto, montaba en _____', img: '🐕🛹', a: 'patineto', options: ['patineto', 'bicicleta', 'carro', 'moto'] },
-      { q: 'La tortuga Ruga, comía _____', img: '🐢🥬', a: 'lechuga', options: ['lechuga', 'pizza', 'carne', 'huevo'] },
-      { q: 'El elefante elegante, era muy _____', img: '🐘✨', a: 'importante', options: ['importante', 'pequeño', 'rápido', 'silencioso'] },
-      { q: 'La gallina Catalina, bailaba _____', img: '🐔💃', a: 'bailarina', options: ['bailarina', 'cantando', 'saltando', 'corriendo'] },
-      { q: 'El mono Toño, se comió un _____', img: '🐵🍩', a: 'moño', options: ['moño', 'plátano', 'coco', 'mango'] },
-      { q: 'El conejo Alejo, se miró en el _____', img: '🐰🪞', a: 'espejo', options: ['espejo', 'agua', 'lago', 'vidrio'] }
+      { q: 'El gato con botas, comía ¿...?', img: '🐱👢', a: 'zanahorias', options: ['zanahorias', 'manzanas', 'pescados', 'galletas'] },
+      { q: 'Había una vez un pato, que usaba un ¿...?', img: '🦆', a: 'zapato', options: ['zapato', 'sombrero', 'pantalón', 'vestido'] },
+      { q: 'La abeja Lucía, volaba con ¿...?', img: '🐝', a: 'alegría', options: ['alegría', 'tristeza', 'pereza', 'fuerza'] },
+      { q: 'En el mar había un pez, que contaba hasta ¿...?', img: '🐟', a: 'diez', options: ['diez', 'cien', 'tres', 'seis'] },
+      { q: 'El ratón Ramón, tocaba el ¿...?', img: '🐭🎵', a: 'trombón', options: ['trombón', 'piano', 'tambor', 'violín'] },
+      { q: 'La rana cantaba, mientras ¿...?', img: '🐸🎤', a: 'saltaba', options: ['saltaba', 'dormía', 'comía', 'nadaba'] },
+      { q: 'El oso Mateo, ganó el ¿...?', img: '🐻🏆', a: 'trofeo', options: ['trofeo', 'premio', 'juego', 'torneo'] },
+      { q: 'La estrella Estela, brillaba en la ¿...?', img: '⭐🌙', a: 'escuela', options: ['escuela', 'ventana', 'cocina', 'calle'] },
+      { q: 'El león Simón, comía ¿...?', img: '🦁🍉', a: 'melón', options: ['melón', 'manzana', 'naranja', 'fresa'] },
+      { q: 'El perro Beto, montaba en ¿...?', img: '🐕🛹', a: 'patineto', options: ['patineto', 'bicicleta', 'carro', 'moto'] },
+      { q: 'La tortuga Ruga, comía ¿...?', img: '🐢🥬', a: 'lechuga', options: ['lechuga', 'pizza', 'carne', 'huevo'] },
+      { q: 'El elefante elegante, era muy ¿...?', img: '🐘✨', a: 'importante', options: ['importante', 'pequeño', 'rápido', 'silencioso'] },
+      { q: 'La gallina Catalina, bailaba ¿...?', img: '🐔💃', a: 'bailarina', options: ['bailarina', 'cantando', 'saltando', 'corriendo'] },
+      { q: 'El mono Toño, se comió un ¿...?', img: '🐵🍩', a: 'moño', options: ['moño', 'plátano', 'coco', 'mango'] },
+      { q: 'El conejo Alejo, se miró en el ¿...?', img: '🐰🪞', a: 'espejo', options: ['espejo', 'agua', 'lago', 'vidrio'] }
     ]
   }
 };
@@ -4199,6 +4604,8 @@ function nextTriviaQuestion(){
 }
 
 function showTriviaSummary(){
+  moduleTracker.totalTriviaCorrect += triviaCorrectCount;
+  moduleTracker.totalTriviaTotal += TRIVIA_TOTAL_QUESTIONS;
   const stars = '⭐'.repeat(triviaCorrectCount);
   const message = triviaCorrectCount === 3
     ? `¡${PLAYER.fullName} es un genio! ¡Perfecto!`
@@ -4234,6 +4641,781 @@ function closeTriviaGame(){
     triviaCallback = null;
   }
 }
+
+// ========== DESAFÍO RELÁMPAGO - CÁLCULO MENTAL RÁPIDO ==========
+let desafioProblems = [];
+let desafioCurrentIndex = 0;
+let desafioCorrectCount = 0;
+let desafioCombo = 0;
+let desafioMaxCombo = 0;
+let desafioStartTime = 0;
+let desafioSpeedBonuses = 0;
+let desafioCallback = null;
+const DESAFIO_TOTAL = 20;
+
+const desafioUsedKeys = new Set();
+const desafioOpsPool = ['suma','suma','resta','resta','multi','multi','divi','suma','resta','multi'];
+let desafioShuffledOps = [];
+
+function generateDesafioProblems(){
+  desafioProblems = [];
+  desafioUsedKeys.clear();
+  desafioShuffledOps = shuffleArray([...desafioOpsPool]);
+
+  for(let i = 0; i < DESAFIO_TOTAL; i++){
+    desafioProblems.push(generateOneDesafioProblem(i, 0));
+  }
+}
+
+// nivel: 0=fácil, 1=medio, 2=difícil (se ajusta por racha)
+function generateOneDesafioProblem(index, nivel){
+  const op = desafioShuffledOps[index % desafioShuffledOps.length];
+  let a, b, ans, sym, readText, key;
+  let tries = 0;
+
+  do {
+    if(op === 'suma'){
+      if(nivel === 0){       a = rand(1,9);   b = rand(1,9); }
+      else if(nivel === 1){  a = rand(5,15);  b = rand(5,15); }
+      else if(nivel === 2){  a = rand(10,30); b = rand(10,30); }
+      else if(nivel === 3){  a = rand(20,50); b = rand(15,40); }
+      else {                 a = rand(30,99); b = rand(20,70); }
+      ans = a + b; sym = '+';
+      readText = `${a} más ${b}`;
+    } else if(op === 'resta'){
+      if(nivel === 0){       a = rand(5,15);  b = rand(1, a - 1); }
+      else if(nivel === 1){  a = rand(15,30); b = rand(5, a - 1); }
+      else if(nivel === 2){  a = rand(25,50); b = rand(10, a - 1); }
+      else if(nivel === 3){  a = rand(40,80); b = rand(15, a - 1); }
+      else {                 a = rand(50,99); b = rand(20, a - 1); }
+      ans = a - b; sym = '−';
+      readText = `${a} menos ${b}`;
+    } else if(op === 'multi'){
+      if(nivel === 0){       a = rand(2,5);  b = rand(2,4); }
+      else if(nivel === 1){  a = rand(3,7);  b = rand(3,6); }
+      else if(nivel === 2){  a = rand(5,12); b = rand(4,9); }
+      else if(nivel === 3){  a = rand(6,12); b = rand(6,12); }
+      else {                 a = rand(7,15); b = rand(7,13); }
+      ans = a * b; sym = '×';
+      readText = `${a} por ${b}`;
+    } else {
+      if(nivel === 0){       b = rand(2,4);  ans = rand(2,5); }
+      else if(nivel === 1){  b = rand(3,6);  ans = rand(3,8); }
+      else if(nivel === 2){  b = rand(4,9);  ans = rand(5,12); }
+      else if(nivel === 3){  b = rand(5,12); ans = rand(6,15); }
+      else {                 b = rand(6,15); ans = rand(7,18); }
+      a = b * ans; sym = '÷';
+      readText = `${a} entre ${b}`;
+    }
+    key = `${a}${sym}${b}`;
+    tries++;
+  } while(desafioUsedKeys.has(key) && tries < 50);
+
+  desafioUsedKeys.add(key);
+  const distractors = generateDesafioDistractors(ans, nivel);
+  const options = shuffleArray([ans, ...distractors]);
+
+  return { op, a, b, answer: ans, sym, options, readText };
+}
+
+function getDesafioDifficulty(){
+  // Escala progresiva: racha más larga = más difícil
+  // También sube con el avance de preguntas
+  const rachaBonus = desafioCombo >= 10 ? 4 : desafioCombo >= 7 ? 3 : desafioCombo >= 4 ? 2 : desafioCombo >= 2 ? 1 : 0;
+  const progressBonus = desafioCurrentIndex >= 15 ? 2 : desafioCurrentIndex >= 10 ? 1 : 0;
+  return Math.min(rachaBonus + progressBonus, 4);
+}
+
+function generateDesafioDistractors(correct, nivel){
+  const set = new Set();
+  // Distractores más engañosos en niveles altos
+  const maxOffset = nivel >= 3 ? 8 : nivel >= 2 ? 5 : 3;
+  while(set.size < 3){
+    let offset = rand(1, maxOffset) * (Math.random() > 0.5 ? 1 : -1);
+    let d = correct + offset;
+    if(d < 0) d = correct + Math.abs(offset);
+    if(d !== correct && !set.has(d)) set.add(d);
+  }
+  return [...set];
+}
+
+function showDesafioRelampago(onComplete){
+  desafioCallback = onComplete;
+  desafioCurrentIndex = 0;
+  desafioCorrectCount = 0;
+  desafioCombo = 0;
+  desafioMaxCombo = 0;
+  desafioSpeedBonuses = 0;
+  desafioStartTime = Date.now();
+
+  generateDesafioProblems();
+
+  document.getElementById('desafioModal').style.display = 'flex';
+  document.getElementById('desafioModal').innerHTML = `
+    <div class="desafio-content">
+      <div style="font-size:4rem;margin-bottom:16px">🚀</div>
+      <div class="desafio-title">⚡ ¡Desafío Relámpago! ⚡</div>
+      <div class="desafio-subtitle" style="margin:12px 0;font-size:1rem;color:var(--text)">
+        Responde rápido para llevar el cohete a las estrellas
+      </div>
+      <div style="font-size:.9rem;color:var(--text-dim);margin-bottom:20px">
+        ${DESAFIO_TOTAL} operaciones · Toca la respuesta correcta
+      </div>
+      <button class="desafio-continue-btn" id="desafioStartBtn" onclick="showDesafioQuestion()" style="pointer-events:none;opacity:.5">¡Empezar! 🚀</button>
+    </div>
+  `;
+
+  speakText(`¡${PLAYER.nickname}, es hora del Desafío Relámpago! Responde rápido para llevar el cohete a las estrellas. Tienes ${DESAFIO_TOTAL} preguntas. ¡Vamos!`, () => {
+    const btn = document.getElementById('desafioStartBtn');
+    if(btn){ btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
+  }, { rate: 0.92, pitch: 1.05 });
+}
+
+function showDesafioQuestion(){
+  const problem = desafioProblems[desafioCurrentIndex];
+  const rocketBottom = 5 + (desafioCurrentIndex > 0 ? getDesafioRocketPosition() : 0);
+
+  const progressDots = Array.from({length: DESAFIO_TOTAL}, (_, i) => {
+    if(i < desafioCurrentIndex){
+      const wasCorrect = desafioProblems[i].wasCorrect;
+      return `<span class="desafio-dot ${wasCorrect ? 'done' : 'wrong-dot'}">${wasCorrect ? '✓' : '✗'}</span>`;
+    }
+    if(i === desafioCurrentIndex) return '<span class="desafio-dot current">●</span>';
+    return '<span class="desafio-dot">○</span>';
+  }).join('');
+
+  const checkpoints = [
+    { pct: 30, pos: '30%' },
+    { pct: 60, pos: '60%' },
+    { pct: 95, pos: '95%' }
+  ];
+  const reachedPct = (desafioCorrectCount / DESAFIO_TOTAL) * 100;
+  const checkpointHTML = checkpoints.map(cp =>
+    `<div class="desafio-checkpoint ${reachedPct >= cp.pct ? 'reached' : ''}" style="bottom:${cp.pos}">⭐</div>`
+  ).join('');
+
+  const optionsHTML = problem.options.map(opt =>
+    `<button class="desafio-option" onclick="checkDesafioAnswer(${opt})">${opt}</button>`
+  ).join('');
+
+  const nivel = getDesafioDifficulty();
+  const nivelLabels = ['🟢 Fácil', '🟡 Medio', '🔴 Difícil'];
+  const comboText = desafioCombo >= 3 ? `${'🔥'.repeat(Math.min(desafioCombo - 2, 5))} ¡Racha de ${desafioCombo}!` : '';
+
+  document.getElementById('desafioModal').innerHTML = `
+    <div class="desafio-content">
+      <div class="desafio-header">
+        <div class="desafio-progress">${progressDots}</div>
+        <div class="desafio-title">⚡ Pregunta ${desafioCurrentIndex + 1} de ${DESAFIO_TOTAL}</div>
+        <div class="desafio-subtitle">⭐ ${desafioCorrectCount} correctas · ${nivelLabels[nivel]}</div>
+      </div>
+
+      <div class="desafio-track">
+        ${checkpointHTML}
+        <div class="desafio-rocket" style="bottom:${rocketBottom}%">🚀</div>
+      </div>
+
+      <div class="desafio-equation-box">
+        <div class="desafio-equation">
+          ${problem.a} <span class="desafio-op">${problem.sym}</span> ${problem.b} <span class="desafio-op">=</span> <span class="desafio-q">?</span>
+        </div>
+      </div>
+
+      <div class="desafio-options">${optionsHTML}</div>
+      <div class="desafio-combo ${comboText ? 'active' : ''}">${comboText}</div>
+    </div>
+  `;
+
+  // Deshabilitar mientras lee
+  const allBtns = document.querySelectorAll('.desafio-option');
+  allBtns.forEach(b => b.classList.add('disabled'));
+
+  problem.questionStartTime = Date.now();
+
+  speakText(problem.readText, () => {
+    allBtns.forEach(b => b.classList.remove('disabled'));
+  }, { rate: 1.0, pitch: 1.05 });
+}
+
+function getDesafioRocketPosition(){
+  let pos = 0;
+  for(let i = 0; i < desafioCurrentIndex; i++){
+    pos += desafioProblems[i].wasCorrect ? 9.5 : 3;
+  }
+  return Math.min(pos, 90);
+}
+
+function checkDesafioAnswer(selected){
+  const problem = desafioProblems[desafioCurrentIndex];
+  const btns = document.querySelectorAll('.desafio-option');
+  const correct = problem.answer;
+  const elapsed = Date.now() - problem.questionStartTime;
+
+  btns.forEach(btn => {
+    btn.classList.add('disabled');
+    if(parseInt(btn.textContent) === correct) btn.classList.add('correct');
+  });
+
+  if(selected === correct){
+    problem.wasCorrect = true;
+    desafioCorrectCount++;
+    desafioCombo++;
+    if(desafioCombo > desafioMaxCombo) desafioMaxCombo = desafioCombo;
+
+    const isSpeed = elapsed < 4000;
+    if(isSpeed) desafioSpeedBonuses++;
+
+    score.stars++;
+    if(isSpeed){ score.stars++; }
+    renderScoreBar();
+
+    sndCorrect();
+    spawnConfetti(8);
+
+    // Animar cohete subiendo
+    const rocket = document.querySelector('.desafio-rocket');
+    if(rocket){
+      const newPos = getDesafioRocketPosition() + 9.5;
+      rocket.style.bottom = Math.min(newPos, 95) + '%';
+    }
+
+    // Actualizar combo visual
+    const comboEl = document.querySelector('.desafio-combo');
+    if(comboEl && desafioCombo >= 3){
+      comboEl.className = 'desafio-combo active';
+      comboEl.innerHTML = `${'🔥'.repeat(Math.min(desafioCombo - 2, 5))} ¡Racha de ${desafioCombo}!`;
+    }
+
+    const msgs = ['¡Bien!', '¡Eso!', '¡Sí!', '¡Genial!'];
+    speakText(msgs[rand(0, msgs.length - 1)], () => {
+      setTimeout(nextDesafioQuestion, 400);
+    }, { rate: 1.1, pitch: 1.1 });
+
+  } else {
+    problem.wasCorrect = false;
+    desafioCombo = 0;
+
+    const selectedBtn = Array.from(btns).find(b => parseInt(b.textContent) === selected);
+    if(selectedBtn) selectedBtn.classList.add('wrong');
+
+    sndWrong();
+
+    const rocket = document.querySelector('.desafio-rocket');
+    if(rocket){
+      rocket.style.animation = 'rocketShake .4s ease';
+      const newPos = getDesafioRocketPosition() + 3;
+      rocket.style.bottom = Math.min(newPos, 95) + '%';
+      setTimeout(() => { if(rocket) rocket.style.animation = ''; }, 400);
+    }
+
+    const comboEl = document.querySelector('.desafio-combo');
+    if(comboEl){ comboEl.className = 'desafio-combo'; comboEl.innerHTML = ''; }
+
+    speakText(`Era ${correct}`, () => {
+      setTimeout(nextDesafioQuestion, 400);
+    }, { rate: 1.0, pitch: 0.9 });
+  }
+}
+
+function nextDesafioQuestion(){
+  desafioCurrentIndex++;
+  if(desafioCurrentIndex < DESAFIO_TOTAL){
+    // Regenerar la siguiente pregunta con dificultad ajustada a la racha
+    desafioProblems[desafioCurrentIndex] = generateOneDesafioProblem(desafioCurrentIndex, getDesafioDifficulty());
+    showDesafioQuestion();
+  } else {
+    showDesafioSummary();
+  }
+}
+
+function showDesafioSummary(){
+  moduleTracker.totalDesafioCorrect += desafioCorrectCount;
+  moduleTracker.totalDesafioTotal += DESAFIO_TOTAL;
+  const totalTime = Math.round((Date.now() - desafioStartTime) / 1000);
+  const stars = '⭐'.repeat(desafioCorrectCount);
+  const speedStars = desafioSpeedBonuses > 0 ? ` (+${desafioSpeedBonuses} bonus rapidez ⚡)` : '';
+
+  let message, emoji;
+  if(desafioCorrectCount === DESAFIO_TOTAL){
+    message = `¡${PLAYER.fullName} es un rayo matemático! ¡PERFECTO!`;
+    emoji = '🏆';
+  } else if(desafioCorrectCount >= DESAFIO_TOTAL * 0.8){
+    message = `¡Increíble ${PLAYER.nickname}! ¡${desafioCorrectCount} de ${DESAFIO_TOTAL}!`;
+    emoji = '🌟';
+  } else if(desafioCorrectCount >= DESAFIO_TOTAL * 0.6){
+    message = `¡Muy bien ${PLAYER.nickname}! ¡${desafioCorrectCount} de ${DESAFIO_TOTAL}!`;
+    emoji = '👏';
+  } else if(desafioCorrectCount >= DESAFIO_TOTAL * 0.4){
+    message = `¡Bien ${PLAYER.nickname}! ¡${desafioCorrectCount} de ${DESAFIO_TOTAL}!`;
+    emoji = '💪';
+  } else {
+    message = `¡Sigue practicando ${PLAYER.name}! ¡Tú puedes!`;
+    emoji = '🚀';
+  }
+
+  const comboMsg = desafioMaxCombo >= 3 ? `<div style="margin-top:8px;font-size:.9rem;color:var(--orange)">🔥 Mejor racha: ${desafioMaxCombo} seguidas</div>` : '';
+
+  document.getElementById('desafioModal').innerHTML = `
+    <div class="desafio-content">
+      <div class="desafio-header">
+        <div style="font-size:3rem;margin-bottom:8px">${emoji}</div>
+        <div class="desafio-title">¡Desafío Completado!</div>
+        <div class="desafio-subtitle">${message}</div>
+      </div>
+      <div class="desafio-summary">
+        <div class="summary-stars">${stars || '😅'}</div>
+        <div class="summary-score"><b>${desafioCorrectCount}</b> de ${DESAFIO_TOTAL} correctas${speedStars}</div>
+        <div style="font-size:.85rem;color:var(--text-dim);margin-top:8px">⏱️ Tiempo: ${totalTime} segundos</div>
+        ${comboMsg}
+        <button class="desafio-continue-btn" style="margin-top:20px" onclick="closeDesafioRelampago()">¡Continuar! ➜</button>
+      </div>
+    </div>
+  `;
+
+  if(desafioCorrectCount >= 8) spawnConfetti(desafioCorrectCount * 10);
+  else if(desafioCorrectCount > 0) spawnConfetti(desafioCorrectCount * 5);
+
+  speakText(message, null, { rate: 0.92, pitch: 1.05 });
+}
+
+function closeDesafioRelampago(){
+  stopSpeaking();
+  document.getElementById('desafioModal').style.display = 'none';
+  if(desafioCallback){
+    desafioCallback();
+    desafioCallback = null;
+  }
+}
+
+// ========== MODULE RESULTS ==========
+
+function generateModuleAnalysis(){
+  const ops = ['suma', 'resta', 'multi', 'divi'];
+  const opNames = { suma: 'Suma', resta: 'Resta', multi: 'Multiplicación', divi: 'División' };
+  const opSymbols = { suma: '+', resta: '−', multi: '×', divi: '÷' };
+
+  const analysis = { strong: [], needsPractice: [], weak: [] };
+
+  ops.forEach(op => {
+    const p = moduleTracker.performance[op];
+    if(p.stepCount === 0) return;
+
+    let opScore = 100;
+    opScore -= Math.min(p.quizErrors * 15, 45);
+    opScore -= Math.min(p.practiceErrors * 10, 30);
+    const avgAttempts = p.dragAttempts / p.stepCount;
+    if(avgAttempts > 1) opScore -= Math.min((avgAttempts - 1) * 12, 30);
+    const avgHints = p.hintsUsed / p.stepCount;
+    opScore -= Math.min(avgHints * 8, 24);
+    opScore -= Math.min(p.termsErrors * 5, 20);
+    const avgStars = p.starsEarned / p.stepCount;
+    if(avgStars >= 2.5) opScore += 5;
+    opScore = Math.max(0, Math.min(100, opScore));
+
+    const entry = {
+      op, name: opNames[op], sym: opSymbols[op], score: opScore,
+      quizErrors: p.quizErrors, quizCorrect: p.quizCorrect,
+      practiceErrors: p.practiceErrors,
+      avgAttempts: avgAttempts.toFixed(1),
+      avgHints: avgHints.toFixed(1),
+      avgStars: avgStars.toFixed(1),
+      termsErrors: p.termsErrors, termsCorrect: p.termsCorrect,
+      stepCount: p.stepCount
+    };
+
+    if(opScore >= 75) analysis.strong.push(entry);
+    else if(opScore >= 45) analysis.needsPractice.push(entry);
+    else analysis.weak.push(entry);
+  });
+
+  return analysis;
+}
+
+function generateModuleSpeech(analysis, desafioPct, triviaPct, devMsg){
+  let speech = '';
+
+  // INTRO: saludo natural a los papás
+  const intros = [
+    `¡Hola papás! Vengan, les cuento. . ${PLAYER.name} acaba de terminar un módulo completo donde practicó las cuatro operaciones: suma, resta, multiplicación y división.`,
+    `¡Buenas! Papás, les tengo noticias. . ${PLAYER.name} terminó su módulo de matemáticas y practicó suma, resta, multiplicación y división.`,
+    `¡Hola! Qué bueno que están aquí. . Les voy a contar cómo le fue a ${PLAYER.name} en las cuatro operaciones que practicamos: suma, resta, multiplicación y división.`
+  ];
+  speech += intros[Math.floor(Math.random() * intros.length)] + ' . ';
+
+  // LO QUE HIZO BIEN
+  if(analysis.strong.length > 0){
+    if(analysis.strong.length === 4){
+      const perfectIntros = [
+        `Y la verdad, ¡les fue increíble! ${PLAYER.name} dominó las cuatro operaciones sin ningún problema.`,
+        `¡Y les cuento algo! ${PLAYER.name} estuvo excelente en TODO. . Las cuatro operaciones, perfecto.`,
+        `La buena noticia es que ${PLAYER.name} mostró un nivel excelente en las cuatro operaciones.`
+      ];
+      speech += perfectIntros[Math.floor(Math.random() * perfectIntros.length)] + ' ';
+
+      // Dar detalles de alguna operación destacada
+      const best = analysis.strong.reduce((a, b) => parseFloat(a.avgStars) >= parseFloat(b.avgStars) ? a : b);
+      if(best.quizErrors === 0 && best.termsErrors === 0){
+        speech += `Por ejemplo, en la ${best.name} estuvo perfecto: identificó la operación siempre bien, resolvió los ejercicios y el vocabulario sin errores. `;
+      }
+    } else {
+      const names = analysis.strong.map(e => e.name);
+      if(names.length === 1){
+        speech += `Empecemos por lo bueno: en la ${names[0]} le fue muy bien. `;
+      } else if(names.length === 2){
+        speech += `Empecemos por lo bueno: en ${names[0]} y ${names[1]} estuvo muy bien. `;
+      } else {
+        speech += `Empecemos por lo bueno: en ${names.slice(0, -1).join(', ')} y ${names[names.length-1]} le fue muy bien. `;
+      }
+
+      // Detalles de las fuertes (máximo 2 para no alargar)
+      analysis.strong.slice(0, 2).forEach(e => {
+        const details = [];
+        if(e.quizErrors === 0) details.push('siempre supo identificarla en los cuentos');
+        if(e.termsErrors === 0) details.push('se aprendió todo el vocabulario');
+        if(parseFloat(e.avgStars) >= 2.5) details.push('sacó muchas estrellas');
+        if(details.length > 0){
+          speech += `En la ${e.name}, ${details.join(' y ')}. `;
+        }
+      });
+    }
+  }
+
+  // LO QUE PUEDE MEJORAR
+  if(analysis.needsPractice.length > 0){
+    const transition = analysis.strong.length > 0
+      ? `Ahora, hay algunas cositas que puede mejorar. `
+      : `Bueno, hay áreas donde todavía puede crecer. `;
+    speech += transition;
+
+    analysis.needsPractice.forEach((e, i) => {
+      const connector = i === 0 ? '' : 'También, ';
+      speech += `${connector}en la ${e.name} `;
+
+      const issues = [];
+      if(e.quizErrors > 0 && e.practiceErrors > 0){
+        issues.push(`a veces le costó reconocer cuándo un problema era de ${e.name.toLowerCase()}, por eso lo mandamos a practicar ${e.practiceErrors > 1 ? 'un par de veces' : 'una vez'}`);
+      } else if(e.quizErrors > 0){
+        issues.push(`le costó un poco identificar cuándo el cuento hablaba de ${e.name.toLowerCase()}`);
+      }
+      if(e.termsErrors > 0){
+        issues.push(`hay que repasar los términos, como los nombres de los números en esa operación`);
+      }
+      if(parseFloat(e.avgHints) > 0.5){
+        issues.push(`necesitó algunas pistas para resolver los ejercicios`);
+      }
+
+      if(issues.length > 0){
+        speech += issues.join(', y ') + '. ';
+      } else {
+        speech += `puede practicar un poco más. `;
+      }
+    });
+
+    speech += `Pero nada grave, con un poco más de práctica va a mejorar rápido. `;
+  }
+
+  // LO QUE NECESITA REFORZAR
+  if(analysis.weak.length > 0){
+    const weakTransition = analysis.needsPractice.length > 0
+      ? `Y algo importante: `
+      : (analysis.strong.length > 0 ? `Ahora, algo que sí necesita más trabajo: ` : `Les cuento algo: `);
+    speech += weakTransition;
+
+    const names = analysis.weak.map(e => e.name);
+    speech += `la ${names.join(' y la ')} necesita más práctica. `;
+
+    analysis.weak.forEach(e => {
+      const issues = [];
+      if(e.quizErrors > 0) issues.push(`todavía no reconoce bien cuándo un problema es de ${e.name.toLowerCase()}`);
+      if(e.practiceErrors > 0) issues.push(`tuvo que ir a cuentos de práctica ${e.practiceErrors} ${e.practiceErrors > 1 ? 'veces' : 'vez'}`);
+      if(parseFloat(e.avgAttempts) > 2) issues.push(`necesitó varios intentos para resolver los ejercicios`);
+      if(e.termsErrors > 1) issues.push(`los términos de la ${e.name.toLowerCase()} hay que repasarlos en casa`);
+
+      if(issues.length > 0){
+        speech += `En la ${e.name}, ${issues.join(', y ')}. `;
+      }
+    });
+
+    speech += `Pero tranquilos, es completamente normal. Vamos a seguir practicando y van a ver cómo va mejorando. `;
+  }
+
+  // CÁLCULO MENTAL Y TRIVIA (integrado naturalmente)
+  if(desafioPct > 0 || triviaPct > 0){
+    speech += '. Ah, y también les cuento sobre las actividades extras. ';
+    if(desafioPct > 0){
+      if(desafioPct >= 80) speech += `En el cálculo mental rápido estuvo increíble, sacó ${desafioPct} por ciento de aciertos. `;
+      else if(desafioPct >= 60) speech += `En el cálculo mental rápido le fue bien, sacó ${desafioPct} por ciento. `;
+      else speech += `En el cálculo mental rápido sacó ${desafioPct} por ciento, ahí puede mejorar la velocidad. `;
+    }
+    if(triviaPct > 0){
+      if(triviaPct >= 80) speech += `Y en la trivia de cultura general estuvo genial con ${triviaPct} por ciento de aciertos. `;
+      else if(triviaPct >= 50) speech += `En la trivia de cultura general sacó ${triviaPct} por ciento, nada mal. `;
+      else speech += `La trivia estuvo difícil, sacó ${triviaPct} por ciento, pero así va aprendiendo cosas nuevas. `;
+    }
+  }
+
+  // CIERRE
+  const allStrong = analysis.weak.length === 0 && analysis.needsPractice.length === 0;
+  if(allStrong){
+    const closes = [
+      `. En resumen, ¡${PLAYER.fullName} es un campeón de las matemáticas! Felicítenlo mucho porque se lo merece.`,
+      `. Para cerrar, ¡${PLAYER.fullName} domina las cuatro operaciones! Estoy muy orgulloso de cómo trabajó hoy.`,
+      `. En conclusión, ¡excelente trabajo de ${PLAYER.fullName}! Todas las operaciones las maneja muy bien.`
+    ];
+    speech += closes[Math.floor(Math.random() * closes.length)] + ' ';
+  } else {
+    const closes = [
+      `. En general, ${PLAYER.name} está aprendiendo muy bien. Lo importante es que siga practicando y divirtiéndose con las matemáticas.`,
+      `. En resumen, ${PLAYER.name} va por buen camino. Con práctica constante va a dominar todo. ¡Ánimo!`,
+      `. Para cerrar, ${PLAYER.name} está progresando. Les recomiendo practicar juntos un ratito en casa, sobre todo las operaciones que le costaron más.`
+    ];
+    speech += closes[Math.floor(Math.random() * closes.length)] + ' ';
+  }
+
+  // MENSAJE DEL DESARROLLADOR (transición natural)
+  speech += `. . Ah, y una última cosa: . ${devMsg} . `;
+
+  // PREGUNTA FINAL
+  speech += `. . Bueno ${PLAYER.name}, ¿quieres empezar un nuevo módulo?`;
+  return speech;
+}
+
+function showModuleResults(){
+  // Paso 1: Mostrar aviso para llamar a los papás
+  sndVictory();
+  spawnConfetti(60);
+
+  const callMsgs = [
+    `¡${PLAYER.name}! ¡Corre a llamar a tus papás! Diles que vengan a escuchar tu reporte, quiero contarles cómo te fue.`,
+    `¡Oye ${PLAYER.name}! Ve rápido por mamá o papá. Necesito que escuchen cómo te fue en el módulo.`,
+    `¡${PLAYER.nickname}! Llama a tus papás, diles que tienen que venir a escuchar este mensaje. ¡Es importante!`,
+    `¡${PLAYER.name}! Ve a buscar a mamá o a papá y diles que vengan. Les tengo un reporte de cómo trabajaste hoy.`
+  ];
+  const callMsg = callMsgs[Math.floor(Math.random() * callMsgs.length)];
+
+  document.getElementById('moduleModal').style.display = 'flex';
+  document.getElementById('moduleModal').innerHTML = `
+    <div class="module-content">
+      <div style="font-size:3.5rem;margin-bottom:12px">📢</div>
+      <div class="module-title">¡Módulo Completado!</div>
+      <div class="module-subtitle" style="margin-bottom:24px">${PLAYER.name}, completaste las 4 operaciones</div>
+      <div style="font-size:1.1rem;color:var(--cyan);font-weight:700;line-height:1.6;margin-bottom:20px">
+        ¡Llama a mamá o papá para que escuchen juntos cómo te fue!
+      </div>
+      <button class="module-btn" id="callParentsBtn" onclick="showModuleReport()" style="opacity:.5;pointer-events:none">
+        👨‍👩‍👦 ¡Ya están aquí!
+      </button>
+    </div>
+  `;
+
+  speakText(callMsg, () => {
+    const btn = document.getElementById('callParentsBtn');
+    if(btn){ btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+  }, { rate: 0.85, pitch: 1.0 });
+}
+
+function showModuleReport(){
+  stopSpeaking();
+  const analysis = generateModuleAnalysis();
+
+  spawnConfetti(100);
+  spawnStars(12);
+
+  // Helper para generar barra de progreso
+  function statBar(label, value, max, color){
+    const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+    return `<div class="module-stat-row">
+      <span class="module-stat-label">${label}</span>
+      <div class="module-stat-bar-bg"><div class="module-stat-bar ${color}" style="width:${pct}%"></div></div>
+      <span class="module-stat-value">${value}/${max}</span>
+    </div>`;
+  }
+
+  // Helper para score badge
+  function scoreBadge(score){
+    if(score >= 75) return `<span class="module-op-score high">${score}%</span>`;
+    if(score >= 45) return `<span class="module-op-score mid">${score}%</span>`;
+    return `<span class="module-op-score low">${score}%</span>`;
+  }
+
+  // Generar HTML detallado por cada operación
+  const ops = ['suma', 'resta', 'multi', 'divi'];
+  const opNames = { suma: 'Suma', resta: 'Resta', multi: 'Multiplicación', divi: 'División' };
+  const opSymbols = { suma: '+', resta: '−', multi: '×', divi: '÷' };
+
+  let opsHTML = '';
+  ops.forEach(op => {
+    const p = moduleTracker.performance[op];
+    if(p.stepCount === 0) return;
+
+    const entry = [...analysis.strong, ...analysis.needsPractice, ...analysis.weak].find(e => e.op === op);
+    if(!entry) return;
+
+    const scoreColor = entry.score >= 75 ? 'strong' : entry.score >= 45 ? 'practice' : 'weak';
+    const totalQuiz = p.quizCorrect + p.quizErrors;
+    const totalTerms = p.termsCorrect + p.termsErrors;
+    const quizColor = p.quizErrors === 0 ? 'green' : p.quizErrors <= 1 ? 'yellow' : 'red';
+    const termsColor = p.termsErrors === 0 ? 'green' : p.termsErrors <= 1 ? 'yellow' : 'red';
+    const starsColor = parseFloat(entry.avgStars) >= 2.5 ? 'green' : parseFloat(entry.avgStars) >= 1.5 ? 'yellow' : 'red';
+
+    opsHTML += `
+      <div class="module-op-card ${scoreColor}" style="margin-bottom:12px">
+        <div class="module-op-header">
+          <div class="module-op-name" style="font-size:.95rem">${opSymbols[op]} ${opNames[op]}</div>
+          ${scoreBadge(entry.score)}
+        </div>
+        ${statBar('Identificar operación', p.quizCorrect, totalQuiz, quizColor)}
+        ${statBar('Estrellas', p.starsEarned, p.stepCount * 3, starsColor)}
+        ${statBar('Vocabulario', p.termsCorrect, totalTerms, termsColor)}
+        <div class="module-stat-row">
+          <span class="module-stat-label">Intentos promedio</span>
+          <div class="module-stat-bar-bg"><div class="module-stat-bar ${parseFloat(entry.avgAttempts) <= 1 ? 'green' : parseFloat(entry.avgAttempts) <= 2 ? 'yellow' : 'red'}" style="width:${Math.min(100, (1 / parseFloat(entry.avgAttempts)) * 100)}%"></div></div>
+          <span class="module-stat-value">${entry.avgAttempts}</span>
+        </div>
+        ${p.practiceErrors > 0 ? `<div style="font-size:.7rem;color:var(--yellow);margin-top:4px">⚠️ Fue a cuento de práctica ${p.practiceErrors} ${p.practiceErrors > 1 ? 'veces' : 'vez'}</div>` : ''}
+        ${parseFloat(entry.avgHints) > 0 ? `<div style="font-size:.7rem;color:var(--cyan);margin-top:2px">💡 Usó pistas: ${entry.avgHints} promedio</div>` : ''}
+      </div>`;
+  });
+
+  const desafioPct = moduleTracker.totalDesafioTotal > 0
+    ? Math.round((moduleTracker.totalDesafioCorrect / moduleTracker.totalDesafioTotal) * 100) : 0;
+  const triviaPct = moduleTracker.totalTriviaTotal > 0
+    ? Math.round((moduleTracker.totalTriviaCorrect / moduleTracker.totalTriviaTotal) * 100) : 0;
+
+  const allStrong = analysis.weak.length === 0 && analysis.needsPractice.length === 0;
+  const hasWeak = analysis.weak.length > 0;
+  let overallMsg = '';
+  let overallEmoji = '📊';
+  if(allStrong){
+    overallMsg = `🏆 ¡${PLAYER.fullName} domina las 4 operaciones!`;
+    overallEmoji = '🏆';
+  } else if(hasWeak){
+    const weakNames = analysis.weak.map(e => e.name).join(' y ');
+    overallMsg = `💪 Hay que reforzar la ${weakNames} en casa.`;
+  } else {
+    overallMsg = `👏 Va por buen camino, sigan practicando juntos.`;
+  }
+
+  const devMessages = [
+    '¡Y no olviden invitar al desarrollador de este software a una hamburguesa!',
+    '¡Y no olviden invitar al desarrollador de este software al cine!',
+    '¡Y no olviden invitar al desarrollador de este software a pasear!',
+    '¡Y no olviden invitar al desarrollador de este software a un helado!',
+    '¡Y no olviden invitar al desarrollador de este software a comer pizza!',
+    '¡Y no olviden invitar al desarrollador de este software a un día de aventura!'
+  ];
+  const devMsg = devMessages[Math.floor(Math.random() * devMessages.length)];
+
+  // Calcular score global promedio
+  const allEntries = [...analysis.strong, ...analysis.needsPractice, ...analysis.weak];
+  const avgScore = allEntries.length > 0 ? Math.round(allEntries.reduce((s, e) => s + e.score, 0) / allEntries.length) : 0;
+  const totalStars = allEntries.reduce((s, e) => s + parseInt(moduleTracker.performance[e.op].starsEarned), 0);
+  const maxStars = allEntries.reduce((s, e) => s + moduleTracker.performance[e.op].stepCount * 3, 0);
+
+  document.getElementById('moduleModal').innerHTML = `
+    <div class="module-content">
+      <div style="font-size:3.5rem;margin-bottom:8px">${overallEmoji}</div>
+      <div class="module-title">Reporte del Módulo</div>
+      <div class="module-subtitle">Papás, así le fue a ${PLAYER.name} en las 4 operaciones</div>
+
+      <!-- Score global -->
+      <div style="background:rgba(167,139,250,.1);border-radius:14px;padding:14px;margin-bottom:16px;border:1px solid rgba(167,139,250,.2)">
+        <div style="display:flex;align-items:center;justify-content:space-around;gap:8px;text-align:center">
+          <div>
+            <div style="font-size:1.6rem;font-weight:900;color:${avgScore >= 75 ? 'var(--green)' : avgScore >= 45 ? 'var(--yellow)' : 'var(--red)'}">${avgScore}%</div>
+            <div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;font-weight:700">Score</div>
+          </div>
+          <div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--yellow)">${totalStars}⭐</div>
+            <div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;font-weight:700">de ${maxStars}</div>
+          </div>
+          <div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--cyan)">${moduleTracker.adventuresInModule}</div>
+            <div style="font-size:.6rem;color:var(--text-dim);text-transform:uppercase;font-weight:700">Aventuras</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalle por operación -->
+      <div class="module-section" style="margin-bottom:16px">
+        <div class="module-section-title" style="color:var(--cyan);font-size:.9rem;margin-bottom:12px">📊 Detalle por operación</div>
+        ${opsHTML}
+      </div>
+
+      <!-- Actividades extras -->
+      <div class="module-global-stats">
+        <div class="module-big-stat">
+          <div class="module-big-stat-icon">🧠</div>
+          <div class="module-big-stat-info">
+            <div class="module-big-stat-title">Cálculo Mental</div>
+            <div class="module-big-stat-detail">${moduleTracker.totalDesafioCorrect} correctas de ${moduleTracker.totalDesafioTotal}</div>
+          </div>
+          <div class="module-big-stat-pct" style="color:${desafioPct >= 70 ? 'var(--green)' : desafioPct >= 50 ? 'var(--yellow)' : 'var(--red)'}">${desafioPct}%</div>
+        </div>
+        ${statBar('', moduleTracker.totalDesafioCorrect, moduleTracker.totalDesafioTotal, desafioPct >= 70 ? 'green' : desafioPct >= 50 ? 'yellow' : 'red')}
+        <div class="module-big-stat" style="margin-top:6px">
+          <div class="module-big-stat-icon">🎯</div>
+          <div class="module-big-stat-info">
+            <div class="module-big-stat-title">Trivia de Cultura</div>
+            <div class="module-big-stat-detail">${moduleTracker.totalTriviaCorrect} correctas de ${moduleTracker.totalTriviaTotal}</div>
+          </div>
+          <div class="module-big-stat-pct" style="color:${triviaPct >= 70 ? 'var(--green)' : triviaPct >= 50 ? 'var(--yellow)' : 'var(--red)'}">${triviaPct}%</div>
+        </div>
+        ${statBar('', moduleTracker.totalTriviaCorrect, moduleTracker.totalTriviaTotal, triviaPct >= 70 ? 'green' : triviaPct >= 50 ? 'yellow' : 'red')}
+      </div>
+
+      <div class="module-overall">${overallMsg}</div>
+
+      <div style="margin-top:12px;font-size:.85rem;color:var(--pink);font-weight:700;font-style:italic">${devMsg}</div>
+
+      <button class="module-btn" id="moduleCloseBtn" onclick="closeModuleResults()" style="pointer-events:none;opacity:.5">
+        🎲 ¿Quieres empezar un nuevo módulo?
+      </button>
+    </div>
+  `;
+
+  const speechText = generateModuleSpeech(analysis, desafioPct, triviaPct, devMsg);
+  speakText(speechText, () => {
+    const btn = document.getElementById('moduleCloseBtn');
+    if(btn){ btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
+  }, { rate: 0.85, pitch: 1.0 });
+}
+
+function closeModuleResults(){
+  stopSpeaking();
+  document.getElementById('moduleModal').style.display = 'none';
+  resetModuleTracker();
+  startNewAdventure();
+}
+
+// DEBUG: Ctrl+Shift+M para forzar reporte de módulo (QUITAR DESPUÉS)
+document.addEventListener('keydown', (e) => {
+  if(e.ctrlKey && e.shiftKey && e.key === 'M'){
+    // Simular datos de las 4 operaciones
+    ['suma','resta','multi','divi'].forEach(op => {
+      moduleTracker.opsCompleted.add(op);
+      moduleTracker.performance[op].stepCount = 2;
+      moduleTracker.performance[op].quizCorrect = 1;
+      moduleTracker.performance[op].starsEarned = 5;
+      moduleTracker.performance[op].dragAttempts = 3;
+    });
+    // Simular algunos errores para ver el análisis
+    moduleTracker.performance.resta.quizErrors = 2;
+    moduleTracker.performance.resta.practiceErrors = 2;
+    moduleTracker.performance.resta.termsErrors = 3;
+    moduleTracker.performance.divi.quizErrors = 3;
+    moduleTracker.performance.divi.practiceErrors = 3;
+    moduleTracker.performance.divi.hintsUsed = 4;
+    moduleTracker.performance.divi.termsErrors = 4;
+    moduleTracker.performance.divi.starsEarned = 2;
+    moduleTracker.totalDesafioCorrect = 14;
+    moduleTracker.totalDesafioTotal = 20;
+    moduleTracker.totalTriviaCorrect = 5;
+    moduleTracker.totalTriviaTotal = 6;
+    moduleTracker.adventuresInModule = 3;
+    showModuleResults();
+  }
+});
 
 // ========== START ==========
 init();
