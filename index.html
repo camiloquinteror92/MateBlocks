@@ -661,6 +661,227 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .module-big-stat-title{font-size:.8rem;font-weight:700;color:var(--text)}
 .module-big-stat-detail{font-size:.7rem;color:var(--text-dim)}
 .module-big-stat-pct{font-size:1.2rem;font-weight:900;min-width:50px;text-align:right}
+
+/* ========== NUEVOS HOVER & ACTIVE EFFECTS ========== */
+
+/* Shimmer animation para botones principales */
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 5px rgba(255,212,59,.2)}50%{box-shadow:0 0 20px rgba(255,212,59,.5)}}
+@keyframes subtleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes rippleEffect{0%{transform:scale(0);opacity:.5}100%{transform:scale(4);opacity:0}}
+@keyframes scorePopIn{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(255,255,255,.08)}50%{border-color:rgba(56,189,248,.3)}}
+
+/* Score bar - glow y pop cuando se actualiza */
+.score-item{transition:all .3s ease}
+@media(hover:hover){
+  .score-item:hover{transform:translateY(-2px);background:rgba(255,255,255,.08);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+}
+.score-item.pop{animation:scorePopIn .4s cubic-bezier(.34,1.56,.64,1)}
+
+/* Story panel hover */
+.story-panel{transition:all .3s ease}
+@media(hover:hover){
+  .story-panel:hover{border-color:rgba(167,139,250,.3);box-shadow:0 4px 20px rgba(167,139,250,.15)}
+}
+
+/* Challenge card hover */
+.challenge-card{transition:all .3s ease}
+@media(hover:hover){
+  .challenge-card:hover{border-color:rgba(56,189,248,.3);box-shadow:0 4px 20px rgba(56,189,248,.15);transform:translateY(-1px)}
+}
+
+/* Hint level hover */
+.hint-level{transition:all .3s ease;cursor:default}
+.hint-level.active{animation:fadeIn .4s ease, subtleFloat 3s ease infinite}
+@media(hover:hover){
+  .hint-level:hover{transform:translateX(4px);filter:brightness(1.15)}
+}
+
+/* Counter chips hover */
+.counter-chip{transition:all .2s ease}
+@media(hover:hover){
+  .counter-chip:hover{transform:scale(1.08);background:rgba(255,255,255,.1);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+}
+
+/* Progress step animations */
+.progress-step{transition:all .4s ease}
+.progress-step.done{box-shadow:0 0 8px rgba(0,214,143,.4)}
+.progress-step.current{animation:zonePulse 2s ease infinite}
+
+/* Term items en math review */
+.term-item{transition:all .3s ease;cursor:default}
+@media(hover:hover){
+  .term-item:hover{transform:translateY(-3px) scale(1.03);border-color:var(--cyan);box-shadow:0 6px 16px rgba(0,0,0,.3);background:rgba(255,255,255,.1)}
+}
+
+/* Fun fact hover */
+.fun-fact{transition:all .3s ease}
+@media(hover:hover){
+  .fun-fact:hover{transform:translateX(4px);background:rgba(255,212,59,.15)}
+}
+
+/* Btn check - shimmer effect */
+.btn-check{position:relative;overflow:hidden}
+.btn-check::after{content:'';position:absolute;top:0;left:-200%;width:200%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 3s ease infinite}
+@media(hover:hover){
+  .btn-check:hover{transform:scale(1.05);box-shadow:0 6px 25px var(--glow-green)}
+}
+
+/* Btn new hover mejorado */
+@media(hover:hover){
+  .btn-new:hover{transform:scale(1.05);box-shadow:0 4px 20px rgba(167,139,250,.4)}
+}
+
+/* Trivia category badge hover */
+.trivia-category{transition:all .3s ease}
+@media(hover:hover){
+  .trivia-category:hover{transform:scale(1.05);background:rgba(255,255,255,.15);box-shadow:0 2px 10px rgba(255,212,59,.3)}
+}
+
+/* Trivia option - efecto más llamativo */
+@media(hover:hover){
+  .trivia-option:hover{background:rgba(56,189,248,.15);border-color:var(--cyan);transform:scale(1.04);box-shadow:0 4px 16px rgba(56,189,248,.3)}
+}
+
+/* Desafío option hover mejorado */
+@media(hover:hover){
+  .desafio-option:hover{background:rgba(34,211,238,.15);border-color:var(--cyan);transform:scale(1.04);box-shadow:0 4px 16px rgba(34,211,238,.3)}
+}
+
+/* Module btn hover */
+.module-btn{transition:all .3s ease}
+@media(hover:hover){
+  .module-btn:hover{transform:scale(1.06);box-shadow:0 6px 25px rgba(167,139,250,.5)}
+}
+
+/* Op card hover en module report */
+.module-op-card{transition:all .2s ease}
+@media(hover:hover){
+  .module-op-card:hover{transform:translateX(4px);background:rgba(0,0,0,.3)}
+}
+
+/* Trivia continue btn hover mejorado */
+.trivia-continue-btn{transition:all .2s ease}
+@media(hover:hover){
+  .trivia-continue-btn:hover{transform:scale(1.06);box-shadow:0 4px 20px rgba(255,212,59,.5)}
+}
+
+/* Continue btn (math review) hover mejorado */
+@media(hover:hover){
+  .continue-btn:hover{transform:scale(1.06);box-shadow:0 6px 25px rgba(0,214,143,.5)}
+}
+
+/* Sound toggle mejorado */
+.sound-toggle{transition:all .3s ease}
+@media(hover:hover){
+  .sound-toggle:hover{transform:scale(1.15) rotate(5deg);box-shadow:0 4px 12px rgba(0,0,0,.3);background:rgba(255,255,255,.1)}
+}
+
+/* Desafío rocket track hover */
+.desafio-track{transition:all .3s ease}
+@media(hover:hover){
+  .desafio-track:hover{box-shadow:0 0 20px rgba(34,211,238,.2)}
+}
+
+/* Drop zone mejorada */
+@media(hover:hover){
+  .drop-zone:hover{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.05);box-shadow:0 4px 16px rgba(0,0,0,.2);transform:translateY(-2px)}
+}
+
+/* Source group hover */
+.source-group{transition:all .2s ease}
+@media(hover:hover){
+  .source-group:hover{border-color:rgba(255,255,255,.3);background:rgba(0,0,0,.3);transform:translateY(-2px)}
+}
+
+/* Workspace title glow */
+.workspace-title{transition:all .3s ease;animation:borderGlow 4s ease infinite}
+
+/* ========== ACTIVE/PRESS STATES (MOBILE + DESKTOP) ========== */
+/* Estos NO dependen de hover:hover, funcionan en touch */
+
+.btn-check:active{transform:scale(.95)!important;box-shadow:0 1px 5px var(--glow-green)!important}
+.btn-new:active{transform:scale(.95)!important}
+.op-btn:active{transform:scale(.93)!important;filter:brightness(1.3)}
+.trivia-option:active{transform:scale(.96)!important;filter:brightness(1.2);box-shadow:0 0 15px rgba(56,189,248,.4)!important}
+.desafio-option:active{transform:scale(.96)!important;filter:brightness(1.2);box-shadow:0 0 15px rgba(34,211,238,.4)!important}
+.term-option:active{transform:scale(.96)!important;filter:brightness(1.2)}
+.continue-btn:active{transform:scale(.95)!important}
+.trivia-continue-btn:active{transform:scale(.95)!important}
+.desafio-continue-btn:active{transform:scale(.95)!important}
+.module-btn:active{transform:scale(.95)!important}
+.listen-btn:active{transform:scale(.96)!important;filter:brightness(1.2)}
+.sound-toggle:active{transform:scale(.9)!important}
+.trash-bin:active{transform:scale(1.15)!important;background:rgba(255,71,87,.3)!important;border-style:solid!important}
+.source-emoji:active{transform:scale(1.25)!important;filter:drop-shadow(0 0 8px var(--cyan))}
+.placed-emoji:active{transform:scale(1.25)!important;filter:drop-shadow(0 0 8px var(--cyan))}
+
+/* Ripple effect para botones */
+.btn,.op-btn,.trivia-option,.desafio-option,.term-option,.listen-btn,.continue-btn,.trivia-continue-btn,.module-btn{position:relative;overflow:hidden}
+.btn .ripple,.op-btn .ripple,.trivia-option .ripple,.desafio-option .ripple,.term-option .ripple,.listen-btn .ripple,.continue-btn .ripple,.trivia-continue-btn .ripple,.module-btn .ripple{
+  position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:rippleEffect .6s ease-out;pointer-events:none
+}
+
+/* ========== MEJORAS MOBILE EXTRA ========== */
+@media(max-width:900px){
+  /* Tap targets más grandes */
+  .trash-bin{width:64px;height:64px;font-size:2rem;border-radius:16px}
+  .sound-toggle{padding:14px 16px;font-size:1.2rem;border-radius:12px}
+
+  /* Botones con más padding en mobile */
+  .btn{padding:18px 28px;font-size:1.15rem;border-radius:16px;min-height:54px}
+  .op-btn{min-width:90px;padding:14px 12px;min-height:60px}
+  .trivia-option{padding:16px 14px;font-size:1rem;border-radius:14px;min-height:52px}
+  .desafio-option{padding:18px 14px;font-size:1.35rem;border-radius:14px;min-height:56px}
+  .term-option{padding:14px 12px;font-size:.88rem;border-radius:12px;min-height:48px}
+  .continue-btn{padding:16px 28px;font-size:1.05rem;min-height:52px}
+  .trivia-continue-btn{padding:16px 28px;font-size:1.05rem;min-height:52px}
+  .module-btn{padding:16px 32px;font-size:1.05rem;min-height:52px}
+  .listen-btn{padding:18px 24px;font-size:1.15rem;min-height:56px}
+
+  /* Feedback visual más fuerte en touch */
+  .trivia-option:active,.desafio-option:active{background:rgba(56,189,248,.2)!important;border-color:var(--cyan)!important}
+  .op-btn:active{box-shadow:0 0 20px rgba(255,255,255,.2)!important}
+
+  /* Smooth scrolling */
+  html{scroll-behavior:smooth}
+  .math-review-content,.desafio-content,.module-content{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+
+  /* Story modal improvements */
+  .story-modal-content{padding:22px 18px}
+  .story-modal-text{font-size:.95rem;padding:14px 16px}
+
+  /* Header mobile más compacto pero legible */
+  .header{padding:6px 10px}
+  .header h1{font-size:.95rem}
+
+  /* Celebración mobile mejorada */
+  .celebration-content{max-width:92%;padding:24px 20px;border-radius:20px}
+  .celebration h2{font-size:1.3rem}
+  .celebration .stars{font-size:2rem}
+}
+
+/* Pantallas muy pequeñas - mejorado */
+@media(max-width:400px){
+  .btn{padding:16px 20px;font-size:1.05rem}
+  .trivia-option{padding:14px 12px;font-size:.92rem}
+  .desafio-option{padding:16px 12px;font-size:1.2rem}
+  .trash-bin{width:58px;height:58px;font-size:1.8rem}
+  .op-btn{min-width:75px;padding:12px 10px}
+  .listen-btn{padding:16px 16px;font-size:1rem}
+}
+
+/* Landscape mobile fix */
+@media(max-width:900px) and (max-height:500px){
+  .story-modal-content{padding:14px 16px}
+  .story-modal-avatar{width:50px;height:50px;font-size:1.5rem;margin-bottom:8px}
+  .story-modal-title{font-size:1rem}
+  .listen-btn{padding:12px 20px;font-size:.95rem}
+  .desafio-track{height:100px;width:36px}
+  .desafio-rocket{font-size:1.2rem}
+  .math-review-content{max-height:92vh}
+}
 </style>
 </head>
 <body>
@@ -960,6 +1181,81 @@ function sndPop(){ pick(popStyles)(); }
 
 // Borrar - whoosh suave
 function sndErase(){ playTone(vary(400,50),.08,'triangle',.07); playTone(vary(300,40),.1,'triangle',.06); }
+
+// Sonido de apertura de modal - whoosh ascendente mágico
+function sndModalOpen(){
+  if(!soundOn) return;
+  ensureAudio();
+  [400,600,900].forEach((f,i)=>setTimeout(()=>playTone(vary(f,30),.08,'sine',.06),i*35));
+  setTimeout(()=>playTone(vary(1200,80),.12,'triangle',.04),120);
+}
+
+// Sonido de cierre de modal - whoosh descendente suave
+function sndModalClose(){
+  if(!soundOn) return;
+  ensureAudio();
+  [800,500,300].forEach((f,i)=>setTimeout(()=>playTone(vary(f,25),.07,'sine',.05),i*30));
+}
+
+// Sonido de revelar pista - chime curioso
+function sndHintReveal(){
+  if(!soundOn) return;
+  ensureAudio();
+  playTone(vary(660,30),.08,'triangle',.07);
+  setTimeout(()=>playTone(vary(880,40),.1,'sine',.06),60);
+  setTimeout(()=>playTone(vary(1100,50),.12,'triangle',.05),130);
+}
+
+// Sonido de actualización de score - sparkle
+function sndScoreUp(){
+  if(!soundOn) return;
+  ensureAudio();
+  [1000,1300,1600].forEach((f,i)=>setTimeout(()=>playTone(vary(f,60),.06,'sine',.05),i*40));
+}
+
+// Sonido hover suave - toque muy sutil
+function sndHover(){
+  if(!soundOn) return;
+  ensureAudio();
+  playTone(vary(800,100),.03,'sine',.03);
+}
+
+// Sonido de zona iluminada durante drag
+function sndZoneHighlight(){
+  if(!soundOn) return;
+  ensureAudio();
+  playTone(vary(700,80),.04,'triangle',.04);
+}
+
+// Sonido de botón presionado - feedback táctil
+function sndButtonPress(){
+  if(!soundOn) return;
+  ensureAudio();
+  playTone(vary(500,40),.04,'sine',.06);
+  setTimeout(()=>playTone(vary(700,50),.03,'triangle',.04),25);
+}
+
+// Sonido de streak/combo
+function sndStreak(){
+  if(!soundOn) return;
+  ensureAudio();
+  [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(vary(f,20),.1,'sine',.08),i*50));
+}
+
+// Sonido de countdown/timer tick
+function sndTick(){
+  if(!soundOn) return;
+  ensureAudio();
+  playTone(vary(1000,50),.03,'triangle',.04);
+}
+
+// Sonido whoosh de transición
+function sndWhoosh(){
+  if(!soundOn) return;
+  ensureAudio();
+  const startF = 200 + Math.random()*200;
+  for(let i=0;i<5;i++) setTimeout(()=>playTone(startF + i*150,.04,'sine',.03),i*15);
+}
 
 // ========== CONFETTI & EFFECTS ==========
 function spawnConfetti(count=30){
@@ -1600,6 +1896,7 @@ function showStoryModal(){
     </div>
   `;
   document.getElementById('storyModal').style.display = 'flex';
+  sndModalOpen();
 
   // Guardar texto limpio para lectura
   window.currentStoryTextClean = storyTextClean;
@@ -1641,6 +1938,7 @@ function startStoryReading(){
 
 function checkOperationQuiz(selectedOp){
   if(quizCooldown > 0) return;
+  sndButtonPress();
 
   const correctOp = currentOp;
   const btns = document.querySelectorAll('.op-btn');
@@ -1813,12 +2111,14 @@ function launchPracticeRound(){
 
 function closeStoryModal(){
   stopSpeaking(); // Detener lectura en voz alta
+  sndModalClose();
   document.getElementById('storyModal').style.display = 'none';
   if(quizCooldownInterval) clearInterval(quizCooldownInterval);
   quizCooldown = 0;
 }
 
 function startGameplay(){
+  sndWhoosh();
   // Continuar con el flujo normal del juego
   clearWorkspace();
   hasChecked = false;
@@ -2031,6 +2331,7 @@ function showMathReviewModal(){
   `;
 
   document.getElementById('mathReviewModal').style.display = 'flex';
+  sndModalOpen();
 
   // Leer explicación del modal - habilitar botón cuando termine
   // Para suma, decir "primer sumando" y "segundo sumando" para que no suene repetitivo
@@ -2236,6 +2537,7 @@ let mathQuizCooldownInterval = null;
 
 function checkMathQuizAnswer(selected, correct){
   if(mathQuizCooldown > 0) return;
+  sndButtonPress();
 
   const btns = document.querySelectorAll('.term-option');
   const feedback = document.getElementById('mathQuizFeedback');
@@ -2494,6 +2796,7 @@ function closeMathReviewAndContinue(){
   stopSpeaking();
 
   document.getElementById('mathReviewModal').style.display = 'none';
+  sndModalClose();
 
   // Desafío Relámpago después del vocabulario, luego trivia
   showDesafioRelampago(() => {
@@ -2634,12 +2937,22 @@ function getHints(){
 // Las pistas se revelan automáticamente al fallar
 
 // ========== RENDER ==========
+let _prevScore = { adventures: 0, streak: 0, stars: 0 };
 function renderScoreBar(){
+  const changed = score.stars !== _prevScore.stars || score.adventures !== _prevScore.adventures || score.streak !== _prevScore.streak;
   document.getElementById('scoreBar').innerHTML = `
     <div class="score-item adventures"><div class="val">${score.adventures}</div><div class="lbl">Aventuras</div></div>
     <div class="score-item streak"><div class="val">🔥${score.streak}</div><div class="lbl">Racha</div></div>
     <div class="score-item stars"><div class="val">⭐${score.stars}</div><div class="lbl">Estrellas</div></div>
   `;
+  if(changed && (_prevScore.stars > 0 || _prevScore.adventures > 0)){
+    sndScoreUp();
+    document.querySelectorAll('.score-item').forEach(el => {
+      el.classList.add('pop');
+      setTimeout(() => el.classList.remove('pop'), 450);
+    });
+  }
+  _prevScore = { ...score };
 }
 
 function renderStoryPanel(){
@@ -3303,6 +3616,7 @@ function handleDragEnter(e){
   e.preventDefault();
   if(e.currentTarget && e.currentTarget.classList){
     e.currentTarget.classList.add('highlight');
+    sndZoneHighlight();
   }
 }
 
@@ -3422,6 +3736,7 @@ document.addEventListener('dragend', () => {
 // ========== CHECK ==========
 function checkAnswer(){
   if(hasChecked) return;
+  sndButtonPress();
 
   const totalPlaced = placedItems.length;
   const totalSource = sourceItems.length;
@@ -3532,6 +3847,7 @@ function checkAnswer(){
   // Auto-reveal hints progressively after each failed attempt
   if(!correct){
     // Revelar pista automáticamente según intentos
+    const prevHint = hintLevel;
     if(attempts === 1 && hintLevel < 1){
       hintLevel = 1; // Primera pista: concepto
     } else if(attempts === 2 && hintLevel < 2){
@@ -3539,6 +3855,7 @@ function checkAnswer(){
     } else if(attempts >= 3 && hintLevel < 3){
       hintLevel = 3; // Tercera pista: la respuesta
     }
+    if(hintLevel > prevHint) sndHintReveal();
     renderHintPanel();
   }
 
@@ -3562,6 +3879,7 @@ function checkAnswer(){
     if(attempts > 2 || hintLevel >= 2) starsEarned = 1;
 
     score.streak++;
+    if(score.streak >= 3 && score.streak % 3 === 0) setTimeout(()=>sndStreak(), 400);
     score.stars += starsEarned;
 
     // Module tracking
@@ -4336,6 +4654,7 @@ function showVictory(){
 
 function closeCelebration(){
   stopSpeaking();
+  sndWhoosh();
   document.getElementById('celebration').style.display = 'none';
   if(moduleTracker.opsCompleted.size >= 4){
     showModuleResults();
@@ -4513,6 +4832,7 @@ function showTriviaQuestion(){
   }).join('');
 
   document.getElementById('triviaModal').style.display = 'flex';
+  sndModalOpen();
   document.getElementById('triviaModal').innerHTML = `
     <div class="trivia-content">
       <div class="trivia-header">
@@ -4684,6 +5004,7 @@ function showTriviaSummary(){
 
 function closeTriviaGame(){
   stopSpeaking();
+  sndModalClose();
   document.getElementById('triviaModal').style.display = 'none';
 
   if(triviaCallback){
@@ -4801,6 +5122,7 @@ function showDesafioRelampago(onComplete){
   generateDesafioProblems();
 
   document.getElementById('desafioModal').style.display = 'flex';
+  sndModalOpen();
   document.getElementById('desafioModal').innerHTML = `
     <div class="desafio-content">
       <div style="font-size:4rem;margin-bottom:16px">🚀</div>
@@ -4822,6 +5144,7 @@ function showDesafioRelampago(onComplete){
 }
 
 function showDesafioQuestion(){
+  sndTick();
   const problem = desafioProblems[desafioCurrentIndex];
   const rocketBottom = 5 + (desafioCurrentIndex > 0 ? getDesafioRocketPosition() : 0);
 
@@ -5030,6 +5353,7 @@ function showDesafioSummary(){
 
 function closeDesafioRelampago(){
   stopSpeaking();
+  sndModalClose();
   document.getElementById('desafioModal').style.display = 'none';
   if(desafioCallback){
     desafioCallback();
@@ -5244,6 +5568,7 @@ function showModuleResults(){
   const callMsg = callMsgs[Math.floor(Math.random() * callMsgs.length)];
 
   document.getElementById('moduleModal').style.display = 'flex';
+  sndModalOpen();
   document.getElementById('moduleModal').innerHTML = `
     <div class="module-content">
       <div style="font-size:3.5rem;margin-bottom:12px">📢</div>
@@ -5433,6 +5758,7 @@ function showModuleReport(){
 
 function closeModuleResults(){
   stopSpeaking();
+  sndModalClose();
   document.getElementById('moduleModal').style.display = 'none';
   resetModuleTracker();
   startNewAdventure();
@@ -5550,6 +5876,38 @@ document.addEventListener('keydown', (e) => {
     debugScenario++;
   }
 });
+
+// ========== RIPPLE EFFECT & BUTTON SOUNDS ==========
+document.addEventListener('click', function(e){
+  // Ripple effect para botones interactivos
+  const rippleTargets = '.btn, .op-btn, .trivia-option, .desafio-option, .term-option, .listen-btn, .continue-btn, .trivia-continue-btn, .module-btn, .desafio-continue-btn';
+  const target = e.target.closest(rippleTargets);
+  if(target){
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    const rect = target.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+    target.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  }
+});
+
+// Sonido sutil de hover en botones principales (solo desktop)
+if(window.matchMedia('(hover:hover)').matches){
+  let lastHoverSound = 0;
+  document.addEventListener('mouseover', function(e){
+    const now = Date.now();
+    if(now - lastHoverSound < 150) return; // Throttle
+    const hoverTargets = '.btn-check, .btn-new, .op-btn, .trivia-option, .desafio-option, .listen-btn';
+    if(e.target.closest(hoverTargets)){
+      lastHoverSound = now;
+      sndHover();
+    }
+  });
+}
 
 // ========== START ==========
 init();
