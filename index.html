@@ -903,6 +903,129 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 .lang-btn{background:var(--card);border:2px solid rgba(255,255,255,.1);border-radius:14px;padding:18px 30px;color:var(--text);font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;min-width:130px}
 .lang-btn:hover{border-color:var(--cyan);transform:scale(1.05)}
 .lang-btn.selected{border-color:var(--green);background:rgba(0,214,143,.15)}
+
+/* ========== MODULE SELECTOR ========== */
+.module-select-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);display:flex;align-items:center;justify-content:center;z-index:998;padding:20px;overflow:auto}
+.module-select-container{text-align:center;max-width:600px;width:100%}
+.module-select-title{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--green),var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.module-select-subtitle{color:var(--text-dim);font-size:.95rem;margin-bottom:24px;font-weight:600}
+.module-select-progress{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;font-size:.85rem;color:var(--text-dim);font-weight:700}
+.module-select-progress .progress-fill{flex:0 0 120px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+.module-select-progress .progress-fill-inner{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:4px;transition:width .5s ease}
+.module-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.module-card{background:linear-gradient(135deg,var(--card),var(--panel));border-radius:16px;padding:20px 14px;border:2px solid rgba(255,255,255,.1);cursor:pointer;transition:all .3s ease;text-align:center;position:relative;overflow:hidden}
+.module-card:not(.completed):hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.module-card:not(.completed):active{transform:scale(.96)}
+.module-card .mc-emoji{font-size:2.2rem;margin-bottom:8px;display:block}
+.module-card .mc-name{font-weight:800;font-size:.85rem;margin-bottom:4px;color:var(--text)}
+.module-card .mc-desc{font-size:.65rem;color:var(--text-dim);line-height:1.3}
+.module-card.suma{border-color:var(--green)}.module-card.suma:not(.completed):hover{border-color:var(--green);box-shadow:0 8px 30px rgba(0,214,143,.3)}
+.module-card.resta{border-color:var(--orange)}.module-card.resta:not(.completed):hover{border-color:var(--orange);box-shadow:0 8px 30px rgba(255,159,67,.3)}
+.module-card.multi{border-color:var(--blue)}.module-card.multi:not(.completed):hover{border-color:var(--blue);box-shadow:0 8px 30px rgba(56,189,248,.3)}
+.module-card.divi{border-color:var(--pink)}.module-card.divi:not(.completed):hover{border-color:var(--pink);box-shadow:0 8px 30px rgba(255,107,157,.3)}
+.module-card.sumaFrac{border-color:var(--purple)}.module-card.sumaFrac:not(.completed):hover{border-color:var(--purple);box-shadow:0 8px 30px rgba(167,139,250,.3)}
+.module-card.restaFrac{border-color:var(--cyan)}.module-card.restaFrac:not(.completed):hover{border-color:var(--cyan);box-shadow:0 8px 30px rgba(34,211,238,.3)}
+.module-card.completed{opacity:.55;cursor:default;pointer-events:none}
+.module-card.completed::after{content:'✅';position:absolute;top:8px;right:8px;font-size:1.2rem}
+.module-card.mystery{background:linear-gradient(135deg,rgba(255,212,59,.08),rgba(167,139,250,.08));animation:mysteryPulse 3s ease infinite}
+.module-card.mystery:hover{border-color:var(--yellow)!important;box-shadow:0 8px 30px rgba(255,212,59,.3)!important;transform:translateY(-4px) scale(1.02)}
+@keyframes mysteryPulse{0%,100%{border-color:rgba(255,212,59,.2)}50%{border-color:rgba(255,212,59,.5)}}
+.module-card.completed .mc-name{text-decoration:line-through;text-decoration-color:var(--green)}
+@media(max-width:900px){
+  .module-select-screen{padding:16px}
+  .module-select-title{font-size:1.4rem}
+  .module-cards{grid-template-columns:repeat(2,1fr);gap:10px}
+  .module-card{padding:16px 10px;border-radius:14px}
+  .module-card .mc-emoji{font-size:1.8rem;margin-bottom:6px}
+  .module-card .mc-name{font-size:.78rem}
+  .module-card .mc-desc{font-size:.6rem}
+}
+@media(max-width:400px){
+  .module-cards{grid-template-columns:repeat(2,1fr);gap:8px}
+  .module-card{padding:14px 8px}
+  .module-card .mc-emoji{font-size:1.5rem}
+  .module-card .mc-name{font-size:.72rem}
+}
+
+/* ========== FRACTION OPERATIONS ========== */
+.op-btn.sumaFrac{border-color:var(--purple);background:rgba(167,139,250,.1)}
+@media(hover:hover){.op-btn.sumaFrac:hover{background:rgba(167,139,250,.2);box-shadow:0 0 15px rgba(167,139,250,.3)}}
+.op-btn.restaFrac{border-color:var(--cyan);background:rgba(34,211,238,.1)}
+@media(hover:hover){.op-btn.restaFrac:hover{background:rgba(34,211,238,.2);box-shadow:0 0 15px rgba(34,211,238,.3)}}
+
+/* Fraction inline display */
+.frac-display{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 3px;line-height:1}
+.frac-display .frac-num,.frac-display .frac-den{font-weight:900;font-size:.85em;padding:1px 4px}
+.frac-display .frac-num{color:var(--green)}
+.frac-display .frac-den{color:var(--blue)}
+.frac-display .frac-bar{width:100%;height:2px;background:var(--orange);margin:1px 0;min-width:20px}
+
+/* Fraction bar visualization for drag-and-drop */
+.frac-bar-visual{display:flex;gap:2px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.15);padding:2px;background:rgba(0,0,0,.2)}
+.frac-cell{flex:1;height:36px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);transition:all .3s ease;min-width:20px}
+.frac-cell.filled-a{background:rgba(167,139,250,.4);border-color:var(--purple)}
+.frac-cell.filled-b{background:rgba(34,211,238,.4);border-color:var(--cyan)}
+.frac-cell.filled-main{background:rgba(0,214,143,.4);border-color:var(--green)}
+.frac-cell.filled-remove{background:rgba(255,71,87,.3);border-color:var(--red)}
+.frac-cell.empty{background:rgba(255,255,255,.04)}
+
+/* Fraction pieces (draggable) */
+.frac-piece{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;font-weight:900;font-size:.7rem;cursor:grab;transition:all .2s;border:2px solid rgba(255,255,255,.2);color:#fff;text-align:center;line-height:1.1}
+.frac-piece.group-a{background:rgba(167,139,250,.3);border-color:var(--purple)}
+.frac-piece.group-b{background:rgba(34,211,238,.3);border-color:var(--cyan)}
+.frac-piece.group-main{background:rgba(0,214,143,.3);border-color:var(--green)}
+.frac-piece:active{transform:scale(1.15);cursor:grabbing}
+
+/* Fraction workspace bar (drop target) */
+.frac-workspace{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%}
+.frac-zone-container{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:400px}
+.frac-zone-label{font-size:.8rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.frac-bar-drop{display:flex;gap:2px;border-radius:10px;overflow:hidden;border:3px dashed rgba(255,255,255,.2);padding:4px;background:rgba(0,0,0,.15);min-height:48px;transition:all .3s ease;width:100%}
+.frac-bar-drop.drag-over{border-color:var(--yellow);background:rgba(255,212,59,.08)}
+.frac-bar-slot{flex:1;min-height:40px;border-radius:6px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;transition:all .2s;min-width:24px}
+.frac-bar-slot.occupied-a{background:rgba(167,139,250,.35);border-color:var(--purple);border-style:solid}
+.frac-bar-slot.occupied-b{background:rgba(34,211,238,.35);border-color:var(--cyan);border-style:solid}
+.frac-bar-slot.occupied-main{background:rgba(0,214,143,.35);border-color:var(--green);border-style:solid}
+.frac-bar-slot.occupied-remove{background:rgba(255,71,87,.3);border-color:var(--red);border-style:solid}
+
+/* Fraction equation display in review modal */
+.frac-equation-display{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.frac-equation-display .frac-box{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:50px}
+.frac-equation-display .frac-box .frac-val{font-size:1.6rem;font-weight:900;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:10px}
+.frac-equation-display .frac-box .frac-val.num-val{background:rgba(0,214,143,.15);border:2px solid var(--green);color:var(--green)}
+.frac-equation-display .frac-box .frac-val.den-val{background:rgba(56,189,248,.15);border:2px solid var(--blue);color:var(--blue)}
+.frac-equation-display .frac-box .frac-line{width:100%;height:3px;background:var(--orange);border-radius:2px}
+.frac-equation-display .frac-box .frac-lbl{font-size:.5rem;font-weight:800;color:var(--cyan);text-transform:uppercase}
+.frac-equation-display .frac-sym{font-size:1.5rem;font-weight:900;color:var(--orange)}
+
+/* LCD step display */
+.lcd-step{background:rgba(255,212,59,.08);border-radius:10px;padding:10px 14px;margin:10px 0;border-left:3px solid var(--yellow);text-align:left;font-size:.8rem;color:var(--text);line-height:1.6}
+.lcd-step b{color:var(--yellow)}
+.lcd-step .frac-display{font-size:.9rem}
+
+/* Desafío fracción inline */
+.desafio-frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px;line-height:1}
+.desafio-frac .df-num,.desafio-frac .df-den{font-weight:900;font-size:.7em;padding:2px 6px}
+.desafio-frac .df-bar{width:100%;height:3px;background:var(--orange);margin:2px 0}
+
+/* Challenge card fraction display */
+.challenge-op.sumaFrac{color:var(--purple)}
+.challenge-op.restaFrac{color:var(--cyan)}
+
+/* Mobile adjustments for fractions */
+@media(max-width:900px){
+  .frac-piece{width:38px;height:38px;font-size:.6rem}
+  .frac-cell{height:30px;min-width:16px}
+  .frac-bar-slot{min-height:34px;min-width:18px}
+  .frac-bar-drop{padding:3px}
+  .frac-equation-display .frac-box .frac-val{font-size:1.3rem;width:38px;height:38px}
+  .operation-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+}
+@media(max-width:400px){
+  .frac-piece{width:34px;height:34px;font-size:.55rem}
+  .frac-cell{height:26px;min-width:14px}
+  .operation-btns{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
@@ -969,6 +1092,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
 <div class="trivia-modal" id="triviaModal" style="display:none"></div>
 <div class="desafio-modal" id="desafioModal" style="display:none"></div>
 <div class="module-modal" id="moduleModal" style="display:none"></div>
+<div class="module-select-screen" id="moduleSelectScreen" style="display:none"></div>
 
 <script>
 // ========== IDIOMA ==========
@@ -1590,6 +1714,134 @@ const STORIES = [
       { op: 'resta', template: 'En el escritorio de {char} hay {a} lápices de colores. Unos estudiantes le piden prestado material y ella les da {b} lápices. Los estudiantes se van a estudiar con sus lápices.', question: '¿Cuántos lápices le quedan en el escritorio?', successMsg: '¡{ans} lápices!', emoji: '✏️', emojiB: '✏️' },
       { op: 'divi', template: '{char} organizó una lectura grupal y tiene {a} marcapáginas para repartir entre {b} niños que vinieron. Quiere que cada niño reciba la misma cantidad.', question: '¿Cuántos marcapáginas le tocan a cada niño?', successMsg: '¡{ans} marcapáginas!', emoji: '🔖', groupEmoji: '👧' }
     ]
+  },
+  // ========== FRACTION STORIES ==========
+  {
+    title: "La Pizzería de los Hermanos", avatar: "🍕", character: "Marco",
+    steps: [
+      { op: 'sumaFrac', template: '{char} cortó una pizza en partes iguales. Él se comió {a} de la pizza. Su hermana Lucía llegó y se comió {b} de otra pizza del mismo tamaño. Quieren saber cuánta pizza comieron entre los dos.', question: '¿Cuánta pizza comieron entre los dos?', successMsg: '¡Comieron {ans} de pizza!', emoji: '🍕', isFrac: true },
+      { op: 'suma', template: '{char} tiene que preparar más pizzas. Ya tenía {a} pizzas listas en el horno y sacó {b} más que recién terminó de hornear.', question: '¿Cuántas pizzas tiene listas ahora?', successMsg: '¡{ans} pizzas!', emoji: '🍕', emojiB: '🍕' },
+      { op: 'resta', template: 'La pizzería tenía {a} refrescos en la nevera. Durante la tarde los clientes se tomaron {b} refrescos.', question: '¿Cuántos refrescos quedan?', successMsg: '¡{ans} refrescos!', emoji: '🥤', emojiB: '🥤' },
+      { op: 'multi', template: '{char} armó {a} cajas de pizza para delivery. En cada caja puso {b} porciones de ajo. Todas las cajas llevan lo mismo.', question: '¿Cuántas porciones de ajo usó en total?', successMsg: '¡{ans} porciones!', emoji: '🧄', groupEmoji: '📦' }
+    ]
+  },
+  {
+    title: "El Pastel de Chocolate", avatar: "🎂", character: "Valentina",
+    steps: [
+      { op: 'restaFrac', template: '{char} horneó un pastel de chocolate y lo cortó en partes iguales. Tenía {a} del pastel guardado. Su hermano llegó y se comió {b} del pastel.', question: '¿Cuánto pastel le queda a {char}?', successMsg: '¡Le queda {ans} del pastel!', emoji: '🍰', isFrac: true },
+      { op: 'suma', template: 'Para decorar, {char} preparó {a} rosas de crema y luego hizo {b} más porque le faltaban.', question: '¿Cuántas rosas de crema hizo en total?', successMsg: '¡{ans} rosas!', emoji: '🌹', emojiB: '🌹' },
+      { op: 'divi', template: '{char} tiene {a} fresas para decorar y quiere ponerlas en {b} rebanadas por igual.', question: '¿Cuántas fresas van en cada rebanada?', successMsg: '¡{ans} fresas!', emoji: '🍓', groupEmoji: '🍰' },
+      { op: 'multi', template: '{char} prepara {a} bolsas de galletas de regalo. Cada bolsa lleva {b} galletas. Todas iguales.', question: '¿Cuántas galletas necesita en total?', successMsg: '¡{ans} galletas!', emoji: '🍪', groupEmoji: '🛍️' }
+    ]
+  },
+  {
+    title: "La Sandía Gigante", avatar: "🍉", character: "Tomás",
+    steps: [
+      { op: 'sumaFrac', template: '{char} encontró una sandía gigante en el mercado y la cortó en partes iguales. En la mañana se comió {a} de la sandía. Por la tarde, con mucho calor, se comió {b} más.', question: '¿Cuánta sandía se comió en todo el día?', successMsg: '¡Se comió {ans} de la sandía!', emoji: '🍉', isFrac: true },
+      { op: 'resta', template: '{char} también compró {a} mangos en el mercado. Le regaló {b} mangos a su vecina.', question: '¿Cuántos mangos le quedan?', successMsg: '¡{ans} mangos!', emoji: '🥭', emojiB: '🥭' },
+      { op: 'divi', template: '{char} tiene {a} uvas y quiere repartirlas entre {b} amigos por igual.', question: '¿Cuántas uvas le tocan a cada amigo?', successMsg: '¡{ans} uvas!', emoji: '🍇', groupEmoji: '👦' },
+      { op: 'multi', template: '{char} plantó {a} filas de melones. Cada fila tiene {b} melones. Todas las filas son iguales.', question: '¿Cuántos melones plantó en total?', successMsg: '¡{ans} melones!', emoji: '🍈', groupEmoji: '🌱' }
+    ]
+  },
+  {
+    title: "El Tanque de Agua", avatar: "💧", character: "Camila",
+    steps: [
+      { op: 'restaFrac', template: '{char} tenía un tanque de agua lleno. Por la mañana usó agua para regar el jardín y el tanque quedó con {a} de su capacidad. Por la tarde lavó el carro y gastó {b} más del tanque.', question: '¿Cuánta agua le queda en el tanque?', successMsg: '¡Le queda {ans} del tanque!', emoji: '💧', isFrac: true },
+      { op: 'suma', template: '{char} revisó las mangueras del jardín. Encontró {a} mangueras buenas y luego encontró {b} más en el garaje.', question: '¿Cuántas mangueras tiene en total?', successMsg: '¡{ans} mangueras!', emoji: '🪴', emojiB: '🪴' },
+      { op: 'resta', template: '{char} tenía {a} macetas con flores. Una tormenta fuerte llegó y se dañaron {b} macetas.', question: '¿Cuántas macetas buenas le quedan?', successMsg: '¡{ans} macetas!', emoji: '🌸', emojiB: '🌸' },
+      { op: 'multi', template: '{char} compró {a} paquetes de semillas. Cada paquete trae {b} semillas. Todos los paquetes traen lo mismo.', question: '¿Cuántas semillas tiene en total?', successMsg: '¡{ans} semillas!', emoji: '🌱', groupEmoji: '📦' }
+    ]
+  },
+  {
+    title: "La Barra de Chocolate", avatar: "🍫", character: "Daniel",
+    steps: [
+      { op: 'sumaFrac', template: '{char} tiene una barra de chocolate dividida en partes iguales. Ya se comió {a} de la barra. Su amigo le regala otra barra igual y come {b} de esa segunda barra. Quiere saber cuánto chocolate comió en total.', question: '¿Cuánto chocolate comió en total?', successMsg: '¡Comió {ans} de barra!', emoji: '🍫', isFrac: true },
+      { op: 'resta', template: '{char} tenía {a} dulces en su bolsa. Le dio {b} dulces a su hermana.', question: '¿Cuántos dulces le quedan?', successMsg: '¡{ans} dulces!', emoji: '🍬', emojiB: '🍬' },
+      { op: 'suma', template: '{char} encontró {a} monedas en el sofá y luego {b} más en su mochila.', question: '¿Cuántas monedas encontró en total?', successMsg: '¡{ans} monedas!', emoji: '🪙', emojiB: '🪙' },
+      { op: 'divi', template: '{char} compró {a} chicles y quiere repartirlos entre {b} amigos por igual.', question: '¿Cuántos chicles le tocan a cada amigo?', successMsg: '¡{ans} chicles!', emoji: '🫧', groupEmoji: '👦' }
+    ]
+  },
+  {
+    title: "El Jardín de la Abuela", avatar: "🌻", character: "la Abuela Rosa",
+    steps: [
+      { op: 'restaFrac', template: '{char} tiene un terreno rectangular dividido en partes iguales para diferentes cultivos. Tenía {a} del terreno sembrado con flores. Decidió quitar {b} de ese espacio para plantar vegetales.', question: '¿Cuánto del terreno queda con flores?', successMsg: '¡Queda {ans} del terreno con flores!', emoji: '🌻', isFrac: true },
+      { op: 'multi', template: '{char} tiene {a} macetas grandes. En cada maceta plantó {b} semillas de girasol. Todas las macetas tienen lo mismo.', question: '¿Cuántas semillas plantó en total?', successMsg: '¡{ans} semillas!', emoji: '🌻', groupEmoji: '🪴' },
+      { op: 'suma', template: 'En el jardín hay {a} mariposas volando. Llegan {b} mariposas más atraídas por las flores nuevas.', question: '¿Cuántas mariposas hay ahora?', successMsg: '¡{ans} mariposas!', emoji: '🦋', emojiB: '🦋' },
+      { op: 'resta', template: '{char} cortó {a} rosas del jardín. Le regaló {b} rosas a su vecina.', question: '¿Cuántas rosas le quedan?', successMsg: '¡{ans} rosas!', emoji: '🌹', emojiB: '🌹' }
+    ]
+  },
+  // ========== MÁS HISTORIAS DE FRACCIONES ==========
+  {
+    title: "La Fiesta de Helados", avatar: "🍦", character: "Sofía",
+    steps: [
+      { op: 'sumaFrac', template: '{char} compró un helado enorme y lo dividió en partes iguales. Ella comió {a} del helado y su amiga comió {b} del mismo helado.', question: '¿Cuánto helado comieron entre las dos?', successMsg: '¡Comieron {ans} del helado!', emoji: '🍦', isFrac: true },
+      { op: 'resta', template: '{char} tenía {a} servilletas para la fiesta. Usó {b} servilletas para limpiar.', question: '¿Cuántas servilletas le quedan?', successMsg: '¡{ans} servilletas!', emoji: '🧻', emojiB: '🧻' },
+      { op: 'suma', template: '{char} preparó {a} vasos de jugo y luego hizo {b} más.', question: '¿Cuántos vasos de jugo tiene?', successMsg: '¡{ans} vasos!', emoji: '🥤', emojiB: '🥤' },
+      { op: 'multi', template: '{char} puso {a} mesas y en cada mesa {b} cucharas. Todas iguales.', question: '¿Cuántas cucharas usó en total?', successMsg: '¡{ans} cucharas!', emoji: '🥄', groupEmoji: '🪑' }
+    ]
+  },
+  {
+    title: "El Acuario Mágico", avatar: "🐠", character: "Pablo",
+    steps: [
+      { op: 'sumaFrac', template: '{char} llenó {a} del acuario con agua dulce por la mañana. Por la tarde le agregó {b} más de agua.', question: '¿Cuánto del acuario tiene agua ahora?', successMsg: '¡Tiene {ans} del acuario con agua!', emoji: '💧', isFrac: true },
+      { op: 'divi', template: '{char} tiene {a} peces y quiere ponerlos en {b} peceras por igual.', question: '¿Cuántos peces van en cada pecera?', successMsg: '¡{ans} peces!', emoji: '🐠', groupEmoji: '🏠' },
+      { op: 'resta', template: '{char} tenía {a} conchas decorativas. Se le rompieron {b}.', question: '¿Cuántas conchas buenas le quedan?', successMsg: '¡{ans} conchas!', emoji: '🐚', emojiB: '🐚' },
+      { op: 'suma', template: '{char} compró {a} plantas acuáticas y luego le regalaron {b} más.', question: '¿Cuántas plantas tiene ahora?', successMsg: '¡{ans} plantas!', emoji: '🌿', emojiB: '🌿' }
+    ]
+  },
+  {
+    title: "La Carrera de Ciclismo", avatar: "🚴", character: "Mateo",
+    steps: [
+      { op: 'sumaFrac', template: '{char} recorrió {a} de la pista en la primera vuelta. En la segunda vuelta avanzó {b} más de la pista.', question: '¿Cuánto de la pista recorrió en total?', successMsg: '¡Recorrió {ans} de la pista!', emoji: '🚴', isFrac: true },
+      { op: 'multi', template: '{char} tiene {a} ruedas de repuesto y cada una tiene {b} rayos.', question: '¿Cuántos rayos hay en total?', successMsg: '¡{ans} rayos!', emoji: '⭕', groupEmoji: '🛞' },
+      { op: 'suma', template: '{char} ganó {a} medallas el año pasado y {b} este año.', question: '¿Cuántas medallas tiene en total?', successMsg: '¡{ans} medallas!', emoji: '🏅', emojiB: '🏅' },
+      { op: 'resta', template: '{char} llevó {a} botellas de agua y se tomó {b} durante la carrera.', question: '¿Cuántas botellas le quedan?', successMsg: '¡{ans} botellas!', emoji: '💧', emojiB: '💧' }
+    ]
+  },
+  {
+    title: "El Pintor Creativo", avatar: "🎨", character: "Isabella",
+    steps: [
+      { op: 'sumaFrac', template: '{char} pintó {a} de un mural por la mañana con colores cálidos. Después del almuerzo pintó {b} más con colores fríos.', question: '¿Cuánto del mural pintó en total?', successMsg: '¡Pintó {ans} del mural!', emoji: '🎨', isFrac: true },
+      { op: 'resta', template: '{char} tenía {a} tubos de pintura. Usó {b} para terminar su obra.', question: '¿Cuántos tubos le quedan?', successMsg: '¡{ans} tubos!', emoji: '🖌️', emojiB: '🖌️' },
+      { op: 'divi', template: '{char} tiene {a} pinceles y los organiza en {b} vasos por igual.', question: '¿Cuántos pinceles van en cada vaso?', successMsg: '¡{ans} pinceles!', emoji: '🖌️', groupEmoji: '🥤' },
+      { op: 'suma', template: '{char} hizo {a} dibujos ayer y {b} hoy.', question: '¿Cuántos dibujos hizo en total?', successMsg: '¡{ans} dibujos!', emoji: '🖼️', emojiB: '🖼️' }
+    ]
+  },
+  {
+    title: "El Jugo de Naranja", avatar: "🍊", character: "Diego",
+    steps: [
+      { op: 'restaFrac', template: '{char} preparó una jarra de jugo de naranja. Tenía {a} de la jarra llena. Su mamá se sirvió {b} de la jarra.', question: '¿Cuánto jugo queda en la jarra?', successMsg: '¡Queda {ans} de la jarra!', emoji: '🍊', isFrac: true },
+      { op: 'suma', template: '{char} exprimió {a} naranjas y luego {b} más.', question: '¿Cuántas naranjas exprimió en total?', successMsg: '¡{ans} naranjas!', emoji: '🍊', emojiB: '🍊' },
+      { op: 'multi', template: '{char} preparó {a} vasos y en cada vaso puso {b} cubitos de hielo.', question: '¿Cuántos cubitos usó en total?', successMsg: '¡{ans} cubitos!', emoji: '🧊', groupEmoji: '🥤' },
+      { op: 'resta', template: '{char} tenía {a} popotes y repartió {b} entre sus amigos.', question: '¿Cuántos popotes le quedan?', successMsg: '¡{ans} popotes!', emoji: '🥤', emojiB: '🥤' }
+    ]
+  },
+  {
+    title: "La Cuerda de Saltar", avatar: "🪢", character: "Luna",
+    steps: [
+      { op: 'restaFrac', template: '{char} tiene una cuerda larga. Ya usó {a} de la cuerda para hacer una red. Ahora necesita cortar {b} más para hacer un columpio.', question: '¿Cuánta cuerda le queda?', successMsg: '¡Le queda {ans} de la cuerda!', emoji: '🪢', isFrac: true },
+      { op: 'multi', template: '{char} hizo {a} pulseras y cada pulsera tiene {b} nudos.', question: '¿Cuántos nudos hizo en total?', successMsg: '¡{ans} nudos!', emoji: '🪢', groupEmoji: '📿' },
+      { op: 'suma', template: '{char} tiene {a} cintas rojas y {b} cintas azules.', question: '¿Cuántas cintas tiene en total?', successMsg: '¡{ans} cintas!', emoji: '🎀', emojiB: '🎀' },
+      { op: 'divi', template: '{char} cortó {a} trozos de cuerda y los repartió entre {b} amigos.', question: '¿Cuántos trozos le tocan a cada amigo?', successMsg: '¡{ans} trozos!', emoji: '🪢', groupEmoji: '👧' }
+    ]
+  },
+  {
+    title: "La Batería del Celular", avatar: "📱", character: "Andrés",
+    steps: [
+      { op: 'restaFrac', template: 'La batería del celular de {char} estaba en {a} de su capacidad. Jugó un rato y la batería bajó {b} más.', question: '¿Cuánta batería le queda?', successMsg: '¡Le queda {ans} de batería!', emoji: '📱', isFrac: true },
+      { op: 'suma', template: '{char} descargó {a} juegos nuevos y luego {b} más.', question: '¿Cuántos juegos descargó en total?', successMsg: '¡{ans} juegos!', emoji: '🎮', emojiB: '🎮' },
+      { op: 'resta', template: '{char} tenía {a} fotos y borró {b} porque estaban borrosas.', question: '¿Cuántas fotos le quedan?', successMsg: '¡{ans} fotos!', emoji: '📸', emojiB: '📸' },
+      { op: 'multi', template: '{char} tiene {a} carpetas y en cada carpeta {b} archivos.', question: '¿Cuántos archivos tiene en total?', successMsg: '¡{ans} archivos!', emoji: '📁', groupEmoji: '📂' }
+    ]
+  },
+  {
+    title: "El Globo Aerostático", avatar: "🎈", character: "Emma",
+    steps: [
+      { op: 'restaFrac', template: '{char} tiene un globo aerostático con un tanque de gas. El tanque tenía {a} de combustible. Durante el vuelo gastó {b} del tanque.', question: '¿Cuánto combustible le queda?', successMsg: '¡Le queda {ans} del tanque!', emoji: '🎈', isFrac: true },
+      { op: 'divi', template: '{char} llevó {a} sándwiches y los repartió entre los {b} pasajeros.', question: '¿Cuántos sándwiches le tocan a cada uno?', successMsg: '¡{ans} sándwiches!', emoji: '🥪', groupEmoji: '🧑' },
+      { op: 'suma', template: 'Durante el vuelo vieron {a} aves y luego {b} más.', question: '¿Cuántas aves vieron en total?', successMsg: '¡{ans} aves!', emoji: '🦅', emojiB: '🦅' },
+      { op: 'resta', template: '{char} llevó {a} globos pequeños de adorno pero {b} se volaron.', question: '¿Cuántos globos le quedan?', successMsg: '¡{ans} globos!', emoji: '🎈', emojiB: '🎈' }
+    ]
   }
 ];
 
@@ -1737,6 +1989,134 @@ const STORIES_EN = [
       { op: 'resta', template: 'On {char}\'s desk there are {a} colored pencils. Some students ask to borrow supplies and she gives them {b} pencils. The students go off to study with their pencils.', question: 'How many pencils are left on the desk?', successMsg: '{ans} pencils!', emoji: '✏️', emojiB: '✏️' },
       { op: 'divi', template: '{char} organized a group reading and has {a} bookmarks to share among {b} kids who came. She wants each kid to get the same amount.', question: 'How many bookmarks does each kid get?', successMsg: '{ans} bookmarks!', emoji: '🔖', groupEmoji: '👧' }
     ]
+  },
+  // ========== FRACTION STORIES (EN) ==========
+  {
+    title: "The Brothers' Pizzeria", avatar: "🍕", character: "Marco",
+    steps: [
+      { op: 'sumaFrac', template: '{char} cut a pizza into equal slices. He ate {a} of the pizza. His sister Lucia came and ate {b} of another pizza of the same size. They want to know how much pizza they ate together.', question: 'How much pizza did they eat together?', successMsg: 'They ate {ans} of pizza!', emoji: '🍕', isFrac: true },
+      { op: 'suma', template: '{char} needs to make more pizzas. He already had {a} pizzas ready in the oven and took out {b} more that he just finished baking.', question: 'How many pizzas does he have ready now?', successMsg: '{ans} pizzas!', emoji: '🍕', emojiB: '🍕' },
+      { op: 'resta', template: 'The pizzeria had {a} sodas in the fridge. During the afternoon customers drank {b} sodas.', question: 'How many sodas are left?', successMsg: '{ans} sodas!', emoji: '🥤', emojiB: '🥤' },
+      { op: 'multi', template: '{char} packed {a} pizza boxes for delivery. In each box he put {b} garlic portions. All boxes have the same.', question: 'How many garlic portions did he use in total?', successMsg: '{ans} portions!', emoji: '🧄', groupEmoji: '📦' }
+    ]
+  },
+  {
+    title: "The Chocolate Cake", avatar: "🎂", character: "Valentina",
+    steps: [
+      { op: 'restaFrac', template: '{char} baked a chocolate cake and cut it into equal pieces. She had {a} of the cake saved. Her brother came and ate {b} of the cake.', question: 'How much cake does {char} have left?', successMsg: 'She has {ans} of the cake left!', emoji: '🍰', isFrac: true },
+      { op: 'suma', template: 'To decorate, {char} made {a} cream roses and then made {b} more because she needed extra.', question: 'How many cream roses did she make in total?', successMsg: '{ans} roses!', emoji: '🌹', emojiB: '🌹' },
+      { op: 'divi', template: '{char} has {a} strawberries to decorate and wants to put them on {b} slices equally.', question: 'How many strawberries go on each slice?', successMsg: '{ans} strawberries!', emoji: '🍓', groupEmoji: '🍰' },
+      { op: 'multi', template: '{char} prepares {a} bags of gift cookies. Each bag has {b} cookies. All the same.', question: 'How many cookies does she need in total?', successMsg: '{ans} cookies!', emoji: '🍪', groupEmoji: '🛍️' }
+    ]
+  },
+  {
+    title: "The Giant Watermelon", avatar: "🍉", character: "Thomas",
+    steps: [
+      { op: 'sumaFrac', template: '{char} found a giant watermelon at the market and cut it into equal pieces. In the morning he ate {a} of the watermelon. In the afternoon, feeling very hot, he ate {b} more.', question: 'How much watermelon did he eat all day?', successMsg: 'He ate {ans} of the watermelon!', emoji: '🍉', isFrac: true },
+      { op: 'resta', template: '{char} also bought {a} mangos at the market. He gave {b} mangos to his neighbor.', question: 'How many mangos does he have left?', successMsg: '{ans} mangos!', emoji: '🥭', emojiB: '🥭' },
+      { op: 'divi', template: '{char} has {a} grapes and wants to share them equally among {b} friends.', question: 'How many grapes does each friend get?', successMsg: '{ans} grapes!', emoji: '🍇', groupEmoji: '👦' },
+      { op: 'multi', template: '{char} planted {a} rows of melons. Each row has {b} melons. All rows are the same.', question: 'How many melons did he plant in total?', successMsg: '{ans} melons!', emoji: '🍈', groupEmoji: '🌱' }
+    ]
+  },
+  {
+    title: "The Water Tank", avatar: "💧", character: "Camila",
+    steps: [
+      { op: 'restaFrac', template: '{char} had a full water tank. In the morning she used water to water the garden and the tank was left with {a} of its capacity. In the afternoon she washed the car and used {b} more of the tank.', question: 'How much water is left in the tank?', successMsg: 'She has {ans} of the tank left!', emoji: '💧', isFrac: true },
+      { op: 'suma', template: '{char} checked the garden hoses. She found {a} good hoses and then found {b} more in the garage.', question: 'How many hoses does she have in total?', successMsg: '{ans} hoses!', emoji: '🪴', emojiB: '🪴' },
+      { op: 'resta', template: '{char} had {a} flower pots. A strong storm came and damaged {b} pots.', question: 'How many good pots does she have left?', successMsg: '{ans} pots!', emoji: '🌸', emojiB: '🌸' },
+      { op: 'multi', template: '{char} bought {a} seed packets. Each packet has {b} seeds. All packets have the same.', question: 'How many seeds does she have in total?', successMsg: '{ans} seeds!', emoji: '🌱', groupEmoji: '📦' }
+    ]
+  },
+  {
+    title: "The Chocolate Bar", avatar: "🍫", character: "Daniel",
+    steps: [
+      { op: 'sumaFrac', template: '{char} has a chocolate bar divided into equal pieces. He already ate {a} of the bar. His friend gives him another identical bar and he eats {b} of that second bar. He wants to know how much chocolate he ate in total.', question: 'How much chocolate did he eat in total?', successMsg: 'He ate {ans} of a bar!', emoji: '🍫', isFrac: true },
+      { op: 'resta', template: '{char} had {a} candies in his bag. He gave {b} candies to his sister.', question: 'How many candies does he have left?', successMsg: '{ans} candies!', emoji: '🍬', emojiB: '🍬' },
+      { op: 'suma', template: '{char} found {a} coins in the couch and then {b} more in his backpack.', question: 'How many coins did he find in total?', successMsg: '{ans} coins!', emoji: '🪙', emojiB: '🪙' },
+      { op: 'divi', template: '{char} bought {a} gumballs and wants to share them equally among {b} friends.', question: 'How many gumballs does each friend get?', successMsg: '{ans} gumballs!', emoji: '🫧', groupEmoji: '👦' }
+    ]
+  },
+  {
+    title: "Grandma's Garden", avatar: "🌻", character: "Grandma Rosa",
+    steps: [
+      { op: 'restaFrac', template: '{char} has a rectangular plot of land divided into equal parts for different crops. She had {a} of the land planted with flowers. She decided to remove {b} of that space to plant vegetables.', question: 'How much of the land still has flowers?', successMsg: '{ans} of the land still has flowers!', emoji: '🌻', isFrac: true },
+      { op: 'multi', template: '{char} has {a} big pots. In each pot she planted {b} sunflower seeds. All pots have the same.', question: 'How many seeds did she plant in total?', successMsg: '{ans} seeds!', emoji: '🌻', groupEmoji: '🪴' },
+      { op: 'suma', template: 'In the garden there are {a} butterflies flying. {b} more butterflies arrive attracted by the new flowers.', question: 'How many butterflies are there now?', successMsg: '{ans} butterflies!', emoji: '🦋', emojiB: '🦋' },
+      { op: 'resta', template: '{char} cut {a} roses from the garden. She gave {b} roses to her neighbor.', question: 'How many roses does she have left?', successMsg: '{ans} roses!', emoji: '🌹', emojiB: '🌹' }
+    ]
+  },
+  // ========== MORE FRACTION STORIES (EN) ==========
+  {
+    title: "The Ice Cream Party", avatar: "🍦", character: "Sofia",
+    steps: [
+      { op: 'sumaFrac', template: '{char} bought a huge ice cream and divided it into equal parts. She ate {a} of the ice cream and her friend ate {b} of the same ice cream.', question: 'How much ice cream did they eat together?', successMsg: 'They ate {ans} of the ice cream!', emoji: '🍦', isFrac: true },
+      { op: 'resta', template: '{char} had {a} napkins for the party. She used {b} napkins to clean up.', question: 'How many napkins are left?', successMsg: '{ans} napkins!', emoji: '🧻', emojiB: '🧻' },
+      { op: 'suma', template: '{char} made {a} glasses of juice and then {b} more.', question: 'How many glasses of juice does she have?', successMsg: '{ans} glasses!', emoji: '🥤', emojiB: '🥤' },
+      { op: 'multi', template: '{char} set up {a} tables and put {b} spoons on each. All the same.', question: 'How many spoons did she use in total?', successMsg: '{ans} spoons!', emoji: '🥄', groupEmoji: '🪑' }
+    ]
+  },
+  {
+    title: "The Magic Aquarium", avatar: "🐠", character: "Pablo",
+    steps: [
+      { op: 'sumaFrac', template: '{char} filled {a} of the aquarium with fresh water in the morning. In the afternoon he added {b} more water.', question: 'How much of the aquarium has water now?', successMsg: 'It has {ans} of the aquarium with water!', emoji: '💧', isFrac: true },
+      { op: 'divi', template: '{char} has {a} fish and wants to put them in {b} tanks equally.', question: 'How many fish go in each tank?', successMsg: '{ans} fish!', emoji: '🐠', groupEmoji: '🏠' },
+      { op: 'resta', template: '{char} had {a} decorative shells. {b} of them broke.', question: 'How many good shells are left?', successMsg: '{ans} shells!', emoji: '🐚', emojiB: '🐚' },
+      { op: 'suma', template: '{char} bought {a} aquatic plants and was given {b} more.', question: 'How many plants does he have now?', successMsg: '{ans} plants!', emoji: '🌿', emojiB: '🌿' }
+    ]
+  },
+  {
+    title: "The Cycling Race", avatar: "🚴", character: "Mateo",
+    steps: [
+      { op: 'sumaFrac', template: '{char} covered {a} of the track in the first lap. In the second lap he covered {b} more of the track.', question: 'How much of the track did he cover in total?', successMsg: 'He covered {ans} of the track!', emoji: '🚴', isFrac: true },
+      { op: 'multi', template: '{char} has {a} spare wheels and each one has {b} spokes.', question: 'How many spokes are there in total?', successMsg: '{ans} spokes!', emoji: '⭕', groupEmoji: '🛞' },
+      { op: 'suma', template: '{char} won {a} medals last year and {b} this year.', question: 'How many medals does he have in total?', successMsg: '{ans} medals!', emoji: '🏅', emojiB: '🏅' },
+      { op: 'resta', template: '{char} brought {a} water bottles and drank {b} during the race.', question: 'How many bottles are left?', successMsg: '{ans} bottles!', emoji: '💧', emojiB: '💧' }
+    ]
+  },
+  {
+    title: "The Creative Painter", avatar: "🎨", character: "Isabella",
+    steps: [
+      { op: 'sumaFrac', template: '{char} painted {a} of a mural in the morning with warm colors. After lunch she painted {b} more with cool colors.', question: 'How much of the mural did she paint in total?', successMsg: 'She painted {ans} of the mural!', emoji: '🎨', isFrac: true },
+      { op: 'resta', template: '{char} had {a} paint tubes. She used {b} to finish her artwork.', question: 'How many tubes are left?', successMsg: '{ans} tubes!', emoji: '🖌️', emojiB: '🖌️' },
+      { op: 'divi', template: '{char} has {a} brushes and organizes them in {b} cups equally.', question: 'How many brushes go in each cup?', successMsg: '{ans} brushes!', emoji: '🖌️', groupEmoji: '🥤' },
+      { op: 'suma', template: '{char} made {a} drawings yesterday and {b} today.', question: 'How many drawings did she make in total?', successMsg: '{ans} drawings!', emoji: '🖼️', emojiB: '🖼️' }
+    ]
+  },
+  {
+    title: "The Orange Juice", avatar: "🍊", character: "Diego",
+    steps: [
+      { op: 'restaFrac', template: '{char} made a pitcher of orange juice. It was {a} full. His mom poured herself {b} of the pitcher.', question: 'How much juice is left in the pitcher?', successMsg: '{ans} of the pitcher is left!', emoji: '🍊', isFrac: true },
+      { op: 'suma', template: '{char} squeezed {a} oranges and then {b} more.', question: 'How many oranges did he squeeze in total?', successMsg: '{ans} oranges!', emoji: '🍊', emojiB: '🍊' },
+      { op: 'multi', template: '{char} prepared {a} glasses and put {b} ice cubes in each.', question: 'How many ice cubes did he use in total?', successMsg: '{ans} ice cubes!', emoji: '🧊', groupEmoji: '🥤' },
+      { op: 'resta', template: '{char} had {a} straws and gave {b} to his friends.', question: 'How many straws are left?', successMsg: '{ans} straws!', emoji: '🥤', emojiB: '🥤' }
+    ]
+  },
+  {
+    title: "The Jump Rope", avatar: "🪢", character: "Luna",
+    steps: [
+      { op: 'restaFrac', template: '{char} has a long rope. She used {a} of the rope to make a net. Now she needs to cut {b} more to make a swing.', question: 'How much rope does she have left?', successMsg: 'She has {ans} of the rope left!', emoji: '🪢', isFrac: true },
+      { op: 'multi', template: '{char} made {a} bracelets and each bracelet has {b} knots.', question: 'How many knots did she make in total?', successMsg: '{ans} knots!', emoji: '🪢', groupEmoji: '📿' },
+      { op: 'suma', template: '{char} has {a} red ribbons and {b} blue ribbons.', question: 'How many ribbons does she have in total?', successMsg: '{ans} ribbons!', emoji: '🎀', emojiB: '🎀' },
+      { op: 'divi', template: '{char} cut {a} pieces of rope and shared them among {b} friends.', question: 'How many pieces does each friend get?', successMsg: '{ans} pieces!', emoji: '🪢', groupEmoji: '👧' }
+    ]
+  },
+  {
+    title: "The Phone Battery", avatar: "📱", character: "Andrew",
+    steps: [
+      { op: 'restaFrac', template: "{char}'s phone battery was at {a} of its capacity. He played for a while and the battery dropped {b} more.", question: 'How much battery is left?', successMsg: '{ans} battery left!', emoji: '📱', isFrac: true },
+      { op: 'suma', template: '{char} downloaded {a} new games and then {b} more.', question: 'How many games did he download in total?', successMsg: '{ans} games!', emoji: '🎮', emojiB: '🎮' },
+      { op: 'resta', template: '{char} had {a} photos and deleted {b} because they were blurry.', question: 'How many photos are left?', successMsg: '{ans} photos!', emoji: '📸', emojiB: '📸' },
+      { op: 'multi', template: '{char} has {a} folders and each folder has {b} files.', question: 'How many files does he have in total?', successMsg: '{ans} files!', emoji: '📁', groupEmoji: '📂' }
+    ]
+  },
+  {
+    title: "The Hot Air Balloon", avatar: "🎈", character: "Emma",
+    steps: [
+      { op: 'restaFrac', template: '{char} has a hot air balloon with a gas tank. The tank had {a} of fuel. During the flight she used {b} of the tank.', question: 'How much fuel is left?', successMsg: '{ans} of the tank left!', emoji: '🎈', isFrac: true },
+      { op: 'divi', template: '{char} brought {a} sandwiches and shared them among {b} passengers.', question: 'How many sandwiches does each one get?', successMsg: '{ans} sandwiches!', emoji: '🥪', groupEmoji: '🧑' },
+      { op: 'suma', template: 'During the flight they saw {a} birds and then {b} more.', question: 'How many birds did they see in total?', successMsg: '{ans} birds!', emoji: '🦅', emojiB: '🦅' },
+      { op: 'resta', template: '{char} brought {a} small decorative balloons but {b} flew away.', question: 'How many balloons are left?', successMsg: '{ans} balloons!', emoji: '🎈', emojiB: '🎈' }
+    ]
   }
 ];
 
@@ -1748,6 +2128,11 @@ let currentStory = null;
 let currentStep = 0;
 let numA = 0, numB = 0, answer = 0;
 let currentOp = 'suma';
+let fracA = {num:0, den:1}, fracB = {num:0, den:1}, fracAnswer = {num:0, den:1}, fracLCD = 1;
+let currentModule = null;
+let completedModules = new Set();
+let moduleOrder = []; // Randomized order of operations for surprise modules
+let currentModuleIndex = -1; // Which module we're on
 let score = { adventures: 0, streak: 0, stars: 0 };
 
 // ========== MODULE TRACKING ==========
@@ -1757,7 +2142,9 @@ let moduleTracker = {
     suma:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
     resta: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
     multi: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
-    divi:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 }
+    divi:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+    sumaFrac: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+    restaFrac: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 }
   },
   totalDesafioCorrect: 0,
   totalDesafioTotal: 0,
@@ -1773,7 +2160,9 @@ function resetModuleTracker(){
       suma:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
       resta: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
       multi: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
-      divi:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 }
+      divi:  { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+      sumaFrac: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 },
+      restaFrac: { quizErrors:0, quizCorrect:0, dragAttempts:0, hintsUsed:0, starsEarned:0, termsErrors:0, termsCorrect:0, stepCount:0, practiceErrors:0 }
     },
     totalDesafioCorrect: 0,
     totalDesafioTotal: 0,
@@ -1811,7 +2200,33 @@ function getOPS(){ return {
   resta: {label: L('Resta','Subtract'), sym:'−'},
   multi: {label: L('Multi','Multiply'), sym:'×'},
   divi: {label: L('Div','Divide'), sym:'÷'},
+  sumaFrac: {label: L('Suma Frac','Frac Addition'), sym:'+'},
+  restaFrac: {label: L('Resta Frac','Frac Subtraction'), sym:'−'},
 };}
+function isFracOp(op){ return op === 'sumaFrac' || op === 'restaFrac'; }
+
+// ========== FRACTION HELPERS ==========
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){let t=b; b=a%b; a=t;} return a; }
+function lcm(a,b){ return a && b ? Math.abs(a*b)/gcd(a,b) : 0; }
+function simplifyFrac(n,d){ const g=gcd(n,d); return {num:n/g, den:d/g}; }
+
+function renderFracInline(n,d,cls){
+  cls = cls || '';
+  return `<span class="frac-display ${cls}"><span class="frac-num">${n}</span><span class="frac-bar"></span><span class="frac-den">${d}</span></span>`;
+}
+
+function speakFraction(n,d){
+  if(LANG==='en'){
+    const ords = {2:'half',3:'third',4:'fourth',5:'fifth',6:'sixth',7:'seventh',8:'eighth',9:'ninth',10:'tenth',12:'twelfth',15:'fifteenth',20:'twentieth',24:'twenty-fourth'};
+    const base = ords[d] || (d+'th');
+    if(n===1) return 'one '+base;
+    return n+' '+(ords[d]?base+'s':(d+'ths'));
+  }
+  const names = {2:'medio',3:'tercio',4:'cuarto',5:'quinto',6:'sexto',7:'séptimo',8:'octavo',9:'noveno',10:'décimo',12:'doceavo',15:'quinceavo',20:'veinteavo',24:'veinticuatroavo'};
+  const base = names[d] || (d+'avo');
+  if(n===1) return 'un '+base;
+  return n+' '+base+'s';
+}
 const OPS = getOPS();
 
 // ========== VALIDACIÓN DE NOMBRE ==========
@@ -1839,6 +2254,7 @@ function loadPlayerFromStorage(){
         PLAYER.name = parsed.name;
         PLAYER.nickname = parsed.nickname;
         PLAYER.fullName = parsed.fullName;
+        if(parsed.lang) LANG = parsed.lang;
         return true;
       }
     }
@@ -1852,8 +2268,101 @@ function savePlayerToStorage(){
     localStorage.setItem('mateblocks_player', JSON.stringify({
       name: PLAYER.name,
       nickname: PLAYER.nickname,
-      fullName: PLAYER.fullName
+      fullName: PLAYER.fullName,
+      lang: LANG
     }));
+  } catch(e){}
+}
+
+let currentPhase = 'selector'; // 'selector','story','gameplay','review','desafio','trivia','victory'
+
+function saveProgressToStorage(){
+  try {
+    if(!canUseStorage()) return;
+    localStorage.setItem('mateblocks_progress', JSON.stringify({
+      completedModules: [...completedModules],
+      currentModule: currentModule,
+      currentPhase: currentPhase,
+      score: score,
+      problemData: {
+        numA, numB, answer, currentOp,
+        fracA, fracB, fracAnswer, fracLCD,
+        currentEmoji, currentEmojiB: currentEmojiB || '', currentGroupEmoji: currentGroupEmoji || '',
+        storyTitle: currentStory ? currentStory.title : '',
+        storySteps: currentStory ? currentStory.steps : [],
+        currentStep
+      },
+      moduleTracker: {
+        ...moduleTracker,
+        opsCompleted: [...moduleTracker.opsCompleted]
+      }
+    }));
+  } catch(e){}
+}
+
+function loadProgressFromStorage(){
+  try {
+    if(!canUseStorage()) return false;
+    const data = localStorage.getItem('mateblocks_progress');
+    if(data){
+      const parsed = JSON.parse(data);
+      if(parsed.completedModules){
+        completedModules = new Set(parsed.completedModules);
+      }
+      if(parsed.currentModule){
+        currentModule = parsed.currentModule;
+      }
+      if(parsed.currentPhase){
+        currentPhase = parsed.currentPhase;
+      }
+      if(parsed.score){
+        score.adventures = parsed.score.adventures || 0;
+        score.streak = parsed.score.streak || 0;
+        score.stars = parsed.score.stars || 0;
+      }
+      if(parsed.problemData){
+        const pd = parsed.problemData;
+        numA = pd.numA || 0; numB = pd.numB || 0; answer = pd.answer || 0;
+        currentOp = pd.currentOp || 'suma';
+        fracA = pd.fracA || {num:0,den:1};
+        fracB = pd.fracB || {num:0,den:1};
+        fracAnswer = pd.fracAnswer || {num:0,den:1};
+        fracLCD = pd.fracLCD || 1;
+        currentEmoji = pd.currentEmoji || '🔵';
+        currentEmojiB = pd.currentEmojiB || pd.currentEmoji || '🔵';
+        currentGroupEmoji = pd.currentGroupEmoji || '';
+        currentStep = pd.currentStep || 0;
+        if(pd.storyTitle && pd.storySteps && pd.storySteps.length > 0){
+          currentStory = { title: pd.storyTitle, avatar: '📖', character: '', steps: pd.storySteps };
+          // Try to find full story from STORIES array
+          const stories = getStories();
+          const match = stories.find(s => s.title === pd.storyTitle);
+          if(match) currentStory = { ...match, steps: pd.storySteps };
+        }
+      }
+      if(parsed.moduleTracker){
+        moduleTracker.opsCompleted = new Set(parsed.moduleTracker.opsCompleted || []);
+        moduleTracker.totalDesafioCorrect = parsed.moduleTracker.totalDesafioCorrect || 0;
+        moduleTracker.totalDesafioTotal = parsed.moduleTracker.totalDesafioTotal || 0;
+        moduleTracker.totalTriviaCorrect = parsed.moduleTracker.totalTriviaCorrect || 0;
+        moduleTracker.totalTriviaTotal = parsed.moduleTracker.totalTriviaTotal || 0;
+        moduleTracker.adventuresInModule = parsed.moduleTracker.adventuresInModule || 0;
+        ['suma','resta','multi','divi','sumaFrac','restaFrac'].forEach(op => {
+          if(parsed.moduleTracker.performance && parsed.moduleTracker.performance[op]){
+            Object.assign(moduleTracker.performance[op], parsed.moduleTracker.performance[op]);
+          }
+        });
+      }
+      return completedModules.size > 0 || (currentModule && currentPhase !== 'selector');
+    }
+  } catch(e){}
+  return false;
+}
+
+function clearProgressStorage(){
+  try {
+    if(!canUseStorage()) return;
+    localStorage.removeItem('mateblocks_progress');
   } catch(e){}
 }
 
@@ -1968,15 +2477,26 @@ function init(){
     });
 
     document.getElementById('changeNameBtn').addEventListener('click', ()=>{
-      try { if(canUseStorage()) localStorage.removeItem('mateblocks_player'); } catch(e){}
+      try {
+        if(canUseStorage()){
+          localStorage.removeItem('mateblocks_player');
+          localStorage.removeItem('mateblocks_progress');
+        }
+      } catch(e){}
       location.reload();
     });
 
-    // Siempre mostrar pantalla de bienvenida al iniciar
-    showWelcomeScreen();
+    // Si ya hay jugador guardado, saltar directo al juego
+    if(loadPlayerFromStorage()){
+      document.documentElement.lang = LANG === 'en' ? 'en' : 'es';
+      document.title = LANG === 'en' ? '🧩 MateBlocks — Math Adventure' : '🧩 MateBlocks — Aventura Matemática';
+      startApp();
+    } else {
+      showWelcomeScreen();
+    }
   } catch(e) {
     console.error('Init error:', e);
-    startNewAdventure();
+    showWelcomeScreen();
   }
 }
 
@@ -2013,21 +2533,218 @@ function showStartButton(){
 }
 
 function startWithGreeting(){
-  const greetings = LANG === 'en' ? [
-    `Hello ${PLAYER.fullName}! Welcome to MateBlocks!`,
-    `${PLAYER.name}! Great to see you! Let's learn math!`,
-    `Hi ${PLAYER.nickname}! Get ready for a math adventure!`
-  ] : [
-    `¡Hola ${PLAYER.fullName}! ¡Bienvenido a MateBlocks!`,
-    `¡${PLAYER.name}! ¡Qué bueno verte! ¡Vamos a aprender matemáticas!`,
-    `¡Hola ${PLAYER.nickname}! ¡Prepárate para una aventura matemática!`
-  ];
+  // Load saved progress
+  const hasProgress = loadProgressFromStorage();
+  renderScoreBar();
+
+  // Si hay un módulo en progreso, restaurar donde quedó
+  if(hasProgress && currentModule && currentPhase !== 'selector'){
+    const greeting = LANG === 'en'
+      ? `Welcome back ${PLAYER.nickname}! Let's continue where you left off!`
+      : `¡Bienvenido de vuelta ${PLAYER.nickname}! ¡Continuemos donde quedamos!`;
+    setTimeout(() => {
+      speakText(greeting, () => { resumeFromPhase(); }, { rate: 0.88, pitch: 1.0 });
+    }, 300);
+    return;
+  }
+
+  const greetings = hasProgress
+    ? (LANG === 'en' ? [
+        `Welcome back ${PLAYER.name}! You had ${completedModules.size} modules done. Let's keep going!`,
+        `${PLAYER.nickname}! Good to see you again! Let's continue where you left off!`
+      ] : [
+        `¡Bienvenido de vuelta ${PLAYER.name}! Tenías ${completedModules.size} módulos completados. ¡Sigamos!`,
+        `¡${PLAYER.nickname}! ¡Qué bueno verte de nuevo! ¡Continuemos donde quedamos!`
+      ])
+    : (LANG === 'en' ? [
+        `Hello ${PLAYER.fullName}! Welcome to MateBlocks!`,
+        `${PLAYER.name}! Great to see you! Let's learn math!`,
+        `Hi ${PLAYER.nickname}! Get ready for a math adventure!`
+      ] : [
+        `¡Hola ${PLAYER.fullName}! ¡Bienvenido a MateBlocks!`,
+        `¡${PLAYER.name}! ¡Qué bueno verte! ¡Vamos a aprender matemáticas!`,
+        `¡Hola ${PLAYER.nickname}! ¡Prepárate para una aventura matemática!`
+      ]);
 
   setTimeout(() => {
     speakText(greetings[Math.floor(Math.random() * greetings.length)], () => {
-      startNewAdventure();
+      showModuleSelector();
     }, { rate: 0.88, pitch: 1.0 });
   }, 300);
+}
+
+function resumeFromPhase(){
+  // Resume from the saved phase within a module
+  switch(currentPhase){
+    case 'story':
+      // Restart the story modal for this step
+      loadCurrentStep();
+      break;
+    case 'gameplay':
+      // Regenerate the workspace
+      clearWorkspace();
+      renderWorkspace();
+      renderChallengeCard();
+      renderScoreBar();
+      renderHintPanel();
+      startGameplay();
+      break;
+    case 'review':
+      showMathReviewModal();
+      break;
+    case 'desafio':
+      // Restart desafío, then trivia, then victory flow
+      showDesafioRelampago(() => {
+        showTriviaGame(() => {
+          if(currentStep < currentStory.steps.length - 1){
+            currentStep++;
+            loadCurrentStep();
+          } else {
+            showVictory();
+          }
+        });
+      });
+      break;
+    case 'trivia':
+      // Restart trivia, then victory flow
+      showTriviaGame(() => {
+        if(currentStep < currentStory.steps.length - 1){
+          currentStep++;
+          loadCurrentStep();
+        } else {
+          showVictory();
+        }
+      });
+      break;
+    case 'victory':
+      showVictory();
+      break;
+    default:
+      showModuleSelector();
+  }
+}
+
+// ========== MODULE SELECTOR ==========
+const MODULE_INFO = {
+  suma:      { emoji: '➕', color: 'var(--green)',  nameEs: 'Suma',                        nameEn: 'Addition',              descEs: 'Juntar cosas',         descEn: 'Put things together' },
+  resta:     { emoji: '➖', color: 'var(--orange)', nameEs: 'Resta',                       nameEn: 'Subtraction',           descEs: 'Quitar cosas',         descEn: 'Take things away' },
+  multi:     { emoji: '✖️', color: 'var(--blue)',   nameEs: 'Multiplicación',              nameEn: 'Multiplication',        descEs: 'Grupos iguales',       descEn: 'Equal groups' },
+  divi:      { emoji: '➗', color: 'var(--pink)',   nameEs: 'División',                    nameEn: 'Division',              descEs: 'Repartir igual',       descEn: 'Share equally' },
+  sumaFrac:  { emoji: '🔢', color: 'var(--purple)', nameEs: 'Suma de Fraccionarios',    nameEn: 'Fraction Addition',     descEs: 'Juntar partes',        descEn: 'Put parts together' },
+  restaFrac: { emoji: '🔢', color: 'var(--cyan)',   nameEs: 'Resta de Fraccionarios', nameEn: 'Fraction Subtraction', descEs: 'Quitar partes',        descEn: 'Take parts away' }
+};
+
+const SURPRISE_EMOJIS = ['🎁','🎯','🌟','🎲','🔮','🏆'];
+
+function reshuffleModuleOrder(){
+  // Always re-shuffle: completed ones stay revealed, pending ones get new positions
+  const completed = ['suma','resta','multi','divi','sumaFrac','restaFrac'].filter(op => completedModules.has(op));
+  const pending = ['suma','resta','multi','divi','sumaFrac','restaFrac'].filter(op => !completedModules.has(op));
+  // Shuffle pending
+  for(let i = pending.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [pending[i], pending[j]] = [pending[j], pending[i]];
+  }
+  // Mix completed and pending in random positions
+  const all = [...completed, ...pending];
+  for(let i = all.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [all[i], all[j]] = [all[j], all[i]];
+  }
+  moduleOrder = all;
+}
+
+function showModuleSelector(){
+  stopSpeaking();
+  currentPhase = 'selector'; saveProgressToStorage();
+  reshuffleModuleOrder();
+  const screen = document.getElementById('moduleSelectScreen');
+  const done = completedModules.size;
+  const total = 6;
+  const pct = Math.round((done / total) * 100);
+
+  const cardsHTML = moduleOrder.map((op, i) => {
+    const info = MODULE_INFO[op];
+    const isDone = completedModules.has(op);
+    const revealedName = LANG === 'en' ? info.nameEn : info.nameEs;
+    const surpriseEmoji = SURPRISE_EMOJIS[i % SURPRISE_EMOJIS.length];
+
+    if(isDone){
+      // Revealed: show what it was
+      return `
+        <div class="module-card ${op} completed">
+          <span class="mc-emoji">${info.emoji}</span>
+          <div class="mc-name">${revealedName}</div>
+          <div class="mc-desc" style="color:var(--green)">✅ ${L('Completado','Completed')}</div>
+        </div>
+      `;
+    } else {
+      // Mystery: hidden operation
+      return `
+        <div class="module-card mystery" onclick="selectModule('${op}', ${i})" style="border-color:rgba(255,212,59,.3)">
+          <span class="mc-emoji" style="font-size:2.5rem">${surpriseEmoji}</span>
+          <div class="mc-name" style="color:var(--yellow)">${L('Módulo Sorpresa','Surprise Module')} ${i + 1}</div>
+          <div class="mc-desc">${L('¿Qué operación será?','What operation will it be?')} 🤔</div>
+        </div>
+      `;
+    }
+  }).join('');
+
+  screen.innerHTML = `
+    <div class="module-select-container">
+      <div style="font-size:3rem;margin-bottom:10px">🧩</div>
+      <div class="module-select-title">${L('¡Módulos Sorpresa!','Surprise Modules!')}</div>
+      <div class="module-select-subtitle">${PLAYER.name}, ${L('escoge un módulo y descubre qué operación es','pick a module and discover which operation it is')} 🎁</div>
+      <div class="module-select-progress">
+        ${done}/${total} ${L('descubiertos','discovered')}
+        <div class="progress-fill"><div class="progress-fill-inner" style="width:${pct}%"></div></div>
+      </div>
+      <div class="module-cards">${cardsHTML}</div>
+    </div>
+  `;
+  screen.style.display = 'flex';
+
+  // Voice
+  if(done === 0){
+    speakText(L(
+      `${PLAYER.nickname}, cada módulo es una sorpresa. Escoge uno y descubre qué operación te toca. ¡Tú debes identificarla! Tienes 6 módulos por descubrir.`,
+      `${PLAYER.nickname}, each module is a surprise. Pick one and discover which operation you get. You must identify it! You have 6 modules to discover.`
+    ), null, { rate: 0.9, pitch: 1.0 });
+  } else if(done < total){
+    speakText(L(
+      `¡Muy bien ${PLAYER.nickname}! Ya descubriste ${done} de ${total} módulos. ¡Escoge otro sobre sorpresa!`,
+      `Great job ${PLAYER.nickname}! You discovered ${done} of ${total} modules. Pick another surprise!`
+    ), null, { rate: 0.9, pitch: 1.0 });
+  }
+}
+
+function selectModule(op, idx){
+  stopSpeaking();
+  sndClick();
+  currentModule = op;
+  currentModuleIndex = idx;
+  document.getElementById('moduleSelectScreen').style.display = 'none';
+  startModuleAdventure();
+}
+
+function startModuleAdventure(){
+  const stories = getStories();
+  // Filter stories that have at least one step matching currentModule
+  const matching = stories.filter(s => s.steps.some(st => st.op === currentModule));
+  if(matching.length === 0){ startNewAdventure(); return; }
+
+  const original = matching[Math.floor(Math.random() * matching.length)];
+  // Extract ONLY the steps of the current module's operation
+  const moduleSteps = original.steps.filter(st => st.op === currentModule);
+
+  currentStory = {
+    ...original,
+    steps: moduleSteps
+  };
+  currentStep = 0;
+  previousAnswer = 0;
+
+  loadCurrentStep();
 }
 
 function calculateGridSize(){
@@ -2071,6 +2788,22 @@ function clearWorkspace(){
     for(let i = 0; i < numA; i++){
       sourceItems.push({id: itemIdCounter++, emoji: currentEmoji, group: 'main'});
     }
+  } else if(currentOp === 'sumaFrac'){
+    // Suma de fracciones: piezas de 1/LCD cada una
+    const piecesA = fracA.num * (fracLCD / fracA.den);
+    const piecesB = fracB.num * (fracLCD / fracB.den);
+    for(let i = 0; i < piecesA; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: `1/${fracLCD}`, group: 'A', isFracPiece: true});
+    }
+    for(let i = 0; i < piecesB; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: `1/${fracLCD}`, group: 'B', isFracPiece: true});
+    }
+  } else if(currentOp === 'restaFrac'){
+    // Resta de fracciones: piezas de fracA en LCD
+    const piecesA = fracA.num * (fracLCD / fracA.den);
+    for(let i = 0; i < piecesA; i++){
+      sourceItems.push({id: itemIdCounter++, emoji: `1/${fracLCD}`, group: 'main', isFracPiece: true});
+    }
   }
 }
 
@@ -2107,6 +2840,7 @@ let quizWrongAttempts = 0;
 let originalStory = null;
 let originalStep = 0;
 let originalNumA = 0, originalNumB = 0, originalAnswer = 0;
+let originalFracA = {num:0,den:1}, originalFracB = {num:0,den:1}, originalFracAnswer = {num:0,den:1}, originalFracLCD = 1;
 let isPracticeRound = false;
 
 // Cuentos cortos de práctica para cuando se equivoca (uno por operación, variados)
@@ -2134,6 +2868,18 @@ const PRACTICE_STORIES = {
     { character: 'Emma', avatar: '👧', template: '{char} compró {a} bombones para hacer bolsitas de regalo. Tiene {b} bolsitas vacías y quiere que cada una lleve exactamente la misma cantidad.', question: '¿Cuántos bombones van en cada bolsita?', emoji: '🍬', groupEmoji: '🛍️' },
     { character: 'Nicolás', avatar: '🧒', template: 'La maestra le dio a {char} {a} crayones para que los reparta entre los {b} niños de su mesa. Cada niño debe recibir lo mismo.', question: '¿Cuántos crayones le tocan a cada niño?', emoji: '🖍️', groupEmoji: '👧' },
     { character: 'Paula', avatar: '👧', template: '{char} hizo {a} galletas para la cena. Saca {b} platos y quiere poner la misma cantidad en cada plato para que se vea bonito.', question: '¿Cuántas galletas van en cada plato?', emoji: '🍪', groupEmoji: '🍽️' },
+  ],
+  sumaFrac: [
+    { character: 'Emilio', avatar: '👦', template: '{char} tiene una pizza cortada en partes iguales. Se comió {a} de la pizza. Su primo llegó y se comió {b} de otra pizza del mismo tamaño.', question: '¿Cuánta pizza comieron entre los dos?', emoji: '🍕', isFrac: true },
+    { character: 'Lucía', avatar: '👧', template: '{char} llenó {a} de su botella de agua en la mañana. En la tarde llenó {b} más de otra botella igual.', question: '¿Cuánta agua tiene en total?', emoji: '💧', isFrac: true },
+    { character: 'Pablo', avatar: '🧒', template: '{char} pintó {a} de una pared de azul. Después pintó {b} más de verde.', question: '¿Cuánto de la pared pintó en total?', emoji: '🎨', isFrac: true },
+    { character: 'Rosa', avatar: '👧', template: '{char} comió {a} de un pastel de fresa. Su hermana comió {b} de otro pastel igual.', question: '¿Cuánto pastel comieron entre las dos?', emoji: '🍰', isFrac: true },
+  ],
+  restaFrac: [
+    { character: 'Carlos', avatar: '👦', template: '{char} tenía {a} de una barra de chocolate. Le dio {b} a su hermana.', question: '¿Cuánto chocolate le queda?', emoji: '🍫', isFrac: true },
+    { character: 'Marina', avatar: '👧', template: '{char} tenía {a} de un tanque de jugo. Se tomó {b} durante el recreo.', question: '¿Cuánto jugo le queda en el tanque?', emoji: '🧃', isFrac: true },
+    { character: 'Andrés', avatar: '🧒', template: '{char} tenía {a} de una hoja de stickers. Usó {b} para decorar su cuaderno.', question: '¿Cuántos stickers le quedan?', emoji: '⭐', isFrac: true },
+    { character: 'Elena', avatar: '👧', template: '{char} tenía {a} de una cinta de colores. Cortó {b} para hacer un moño.', question: '¿Cuánta cinta le queda?', emoji: '🎀', isFrac: true },
   ]
 };
 
@@ -2161,6 +2907,18 @@ const PRACTICE_STORIES_EN = {
     { character: 'Emma', avatar: '👧', template: '{char} bought {a} chocolates to make gift bags. She has {b} empty bags and wants each one to have exactly the same amount.', question: 'How many chocolates go in each bag?', emoji: '🍬', groupEmoji: '🛍️' },
     { character: 'Nicolas', avatar: '🧒', template: 'The teacher gave {char} {a} crayons to share among the {b} kids at his table. Each kid must get the same.', question: 'How many crayons does each kid get?', emoji: '🖍️', groupEmoji: '👧' },
     { character: 'Paula', avatar: '👧', template: '{char} made {a} cookies for dinner. She gets {b} plates and wants to put the same amount on each plate so it looks nice.', question: 'How many cookies go on each plate?', emoji: '🍪', groupEmoji: '🍽️' },
+  ],
+  sumaFrac: [
+    { character: 'Emilio', avatar: '👦', template: '{char} has a pizza cut into equal slices. He ate {a} of the pizza. His cousin came and ate {b} of another pizza of the same size.', question: 'How much pizza did they eat together?', emoji: '🍕', isFrac: true },
+    { character: 'Lucy', avatar: '👧', template: '{char} filled {a} of her water bottle in the morning. In the afternoon she filled {b} more of another identical bottle.', question: 'How much water does she have in total?', emoji: '💧', isFrac: true },
+    { character: 'Pablo', avatar: '🧒', template: '{char} painted {a} of a wall blue. Then he painted {b} more green.', question: 'How much of the wall did he paint in total?', emoji: '🎨', isFrac: true },
+    { character: 'Rosa', avatar: '👧', template: '{char} ate {a} of a strawberry cake. Her sister ate {b} of another identical cake.', question: 'How much cake did they eat together?', emoji: '🍰', isFrac: true },
+  ],
+  restaFrac: [
+    { character: 'Carlos', avatar: '👦', template: '{char} had {a} of a chocolate bar. He gave {b} to his sister.', question: 'How much chocolate does he have left?', emoji: '🍫', isFrac: true },
+    { character: 'Marina', avatar: '👧', template: '{char} had {a} of a juice tank. She drank {b} during recess.', question: 'How much juice is left in the tank?', emoji: '🧃', isFrac: true },
+    { character: 'Andrew', avatar: '🧒', template: '{char} had {a} of a sticker sheet. He used {b} to decorate his notebook.', question: 'How many stickers does he have left?', emoji: '⭐', isFrac: true },
+    { character: 'Elena', avatar: '👧', template: '{char} had {a} of a colorful ribbon. She cut {b} to make a bow.', question: 'How much ribbon does she have left?', emoji: '🎀', isFrac: true },
   ]
 };
 
@@ -2173,13 +2931,17 @@ function getOperationExplanation(op){
       suma: ['juntar cosas, cuando llegan más o agregas algo','unir dos cantidades, cuando algo se suma a lo que ya tenías','cuando tienes algo y te dan más, y ahora tienes más que antes','poner todo junto para saber el total'],
       resta: ['quitar cosas, cuando algo se va, se vende o se pierde','cuando tenías algo y ahora tienes menos porque algo se fue','separar una parte de lo que tenías, te quedan menos','cuando pierdes, regalas, vendes o se rompe algo y te quedan menos'],
       multi: ['cuando tienes grupos iguales, como varias cajas con lo mismo adentro','repetir una cantidad varias veces, como sumar lo mismo muchas veces','cuando tienes varios grupos y todos tienen la misma cantidad','contar cuánto hay en total cuando tienes varios grupos del mismo tamaño'],
-      divi: ['repartir en partes iguales, como dividir entre varias personas','cuando tienes algo y lo quieres separar en grupos iguales','dar la misma cantidad a cada uno, que sea parejo para todos','separar algo en partes del mismo tamaño para que sea justo']
+      divi: ['repartir en partes iguales, como dividir entre varias personas','cuando tienes algo y lo quieres separar en grupos iguales','dar la misma cantidad a cada uno, que sea parejo para todos','separar algo en partes del mismo tamaño para que sea justo'],
+      sumaFrac: ['juntar partes de un entero, como pedazos de pizza o pastel','cuando sumas fracciones, juntas las partes que cada uno comió o usó','sumar pedazos o porciones de algo que está dividido en partes iguales','cuando tienes partes de algo y quieres saber cuánto hay en total'],
+      restaFrac: ['quitar partes de un entero, como cuando te comes un pedazo de pastel','cuando restas fracciones, quitas una porción de lo que tenías','restar pedazos de algo dividido en partes iguales','cuando tenías una parte de algo y usas o das una porción']
     },
     en: {
       suma: ['putting things together, when more arrive or you add something','combining two amounts, when something is added to what you already had','when you have something and get more, so now you have more than before','putting everything together to find the total'],
       resta: ['taking things away, when something leaves, is sold or is lost','when you had something and now you have less because something left','removing part of what you had, you end up with less','when you lose, give away, sell or break something and have fewer'],
       multi: ['when you have equal groups, like several boxes with the same amount inside','repeating a number several times, like adding the same thing over and over','when you have several groups and they all have the same amount','counting the total when you have several groups of the same size'],
-      divi: ['sharing equally, like dividing among several people','when you have something and want to split it into equal groups','giving the same amount to everyone, so it is fair for all','splitting something into parts of the same size so it is fair']
+      divi: ['sharing equally, like dividing among several people','when you have something and want to split it into equal groups','giving the same amount to everyone, so it is fair for all','splitting something into parts of the same size so it is fair'],
+      sumaFrac: ['adding parts of a whole, like pieces of pizza or cake','when you add fractions, you combine the parts each person ate or used','adding portions of something divided into equal parts','when you have parts of something and want to know the total'],
+      restaFrac: ['taking away parts of a whole, like eating a piece of cake','when you subtract fractions, you remove a portion from what you had','subtracting portions of something divided into equal parts','when you had part of something and use or give away a portion']
     }
   };
   const arr = (explanations[LANG] || explanations.es)[op] || [''];
@@ -2209,6 +2971,14 @@ function getWrongExplanationDetail(wrongOp, correctOp, problemText){
         `Dividir es REPARTIR igual. Imagina que tienes 12 dulces y los repartes entre 3 amigos para que a todos les toque lo mismo. Eso es dividir. Pero aquí nadie está repartiendo.`,
         `La división es DAR partes iguales. Como cortar una pizza en pedazos iguales para todos. Pero en este cuento no se está partiendo ni repartiendo nada.`,
         `Para que sea división, alguien tendría que separar cosas en grupos iguales. Como poner la misma cantidad de stickers en varias bolsas. Pero eso no pasa aquí.`
+      ],
+      sumaFrac: [
+        `La suma de fraccionarios es JUNTAR PARTES de algo. Como comer un pedazo de pizza y luego otro pedazo. Pero en este cuento no se están juntando partes de un entero.`,
+        `Sumar fracciones es cuando tienes una porción y le agregas otra porción. Pero fíjate, aquí no se habla de partes de algo.`
+      ],
+      restaFrac: [
+        `La resta de fraccionarios es QUITAR PARTES de algo. Como tener medio pastel y comerte un cuarto. Pero en este cuento no se están quitando porciones.`,
+        `Restar fracciones es cuando tienes una porción y le quitas otra. Pero fíjate, aquí no se habla de quitar partes de un entero.`
       ]
     },
     en: {
@@ -2231,6 +3001,14 @@ function getWrongExplanationDetail(wrongOp, correctOp, problemText){
         `Dividing means SHARING EQUALLY. Imagine you have 12 candies and share them among 3 friends so everyone gets the same. That's dividing. But here nobody is sharing.`,
         `Division is giving EQUAL PARTS. Like cutting a pizza into equal slices for everyone. But in this story nothing is being split or shared.`,
         `For it to be division, someone would have to separate things into equal groups. Like putting the same number of stickers in each bag. But that's not happening here.`
+      ],
+      sumaFrac: [
+        `Fraction addition means putting PARTS of a whole together. Like eating a piece of pizza and then another piece. But in this story, no parts of a whole are being combined.`,
+        `Adding fractions is when you have one portion and add another portion. But look, this story isn't talking about parts of something.`
+      ],
+      restaFrac: [
+        `Fraction subtraction means taking away PARTS of a whole. Like having half a cake and eating a quarter. But in this story, no portions are being removed.`,
+        `Subtracting fractions is when you have a portion and take away another. But look, this story isn't about removing parts of a whole.`
       ]
     }
   };
@@ -2265,6 +3043,14 @@ function getCorrectExplanationDetail(correctOp){
         `El cuento dice "repartir" o "entre". Imagina que cortas una pizza en pedazos iguales para que a todos les toque lo mismo. Eso es dividir.`,
         `Aquí se SEPARA algo en grupos iguales. Es como poner la misma cantidad de figuritas en cada sobre. Al final cada grupo tiene lo mismo. Eso siempre es división.`,
         `El truco es buscar palabras como "repartir", "entre", "partes iguales", "a cada uno le toca". Esas palabras te dicen: ¡hay que DIVIDIR! Como compartir galletas con tus hermanos en partes iguales.`
+      ],
+      sumaFrac: [
+        `Fíjate que en el cuento se están JUNTANDO PARTES de algo, no objetos enteros. Es como comer un pedazo de pizza y luego otro pedazo. Juntar partes = SUMA DE FRACCIONARIOS (+🔢).`,
+        `El cuento habla de porciones, pedazos o partes de algo entero. Cuando juntas partes de un entero, ¡es suma de fraccionarios!`
+      ],
+      restaFrac: [
+        `Fíjate que en el cuento se están QUITANDO PARTES de algo, no objetos enteros. Es como tener medio pastel y comerte un cuarto. Quitar partes = RESTA DE FRACCIONARIOS (−🔢).`,
+        `El cuento habla de quitar una porción de algo. Cuando quitas una parte de un entero, ¡es resta de fraccionarios!`
       ]
     },
     en: {
@@ -2291,6 +3077,14 @@ function getCorrectExplanationDetail(correctOp){
         `The story says "share" or "among". Imagine cutting a pizza into equal slices for everyone. That's dividing.`,
         `Here something is SEPARATED into equal groups. It's like putting the same number of cards in each envelope. Each group ends up the same. That's always division.`,
         `The trick is to look for words like "share", "among", "equal parts", "each one gets". Those words tell you: you need to DIVIDE! Like sharing cookies with your siblings in equal parts.`
+      ],
+      sumaFrac: [
+        `Notice that the story talks about combining PARTS of a whole, not entire objects. It's like eating a piece of pizza and then another piece. Combining parts = FRACTION ADDITION (+🔢).`,
+        `The story mentions portions, pieces or parts of something whole. When you combine parts of a whole, it's fraction addition!`
+      ],
+      restaFrac: [
+        `Notice that the story talks about removing PARTS of a whole, not entire objects. It's like having half a cake and eating a quarter. Removing parts = FRACTION SUBTRACTION (−🔢).`,
+        `The story mentions taking away a portion of something. When you remove part of a whole, it's fraction subtraction!`
       ]
     }
   };
@@ -2319,6 +3113,16 @@ const OPERATION_TIPS_I18N = {
       name: 'División', sym: '÷',
       keywords: ['repartir', 'dividir', 'entre', 'partes iguales', 'a cada uno', 'por igual'],
       tip: '<b>🔴 DIVISIÓN (÷)</b> = REPARTIR IGUAL<br><br>🔑 <b>Palabras pista:</b> "repartir", "entre", "partes iguales", "a cada uno le toca"<br><br>📖 <b>Ejemplo:</b> Tienes 12 🍬 y los repartes entre 3 amigos. ¿Cuántos le tocan a cada uno? → 12 ÷ 3 = 4<br><br>💡 <b>Piensa:</b> Si estás REPARTIENDO para que a todos les toque igual, ¡es división!'
+    },
+    sumaFrac: {
+      name: 'Suma de Fraccionarios', sym: '+🔢',
+      keywords: ['partes', 'fracción', 'pedazos', 'porción', 'mitad', 'cuarto', 'tercio', 'parte de'],
+      tip: '<b>🟣 SUMA DE FRACCIONARIOS (+🔢)</b> = JUNTAR PARTES<br><br>🔑 <b>Palabras pista:</b> "parte de", "fracción", "pedazos", "porción", "mitad", "cuarto"<br><br>📖 <b>Ejemplo:</b> Comes 1/3 de pizza y tu amigo come 1/4. ¿Cuánto comieron? → 1/3 + 1/4<br><br>💡 <b>Piensa:</b> Si juntas PARTES de un entero (no objetos completos), ¡es suma de fraccionarios!'
+    },
+    restaFrac: {
+      name: 'Resta de Fraccionarios', sym: '−🔢',
+      keywords: ['queda de', 'parte', 'fracción', 'porción', 'gastó parte', 'comió parte', 'usó parte'],
+      tip: '<b>🔵 RESTA DE FRACCIONARIOS (−🔢)</b> = QUITAR PARTES<br><br>🔑 <b>Palabras pista:</b> "queda de", "gastó parte", "comió parte", "usó porción"<br><br>📖 <b>Ejemplo:</b> Tienes 3/4 de pastel y comes 1/4. ¿Cuánto queda? → 3/4 − 1/4<br><br>💡 <b>Piensa:</b> Si quitas una PARTE de un entero (no objetos completos), ¡es resta de fraccionarios!'
     }
   },
   en: {
@@ -2341,6 +3145,16 @@ const OPERATION_TIPS_I18N = {
       name: 'Division', sym: '÷',
       keywords: ['share', 'divide', 'among', 'equal parts', 'each one gets', 'equally'],
       tip: '<b>🔴 DIVISION (÷)</b> = SHARE EQUALLY<br><br>🔑 <b>Key words:</b> "share", "among", "equal parts", "each one gets"<br><br>📖 <b>Example:</b> You have 12 🍬 and share them among 3 friends. How many does each get? → 12 ÷ 3 = 4<br><br>💡 <b>Think:</b> If you are SHARING so everyone gets the same, it\'s division!'
+    },
+    sumaFrac: {
+      name: 'Fraction Addition', sym: '+🔢',
+      keywords: ['parts', 'fraction', 'pieces', 'portion', 'half', 'quarter', 'third', 'part of'],
+      tip: '<b>🟣 FRACTION ADDITION (+🔢)</b> = PUT PARTS TOGETHER<br><br>🔑 <b>Key words:</b> "part of", "fraction", "pieces", "portion", "half", "quarter"<br><br>📖 <b>Example:</b> You eat 1/3 of a pizza and your friend eats 1/4. How much did you eat? → 1/3 + 1/4<br><br>💡 <b>Think:</b> If you put PARTS of a whole together (not whole objects), it\'s fraction addition!'
+    },
+    restaFrac: {
+      name: 'Fraction Subtraction', sym: '−🔢',
+      keywords: ['left of', 'part', 'fraction', 'portion', 'used part', 'ate part', 'spent part'],
+      tip: '<b>🔵 FRACTION SUBTRACTION (−🔢)</b> = TAKE AWAY PARTS<br><br>🔑 <b>Key words:</b> "left of", "used part", "ate part", "spent portion"<br><br>📖 <b>Example:</b> You have 3/4 of a cake and eat 1/4. How much is left? → 3/4 − 1/4<br><br>💡 <b>Think:</b> If you take away a PART of a whole (not whole objects), it\'s fraction subtraction!'
     }
   }
 };
@@ -2350,20 +3164,33 @@ function getOpTips(){ return OPERATION_TIPS_I18N[LANG] || OPERATION_TIPS_I18N.es
 const OPERATION_TIPS = OPERATION_TIPS_I18N.es; // fallback inicial
 
 function showStoryModal(){
+  currentPhase = 'story'; saveProgressToStorage();
   const step = currentStory.steps[currentStep];
   quizWrongAttempts = 0;
 
   // Texto con HTML para mostrar
+  let aHTML, bHTML, aClean, bClean;
+  if(isFracOp(currentOp)){
+    aHTML = renderFracInline(fracA.num, fracA.den);
+    bHTML = renderFracInline(fracB.num, fracB.den);
+    aClean = speakFraction(fracA.num, fracA.den);
+    bClean = speakFraction(fracB.num, fracB.den);
+  } else {
+    aHTML = `<span class="number">${numA}</span>`;
+    bHTML = `<span class="number">${numB}</span>`;
+    aClean = numA;
+    bClean = numB;
+  }
   const storyTextHTML = step.template
     .replaceAll('{char}', `<span class="highlight">${currentStory.character}</span>`)
-    .replaceAll('{a}', `<span class="number">${numA}</span>`)
-    .replaceAll('{b}', `<span class="number">${numB}</span>`);
+    .replaceAll('{a}', aHTML)
+    .replaceAll('{b}', bHTML);
 
   // Texto limpio para lectura en voz alta
   const storyTextClean = step.template
     .replaceAll('{char}', currentStory.character)
-    .replaceAll('{a}', numA)
-    .replaceAll('{b}', numB);
+    .replaceAll('{a}', aClean)
+    .replaceAll('{b}', bClean);
 
   document.getElementById('storyModal').innerHTML = `
     <div class="story-modal-content">
@@ -2403,6 +3230,14 @@ function showStoryModal(){
           <button class="op-btn divi" onclick="checkOperationQuiz('divi')">
             <span class="op-sym">÷</span>
             <span class="op-name">${L('Dividir','Divide')}</span>
+          </button>
+          <button class="op-btn sumaFrac" onclick="checkOperationQuiz('sumaFrac')">
+            <span class="op-sym">+🔢</span>
+            <span class="op-name">${L('Suma Frac','Frac Addition')}</span>
+          </button>
+          <button class="op-btn restaFrac" onclick="checkOperationQuiz('restaFrac')">
+            <span class="op-sym">−🔢</span>
+            <span class="op-name">${L('Resta Frac','Frac Subtraction')}</span>
           </button>
         </div>
         <div class="quiz-feedback" id="quizFeedback"></div>
@@ -2447,8 +3282,8 @@ function startStoryReading(){
 
   // Texto completo: saludo + problema + pregunta + instrucción del quiz
   const quizPrompt = L(
-    `¿Qué operación necesitas para resolver este problema, ${PLAYER.name}? ¿Es suma, resta, multiplicación o división?`,
-    `What operation do you need to solve this problem, ${PLAYER.name}? Is it addition, subtraction, multiplication or division?`
+    `¿Qué operación necesitas para resolver este problema, ${PLAYER.name}? ¿Es suma, resta, multiplicación, división, suma de fraccionarios o resta de fraccionarios?`,
+    `What operation do you need to solve this problem, ${PLAYER.name}? Is it addition, subtraction, multiplication, division, fraction addition or fraction subtraction?`
   );
   const fullText = greeting + ' ' +
                    window.currentStoryTextClean + '. ' +
@@ -2497,6 +3332,10 @@ function checkOperationQuiz(selectedOp){
           numA = originalNumA;
           numB = originalNumB;
           answer = originalAnswer;
+          fracA = originalFracA;
+          fracB = originalFracB;
+          fracAnswer = originalFracAnswer;
+          fracLCD = originalFracLCD;
           currentOp = currentStory.steps[currentStep].op;
           currentEmoji = currentStory.steps[currentStep].emoji;
           currentEmojiB = currentStory.steps[currentStep].emojiB || currentStory.steps[currentStep].emoji;
@@ -2554,12 +3393,14 @@ function checkOperationQuiz(selectedOp){
         ${correctDetail}
       </div>
       <div class="tip-box" style="margin-top:10px;border-left:3px solid var(--cyan);background:rgba(34,211,238,.08)">
-        <b style="color:var(--cyan)">📋 ${L('Recuerda las 4 operaciones:','Remember the 4 operations:')}</b><br>
+        <b style="color:var(--cyan)">📋 ${L('Recuerda las 6 operaciones:','Remember the 6 operations:')}</b><br>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;font-size:.85em">
           <div>🟢 <b>${L('Suma','Add')} (+)</b> = ${L('Juntar','Put together')}<br><span style="color:var(--text-dim)">${L('Tienes más al final','You have more at the end')}</span></div>
           <div>🟠 <b>${L('Resta','Subtract')} (−)</b> = ${L('Quitar','Take away')}<br><span style="color:var(--text-dim)">${L('Tienes menos al final','You have fewer at the end')}</span></div>
           <div>🔵 <b>${L('Multi','Multiply')} (×)</b> = ${L('Grupos iguales','Equal groups')}<br><span style="color:var(--text-dim)">${L('Cada uno tiene lo mismo','Each one has the same')}</span></div>
           <div>🔴 <b>${L('Divi','Divide')} (÷)</b> = ${L('Repartir','Share')}<br><span style="color:var(--text-dim)">${L('Dar igual a cada uno','Give equal to each')}</span></div>
+          <div>🟣 <b>${L('Suma Frac','Frac Addition')} (+🔢)</b> = ${L('Juntar partes','Put parts together')}<br><span style="color:var(--text-dim)">${L('Partes de un entero','Parts of a whole')}</span></div>
+          <div>🔵 <b>${L('Resta Frac','Frac Subtraction')} (−🔢)</b> = ${L('Quitar partes','Take parts away')}<br><span style="color:var(--text-dim)">${L('Porciones de un entero','Portions of a whole')}</span></div>
         </div>
       </div>
       <div class="tip-box" style="margin-top:8px;border-left:3px solid var(--red)">
@@ -2585,10 +3426,10 @@ function checkOperationQuiz(selectedOp){
     ];
     const cantAdvanceMsg = cantAdvanceMsgs[Math.floor(Math.random() * cantAdvanceMsgs.length)];
 
-    // Resumen hablado de las 4 operaciones para reforzar
+    // Resumen hablado de las 6 operaciones para reforzar
     const opsReminder = L(
-      `Recuerda: Suma es JUNTAR y tener más. . Resta es QUITAR y tener menos. . Multiplicación es tener GRUPOS con lo mismo adentro. . Y División es REPARTIR en partes iguales.`,
-      `Remember: Addition is PUTTING TOGETHER and having more. . Subtraction is TAKING AWAY and having less. . Multiplication is having EQUAL GROUPS with the same inside. . And Division is SHARING in equal parts.`
+      `Recuerda: Suma es JUNTAR y tener más. . Resta es QUITAR y tener menos. . Multiplicación es tener GRUPOS con lo mismo adentro. . División es REPARTIR en partes iguales. . Suma de fraccionarios es JUNTAR PARTES de un entero. . Y Resta de fraccionarios es QUITAR PARTES de un entero.`,
+      `Remember: Addition is PUTTING TOGETHER and having more. . Subtraction is TAKING AWAY and having less. . Multiplication is having EQUAL GROUPS with the same inside. . Division is SHARING in equal parts. . Fraction Addition is putting PARTS of a whole together. . And Fraction Subtraction is taking PARTS away from a whole.`
     );
 
     const explanationText = `${personalMessage}. . ` +
@@ -2605,6 +3446,10 @@ function checkOperationQuiz(selectedOp){
         originalNumA = numA;
         originalNumB = numB;
         originalAnswer = answer;
+        originalFracA = {...fracA};
+        originalFracB = {...fracB};
+        originalFracAnswer = {...fracAnswer};
+        originalFracLCD = fracLCD;
       }
       // Después de explicar, generar cuento de práctica con operación ALEATORIA
       setTimeout(() => {
@@ -2617,9 +3462,8 @@ function checkOperationQuiz(selectedOp){
 function launchPracticeRound(){
   isPracticeRound = true;
 
-  // Elegir operación ALEATORIA (puede ser cualquiera)
-  const ops = ['suma', 'resta', 'multi', 'divi'];
-  const practiceOp = ops[Math.floor(Math.random() * ops.length)];
+  // Usar la MISMA operación del módulo actual (no aleatoria)
+  const practiceOp = currentModule || currentOp;
 
   // Elegir cuento de práctica aleatorio para esa operación
   const practiceStories = getPracticeStories()[practiceOp];
@@ -2665,6 +3509,7 @@ function closeStoryModal(){
 }
 
 function startGameplay(){
+  currentPhase = 'gameplay'; saveProgressToStorage();
   sndWhoosh();
   // Continuar con el flujo normal del juego
   clearWorkspace();
@@ -2713,6 +3558,16 @@ function startGameplay(){
       `${PLAYER.name}, now we divide. You have ${numA} objects to share among ${numB}. How many does each one get?`,
       `${PLAYER.nickname}, share ${numA} objects into ${numB} equal groups. How many go in each group?`,
       `Let's go ${PLAYER.name}, if you divide ${numA} by ${numB}, how many in each part? Put that amount.`
+    ],
+    sumaFrac: [
+      `${PLAYER.name}, now we add fractions! Drag all the pieces to the bar. Remember: first find the common denominator.`,
+      `${PLAYER.nickname}, drag the fraction pieces to the result bar. Each piece is one part of the whole!`,
+      `Let's go ${PLAYER.name}, put all the fraction pieces together on the bar to find the sum!`
+    ],
+    restaFrac: [
+      `${PLAYER.name}, now we subtract fractions! Separate the pieces: which ones stay and which ones go?`,
+      `${PLAYER.nickname}, put the pieces that stay in one bar and the ones you remove in the other.`,
+      `Let's go ${PLAYER.name}, figure out how many pieces stay and how many go away!`
     ]
   } : {
     suma: [
@@ -2734,6 +3589,16 @@ function startGameplay(){
       `${PLAYER.name}, ahora dividimos. Tienes ${numA} objetos para repartir entre ${numB}. ¿Cuántos le tocan a cada uno?`,
       `${PLAYER.nickname}, reparte ${numA} objetos en ${numB} grupos iguales. ¿Cuántos van en cada grupo?`,
       `Vamos ${PLAYER.name}, si divides ${numA} entre ${numB}, ¿cuántos quedan en cada parte? Pon esa cantidad.`
+    ],
+    sumaFrac: [
+      `${PLAYER.name}, ¡ahora sumamos fraccionarios! Arrastra todas las piezas a la barra. Recuerda: primero buscamos el denominador común.`,
+      `${PLAYER.nickname}, arrastra las piezas de fracción a la barra de resultado. ¡Cada pieza es una parte del entero!`,
+      `Vamos ${PLAYER.name}, junta todas las piezas de fracción en la barra para encontrar la suma.`
+    ],
+    restaFrac: [
+      `${PLAYER.name}, ¡ahora restamos fraccionarios! Separa las piezas: ¿cuáles se quedan y cuáles se van?`,
+      `${PLAYER.nickname}, pon las piezas que quedan en una barra y las que quitas en la otra.`,
+      `Vamos ${PLAYER.name}, decide cuántas piezas se quedan y cuántas se van. ¡Piensa bien!`
     ]
   };
 
@@ -2784,6 +3649,34 @@ const MATH_TERMS_I18N = {
         { name: 'Cociente', desc: 'Lo que le toca a cada uno', key: 'result' }
       ],
       funFact: 'Dividir es repartir en partes iguales. ¡El denominador nunca puede ser cero!'
+    },
+    sumaFrac: {
+      opName: 'Suma de Fraccionarios', symbol: '+', symbolName: 'Signo más',
+      terms: [
+        { name: '1er Fraccionario', desc: 'La primera fracción que sumamos', key: 'a' },
+        { name: '2do Fraccionario', desc: 'La segunda fracción que sumamos', key: 'b' },
+        { name: 'Resultado', desc: 'La fracción que obtenemos al sumar', key: 'result' }
+      ],
+      extraTerms: [
+        { name: 'Numerador', desc: 'El número de arriba de una fracción (las partes que tomamos)' },
+        { name: 'Denominador', desc: 'El número de abajo (en cuántas partes se divide el entero)' },
+        { name: 'MCM', desc: 'Mínimo Común Múltiplo: el denominador común para poder sumar' }
+      ],
+      funFact: 'Para sumar fracciones con diferente denominador, primero encontramos el MCM de los denominadores y convertimos ambas fracciones'
+    },
+    restaFrac: {
+      opName: 'Resta de Fraccionarios', symbol: '−', symbolName: 'Signo menos',
+      terms: [
+        { name: '1er Fraccionario', desc: 'La fracción que tenemos', key: 'a' },
+        { name: '2do Fraccionario', desc: 'La fracción que quitamos', key: 'b' },
+        { name: 'Resultado', desc: 'La fracción que queda después de restar', key: 'result' }
+      ],
+      extraTerms: [
+        { name: 'Numerador', desc: 'El número de arriba de una fracción (las partes que tomamos)' },
+        { name: 'Denominador', desc: 'El número de abajo (en cuántas partes se divide el entero)' },
+        { name: 'MCM', desc: 'Mínimo Común Múltiplo: el denominador común para poder restar' }
+      ],
+      funFact: 'Para restar fracciones con diferente denominador, primero encontramos el MCM de los denominadores y convertimos ambas fracciones'
     }
   },
   en: {
@@ -2822,6 +3715,34 @@ const MATH_TERMS_I18N = {
         { name: 'Quotient', desc: 'What each one gets', key: 'result' }
       ],
       funFact: 'Dividing means sharing equally. The denominator can never be zero!'
+    },
+    sumaFrac: {
+      opName: 'Fraction Addition', symbol: '+', symbolName: 'Plus sign',
+      terms: [
+        { name: '1st Fraction', desc: 'The first fraction we add', key: 'a' },
+        { name: '2nd Fraction', desc: 'The second fraction we add', key: 'b' },
+        { name: 'Result', desc: 'The fraction we get after adding', key: 'result' }
+      ],
+      extraTerms: [
+        { name: 'Numerator', desc: 'The top number of a fraction (the parts we take)' },
+        { name: 'Denominator', desc: 'The bottom number (how many equal parts the whole has)' },
+        { name: 'LCM', desc: 'Least Common Multiple: the common denominator needed to add' }
+      ],
+      funFact: 'To add fractions with different denominators, first find the LCM of the denominators and convert both fractions'
+    },
+    restaFrac: {
+      opName: 'Fraction Subtraction', symbol: '−', symbolName: 'Minus sign',
+      terms: [
+        { name: '1st Fraction', desc: 'The fraction we have', key: 'a' },
+        { name: '2nd Fraction', desc: 'The fraction we take away', key: 'b' },
+        { name: 'Result', desc: 'The fraction left after subtracting', key: 'result' }
+      ],
+      extraTerms: [
+        { name: 'Numerator', desc: 'The top number of a fraction (the parts we take)' },
+        { name: 'Denominator', desc: 'The bottom number (how many equal parts the whole has)' },
+        { name: 'LCM', desc: 'Least Common Multiple: the common denominator needed to subtract' }
+      ],
+      funFact: 'To subtract fractions with different denominators, first find the LCM of the denominators and convert both fractions'
     }
   }
 };
@@ -2833,17 +3754,74 @@ let mathQuizQuestions = [];
 let mathQuizCurrent = 0;
 
 function showMathReviewModal(){
+  currentPhase = 'review'; saveProgressToStorage();
   const terms = getMathTerms()[currentOp];
-  const values = { a: numA, b: numB, result: answer };
+  const values = isFracOp(currentOp)
+    ? { a: renderFracInline(fracA.num, fracA.den), b: renderFracInline(fracB.num, fracB.den), result: renderFracInline(fracAnswer.num, fracAnswer.den) }
+    : { a: numA, b: numB, result: answer };
 
   // Generar preguntas de quiz
   generateMathQuizQuestions();
 
   // Crear HTML de la operación formal CON etiquetas visibles
-  // Para división, mostrar como fracción (numerador arriba, denominador abajo)
   let operationHTML;
 
-  if(currentOp === 'divi'){
+  if(isFracOp(currentOp)){
+    const sym = currentOp === 'sumaFrac' ? '+' : '−';
+    const convA = fracA.num * (fracLCD / fracA.den);
+    const convB = fracB.num * (fracLCD / fracB.den);
+    const multA = fracLCD / fracA.den;
+    const multB = fracLCD / fracB.den;
+    const opWord = currentOp === 'sumaFrac' ? L('sumamos','we add') : L('restamos','we subtract');
+    const opWordCap = currentOp === 'sumaFrac' ? L('Sumamos','We add') : L('Restamos','We subtract');
+
+    // Build detailed step-by-step MCM explanation
+    const mcmSteps = `
+      <div class="lcd-step">
+        <b style="color:var(--cyan)">📐 ${L('Paso 1: Encontrar el Mínimo Común Múltiplo (MCM)','Step 1: Find the Least Common Multiple (LCM)')}</b><br>
+        ${L('Los denominadores son','The denominators are')} <b>${fracA.den}</b> ${L('y','and')} <b>${fracB.den}</b>.<br>
+        ${L('Múltiplos de','Multiples of')} ${fracA.den}: ${Array.from({length:6},(_,i)=>(i+1)*fracA.den).join(', ')}...<br>
+        ${L('Múltiplos de','Multiples of')} ${fracB.den}: ${Array.from({length:6},(_,i)=>(i+1)*fracB.den).join(', ')}...<br>
+        ${L('El menor número que aparece en ambas listas es','The smallest number in both lists is')} <b style="color:var(--yellow)">${fracLCD}</b> → MCM = ${fracLCD}
+      </div>
+      <div class="lcd-step">
+        <b style="color:var(--cyan)">📐 ${L('Paso 2: Convertir al mismo denominador','Step 2: Convert to the same denominator')}</b><br>
+        ${renderFracInline(fracA.num,fracA.den)} → ${L('multiplicamos arriba y abajo por','multiply top and bottom by')} <b>${multA}</b> → ${renderFracInline(convA,fracLCD)}<br>
+        ${renderFracInline(fracB.num,fracB.den)} → ${L('multiplicamos arriba y abajo por','multiply top and bottom by')} <b>${multB}</b> → ${renderFracInline(convB,fracLCD)}
+      </div>
+      <div class="lcd-step">
+        <b style="color:var(--cyan)">📐 ${L('Paso 3:','Step 3:')} ${opWordCap} ${L('los numeradores','the numerators')}</b><br>
+        ${renderFracInline(convA,fracLCD)} ${sym} ${renderFracInline(convB,fracLCD)} = ${renderFracInline(currentOp==='sumaFrac'?convA+convB:convA-convB,fracLCD)}
+        ${(fracAnswer.den !== fracLCD) ? `<br>${L('Simplificamos:','We simplify:')} ${renderFracInline(currentOp==='sumaFrac'?convA+convB:convA-convB,fracLCD)} = ${renderFracInline(fracAnswer.num,fracAnswer.den)}` : ''}
+      </div>
+    `;
+
+    operationHTML = `
+      <div class="frac-equation-display" id="operationDisplay">
+        <div class="frac-box">
+          <div class="frac-val num-val">${fracA.num}</div>
+          <div class="frac-line"></div>
+          <div class="frac-val den-val">${fracA.den}</div>
+          <div class="frac-lbl term-label" data-term="a">${terms.terms[0].name}</div>
+        </div>
+        <div class="frac-sym">${sym}</div>
+        <div class="frac-box">
+          <div class="frac-val num-val">${fracB.num}</div>
+          <div class="frac-line"></div>
+          <div class="frac-val den-val">${fracB.den}</div>
+          <div class="frac-lbl term-label" data-term="b">${terms.terms[1].name}</div>
+        </div>
+        <div class="frac-sym">=</div>
+        <div class="frac-box">
+          <div class="frac-val num-val" style="background:rgba(255,212,59,.15);border-color:var(--yellow);color:var(--yellow)">${fracAnswer.num}</div>
+          <div class="frac-line"></div>
+          <div class="frac-val den-val" style="background:rgba(255,212,59,.15);border-color:var(--yellow);color:var(--yellow)">${fracAnswer.den}</div>
+          <div class="frac-lbl term-label" data-term="result">${terms.terms[2].name}</div>
+        </div>
+      </div>
+      ${mcmSteps}
+    `;
+  } else if(currentOp === 'divi'){
     operationHTML = `
       <div class="operation-display division-display" id="operationDisplay">
         <div class="fraction-container">
@@ -2906,6 +3884,22 @@ function showMathReviewModal(){
     </div>
   `).join('');
 
+  // Extra terms for fractions (Numerador, Denominador, MCM)
+  if(terms.extraTerms){
+    const extraValues = isFracOp(currentOp) ? [
+      `${fracA.num}, ${fracB.num}`,
+      `${fracA.den}, ${fracB.den}`,
+      `${fracLCD}`
+    ] : [];
+    termsHTML += terms.extraTerms.map((t, i) => `
+      <div class="term-item" style="border-top-color:var(--yellow)">
+        <div class="term-name">${t.name}</div>
+        <div class="term-value">${extraValues[i] || ''}</div>
+        <div class="term-desc">${t.desc}</div>
+      </div>
+    `).join('');
+  }
+
   document.getElementById('mathReviewModal').innerHTML = `
     <div class="math-review-content">
       <div class="math-review-header">
@@ -2942,9 +3936,37 @@ function showMathReviewModal(){
   sndModalOpen();
 
   // Leer explicación del modal - habilitar botón cuando termine
-  // Para suma, decir "primer sumando" y "segundo sumando" para que no suene repetitivo
   let termExplanation;
-  if(LANG === 'en'){
+  if(isFracOp(currentOp)){
+    const spA = speakFraction(fracA.num, fracA.den);
+    const spB = speakFraction(fracB.num, fracB.den);
+    const spR = speakFraction(fracAnswer.num, fracAnswer.den);
+    const convA = fracA.num * (fracLCD / fracA.den);
+    const convB = fracB.num * (fracLCD / fracB.den);
+    const multA = fracLCD / fracA.den;
+    const multB = fracLCD / fracB.den;
+    const opVerb = currentOp === 'sumaFrac' ? L('sumar','add') : L('restar','subtract');
+    const opVerb2 = currentOp === 'sumaFrac' ? L('sumamos','we add') : L('restamos','we subtract');
+    if(LANG === 'en'){
+      termExplanation = `The first fraction is ${spA}, and the second is ${spB}. . `
+        + `To ${opVerb} fractions with different denominators, we follow three steps. . `
+        + `Step 1: Find the Least Common Multiple of ${fracA.den} and ${fracB.den}. . The LCM is ${fracLCD}. . `
+        + `Step 2: Convert both fractions to have denominator ${fracLCD}. . `
+        + `${spA} times ${multA} on top and bottom equals ${convA} over ${fracLCD}. . `
+        + `${spB} times ${multB} on top and bottom equals ${convB} over ${fracLCD}. . `
+        + `Step 3: Now ${opVerb} the numerators. ${convA} ${currentOp==='sumaFrac'?'plus':'minus'} ${convB} equals ${currentOp==='sumaFrac'?convA+convB:convA-convB}. . `
+        + `So the result is ${spR}.`;
+    } else {
+      termExplanation = `El primer fraccionario es ${spA}, y el segundo es ${spB}. . `
+        + `Para ${opVerb} fracciones con diferente denominador, seguimos tres pasos. . `
+        + `Paso 1: Buscamos el Mínimo Común Múltiplo de ${fracA.den} y ${fracB.den}. . El MCM es ${fracLCD}. . `
+        + `Paso 2: Convertimos las dos fracciones al denominador ${fracLCD}. . `
+        + `${spA} multiplicamos arriba y abajo por ${multA}, nos da ${convA} sobre ${fracLCD}. . `
+        + `${spB} multiplicamos arriba y abajo por ${multB}, nos da ${convB} sobre ${fracLCD}. . `
+        + `Paso 3: Ahora ${opVerb2} los numeradores. ${convA} ${currentOp==='sumaFrac'?'más':'menos'} ${convB} es igual a ${currentOp==='sumaFrac'?convA+convB:convA-convB}. . `
+        + `Entonces el resultado es ${spR}.`;
+    }
+  } else if(LANG === 'en'){
     if(currentOp === 'suma'){
       termExplanation = `The first addend is ${numA}. The second addend is ${numB}. And the result, called the ${terms.terms[2].name}, is ${answer}.`;
     } else {
@@ -2962,16 +3984,16 @@ function showMathReviewModal(){
     ? `Great job ${PLAYER.name}! Now let's learn the names of the numbers. This was ${terms.opName}. ${termExplanation} Memorize these names, ${PLAYER.nickname}, because I'm going to quiz you later.`
     : `¡Muy bien ${PLAYER.name}! Ahora aprendamos los nombres de los números. Esto fue una ${terms.opName}. ${termExplanation} Memoriza estos nombres, ${PLAYER.nickname}, porque luego te voy a preguntar.`;
 
+  const enableQuizBtn = () => {
+    const btn = document.getElementById('startQuizBtn');
+    if(btn){
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }
+  };
   setTimeout(() => {
-    speakText(mathReviewIntro, () => {
-      // Habilitar botón de quiz cuando termine de hablar
-      const btn = document.getElementById('startQuizBtn');
-      if(btn){
-        btn.style.opacity = '1';
-        btn.style.pointerEvents = 'auto';
-      }
-    }, { rate: 0.88, pitch: 1.0 });
-  }, 500);
+    speakText(mathReviewIntro, enableQuizBtn, { rate: 0.88, pitch: 1.0 });
+  }, 150);
 }
 
 function startTermsQuiz(){
@@ -3009,11 +4031,21 @@ function startTermsQuiz(){
   document.querySelectorAll('.term-option').forEach(b => b.classList.add('disabled'));
 
   // Intro corto + primera pregunta
-  const introMsg = L('¡A ver! ¿Cómo se llama el símbolo de esta operación?','Let\'s see! What is the name of this operation\'s symbol?');
+  const introMsg = isFracOp(currentOp)
+    ? L('¡A ver! Primera pregunta sobre fraccionarios.','Let\'s see! First question about fractions.')
+    : L('¡A ver! ¿Cómo se llama el símbolo de esta operación?','Let\'s see! What is the name of this operation\'s symbol?');
 
   speakText(introMsg, () => {
-    // Habilitar botones cuando termine de hablar
-    document.querySelectorAll('.term-option').forEach(b => b.classList.remove('disabled'));
+    if(isFracOp(currentOp)){
+      // Para fracciones, leer la pregunta real después del intro
+      const q = mathQuizQuestions[0];
+      const questionClean = q.question.replace(/<[^>]*>/g, '');
+      speakText(questionClean, () => {
+        document.querySelectorAll('.term-option').forEach(b => b.classList.remove('disabled'));
+      }, { rate: 0.88, pitch: 1.0 });
+    } else {
+      document.querySelectorAll('.term-option').forEach(b => b.classList.remove('disabled'));
+    }
   }, { rate: 0.88, pitch: 1.0 });
 }
 
@@ -3022,6 +4054,64 @@ function generateMathQuizQuestions(){
   mathQuizCurrent = 0;
 
   const terms = getMathTerms()[currentOp];
+
+  if(isFracOp(currentOp)){
+    // Fraction-specific quiz questions focused on MCM process
+    const fracAStr = `${fracA.num}/${fracA.den}`;
+    const fracBStr = `${fracB.num}/${fracB.den}`;
+    const fracAnsStr = `${fracAnswer.num}/${fracAnswer.den}`;
+    const sym = currentOp === 'sumaFrac' ? '+' : '−';
+    const convA = fracA.num * (fracLCD / fracA.den);
+    const convB = fracB.num * (fracLCD / fracB.den);
+    const wrongLCD1 = fracA.den + fracB.den;
+    const wrongLCD2 = fracA.den * fracB.den === fracLCD ? fracA.den + 1 : fracA.den * fracB.den;
+
+    // Q1: What is the MCM of the denominators?
+    mathQuizQuestions.push({
+      question: L(
+        `Los denominadores son <span class="quiz-highlight">${fracA.den}</span> y <span class="quiz-highlight">${fracB.den}</span>. ¿Cuál es el Mínimo Común Múltiplo (MCM)?`,
+        `The denominators are <span class="quiz-highlight">${fracA.den}</span> and <span class="quiz-highlight">${fracB.den}</span>. What is the Least Common Multiple (LCM)?`
+      ),
+      correct: String(fracLCD),
+      alsoCorrect: [],
+      options: shuffleArray([String(fracLCD), String(wrongLCD1), String(fracA.den), String(wrongLCD2 === fracLCD ? fracLCD+2 : wrongLCD2)])
+    });
+
+    // Q2: Convert the first fraction to the common denominator
+    mathQuizQuestions.push({
+      question: L(
+        `Con denominador común ${fracLCD}, ¿a cuánto equivale <span class="quiz-highlight">${fracAStr}</span>?`,
+        `With common denominator ${fracLCD}, what is <span class="quiz-highlight">${fracAStr}</span> equal to?`
+      ),
+      correct: `${convA}/${fracLCD}`,
+      alsoCorrect: [],
+      options: shuffleArray([`${convA}/${fracLCD}`, `${fracA.num}/${fracLCD}`, `${convA}/${fracA.den}`, `${fracA.num+1}/${fracLCD}`])
+    });
+
+    // Q3: Convert the second fraction
+    mathQuizQuestions.push({
+      question: L(
+        `Con denominador común ${fracLCD}, ¿a cuánto equivale <span class="quiz-highlight">${fracBStr}</span>?`,
+        `With common denominator ${fracLCD}, what is <span class="quiz-highlight">${fracBStr}</span> equal to?`
+      ),
+      correct: `${convB}/${fracLCD}`,
+      alsoCorrect: [],
+      options: shuffleArray([`${convB}/${fracLCD}`, `${fracB.num}/${fracLCD}`, `${convB}/${fracB.den}`, `${fracB.num+1}/${fracLCD}`])
+    });
+
+    // Q4: What is the final result?
+    mathQuizQuestions.push({
+      question: L(
+        `${convA}/${fracLCD} ${sym} ${convB}/${fracLCD} = <span class="quiz-highlight">?</span>`,
+        `${convA}/${fracLCD} ${sym} ${convB}/${fracLCD} = <span class="quiz-highlight">?</span>`
+      ),
+      correct: fracAnsStr,
+      alsoCorrect: [],
+      options: shuffleArray([fracAnsStr, `${fracA.num+fracB.num}/${fracA.den+fracB.den}`, `${convA}/${fracLCD+1}`, `${Math.abs(convA-convB)+1}/${fracLCD}`])
+    });
+    return;
+  }
+
   const values = { a: numA, b: numB, result: answer };
 
   // Pregunta 1: ¿Cómo se llama el símbolo?
@@ -3074,8 +4164,8 @@ function generateMathQuizQuestions(){
 
 function getRandomWrongSymbol(op){
   const symbols = LANG === 'en'
-    ? {suma: 'Times sign', resta: 'Plus sign', multi: 'Minus sign', divi: 'Plus sign'}
-    : {suma: 'Signo por', resta: 'Signo más', multi: 'Signo menos', divi: 'Signo más'};
+    ? {suma: 'Times sign', resta: 'Plus sign', multi: 'Minus sign', divi: 'Plus sign', sumaFrac: 'Times sign', restaFrac: 'Plus sign'}
+    : {suma: 'Signo por', resta: 'Signo más', multi: 'Signo menos', divi: 'Signo más', sumaFrac: 'Signo por', restaFrac: 'Signo más'};
   return symbols[op];
 }
 
@@ -3084,12 +4174,16 @@ function getRandomWrongTerm(op, excludeIndex){
     suma: ['Minuend', 'Numerator', 'Quotient', 'Product'],
     resta: ['Addend', 'Multiplier', 'Numerator', 'Product'],
     multi: ['Minuend', 'Addend', 'Numerator', 'Difference'],
-    divi: ['Addend', 'Minuend', 'Product', 'Difference']
+    divi: ['Addend', 'Minuend', 'Product', 'Difference'],
+    sumaFrac: ['Addend', 'Quotient', 'Product', 'Minuend'],
+    restaFrac: ['Addend', 'Quotient', 'Product', 'Multiplier']
   } : {
     suma: ['Minuendo', 'Numerador', 'Cociente', 'Producto'],
     resta: ['Sumando', 'Multiplicador', 'Numerador', 'Producto'],
     multi: ['Minuendo', 'Sumando', 'Numerador', 'Diferencia'],
-    divi: ['Sumando', 'Minuendo', 'Producto', 'Diferencia']
+    divi: ['Sumando', 'Minuendo', 'Producto', 'Diferencia'],
+    sumaFrac: ['Sumando', 'Cociente', 'Producto', 'Minuendo'],
+    restaFrac: ['Sumando', 'Cociente', 'Producto', 'Multiplicador']
   };
   return wrongTerms[op][excludeIndex] || wrongTerms[op][0];
 }
@@ -3133,8 +4227,8 @@ function renderMathQuizQuestion(shouldSpeak = true){
   document.getElementById('mathQuizFeedback').className = 'terms-quiz-feedback';
   document.getElementById('mathQuizFeedback').innerHTML = '';
 
-  // Leer la pregunta si corresponde (no la primera que ya se leyó en el intro)
-  if(shouldSpeak && mathQuizCurrent > 0){
+  // Leer la pregunta si corresponde (no la primera de ops normales que ya se leyó en el intro)
+  if(shouldSpeak && (mathQuizCurrent > 0 || isFracOp(currentOp))){
     // Deshabilitar botones mientras habla
     document.querySelectorAll('.term-option').forEach(b => b.classList.add('disabled'));
 
@@ -3216,6 +4310,12 @@ function checkMathQuizAnswer(selected, correct){
         `<b>${terms.symbol}</b> se llama <b>${terms.symbolName}</b> y se usa para la ${terms.opName}.`,
         `<b>${terms.symbol}</b> is called <b>${terms.symbolName}</b> and is used for ${terms.opName}.`
       );
+    } else if(isFracOp(currentOp)){
+      // For fraction operations, show fraction values in explanations
+      explanation = L(
+        `La respuesta correcta es <b>${correct}</b>.<br>Recuerda: ${renderFracInline(fracA.num,fracA.den)} ${terms.symbol} ${renderFracInline(fracB.num,fracB.den)} = ${renderFracInline(fracAnswer.num,fracAnswer.den)}<br>MCM de ${fracA.den} y ${fracB.den} = ${fracLCD}`,
+        `The correct answer is <b>${correct}</b>.<br>Remember: ${renderFracInline(fracA.num,fracA.den)} ${terms.symbol} ${renderFracInline(fracB.num,fracB.den)} = ${renderFracInline(fracAnswer.num,fracAnswer.den)}<br>LCM of ${fracA.den} and ${fracB.den} = ${fracLCD}`
+      );
     } else {
       const termInfo = terms.terms.find(t => t.name === correct);
       if(termInfo){
@@ -3249,7 +4349,16 @@ function checkMathQuizAnswer(selected, correct){
     // Mensaje hablado guiador según el tipo de pregunta
     let spokenGuide = '';
 
-    if(correct === terms.symbolName){
+    if(isFracOp(currentOp)){
+      // Para fracciones, dar guía específica sobre MCM y conversión
+      const spA = speakFraction(fracA.num, fracA.den);
+      const spB = speakFraction(fracB.num, fracB.den);
+      const spR = speakFraction(fracAnswer.num, fracAnswer.den);
+      spokenGuide = L(
+        `No ${PLAYER.name}, esa no es la respuesta. . La respuesta correcta es ${correct}. . Recuerda: ${spA} y ${spB}. El MCM de ${fracA.den} y ${fracB.den} es ${fracLCD}. El resultado es ${spR}. . Piénsalo bien ${PLAYER.name}.`,
+        `No ${PLAYER.name}, that's not the answer. . The correct answer is ${correct}. . Remember: ${spA} and ${spB}. The LCM of ${fracA.den} and ${fracB.den} is ${fracLCD}. The result is ${spR}. . Think carefully ${PLAYER.name}.`
+      );
+    } else if(correct === terms.symbolName){
       spokenGuide = L(
         `No ${PLAYER.name}, ese no es el nombre del símbolo. . Mira, el símbolo ${terms.symbol} se llama ${terms.symbolName}. . Se usa para hacer ${terms.opName.toLowerCase()}s. . ¿Cuál es entonces ${PLAYER.name}?`,
         `No ${PLAYER.name}, that's not the symbol's name. . Look, the symbol ${terms.symbol} is called ${terms.symbolName}. . It's used for ${terms.opName.toLowerCase()}. . Which one is it then ${PLAYER.name}?`
@@ -3425,7 +4534,7 @@ function closeMathReviewAndContinue(){
   document.getElementById('mathReviewModal').style.display = 'none';
   sndModalClose();
 
-  // Desafío Relámpago después del vocabulario, luego trivia
+  // Desafío Matemático después del vocabulario, luego trivia
   showDesafioRelampago(() => {
     showTriviaGame(() => {
       // Después del trivia, continuar al siguiente paso o mostrar victoria
@@ -3488,6 +4597,50 @@ function generateProblem(){
     } else if(currentOp === 'multi'){
       numA = rand(2,5); numB = rand(2,4);
       answer = numA * numB;
+    } else if(currentOp === 'sumaFrac'){
+      // Suma de fracciones con denominadores diferentes
+      const pares = [[2,3],[2,4],[3,4],[2,5],[3,5],[4,5],[2,6],[3,6],[4,6]];
+      const par = pares[rand(0, pares.length-1)];
+      const denA = par[0], denB = par[1];
+      const numAn = rand(1, denA-1);
+      const numBn = rand(1, denB-1);
+      const lcd = lcm(denA, denB);
+      const resNum = numAn * (lcd/denA) + numBn * (lcd/denB);
+      // Simplificar resultado
+      const simplified = simplifyFrac(resNum, lcd);
+      fracA = {num: numAn, den: denA};
+      fracB = {num: numBn, den: denB};
+      fracAnswer = simplified;
+      fracLCD = lcd;
+      // Para compatibilidad con scoring
+      numA = numAn; numB = numBn; answer = simplified.num;
+    } else if(currentOp === 'restaFrac'){
+      // Resta de fracciones con denominadores diferentes
+      const pares = [[2,3],[2,4],[3,4],[2,5],[3,5],[4,5],[2,6],[3,6],[4,6]];
+      let par, denA, denB, numAn, numBn, lcd, resNum;
+      // Intentar hasta que el resultado sea positivo
+      for(let tries=0; tries<20; tries++){
+        par = pares[rand(0, pares.length-1)];
+        denA = par[0]; denB = par[1];
+        numAn = rand(1, denA-1);
+        numBn = rand(1, denB-1);
+        lcd = lcm(denA, denB);
+        resNum = numAn * (lcd/denA) - numBn * (lcd/denB);
+        if(resNum > 0) break;
+        // Swap if negative
+        const tmpN = numAn, tmpD = denA;
+        numAn = numBn; denA = denB;
+        numBn = tmpN; denB = tmpD;
+        resNum = numAn * (lcd/denA) - numBn * (lcd/denB);
+        if(resNum > 0) break;
+      }
+      if(resNum <= 0){ numAn = 3; denA = 4; numBn = 1; denB = 4; lcd = 4; resNum = 2; }
+      const simplified = simplifyFrac(resNum, lcd);
+      fracA = {num: numAn, den: denA};
+      fracB = {num: numBn, den: denB};
+      fracAnswer = simplified;
+      fracLCD = lcd;
+      numA = numAn; numB = numBn; answer = simplified.num;
     } else {
       // División: numA cosas ÷ numB grupos = answer por grupo
       // Más variedad en los números
@@ -3508,10 +4661,34 @@ function rand(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
 
 function getStoryText(){
   const step = currentStory.steps[currentStep];
+  let aDisplay, bDisplay;
+  if(isFracOp(currentOp)){
+    aDisplay = renderFracInline(fracA.num, fracA.den);
+    bDisplay = renderFracInline(fracB.num, fracB.den);
+  } else {
+    aDisplay = `<span class="number">${numA}</span>`;
+    bDisplay = `<span class="number">${numB}</span>`;
+  }
   return step.template
     .replaceAll('{char}', `<span class="highlight">${currentStory.character}</span>`)
-    .replaceAll('{a}', `<span class="number">${numA}</span>`)
-    .replaceAll('{b}', `<span class="number">${numB}</span>`);
+    .replaceAll('{a}', aDisplay)
+    .replaceAll('{b}', bDisplay);
+}
+
+function getStoryTextSpoken(){
+  const step = currentStory.steps[currentStep];
+  let aText, bText;
+  if(isFracOp(currentOp)){
+    aText = speakFraction(fracA.num, fracA.den);
+    bText = speakFraction(fracB.num, fracB.den);
+  } else {
+    aText = String(numA);
+    bText = String(numB);
+  }
+  return step.template
+    .replaceAll('{char}', currentStory.character)
+    .replaceAll('{a}', aText)
+    .replaceAll('{b}', bText);
 }
 
 // ========== HINTS SYSTEM ==========
@@ -3556,6 +4733,16 @@ function getHints(){
       `<b>🎯 How do I do it?</b><br>Share the ${currentEmoji} among the ${numB} ${currentGroupEmoji}. They all must have the same!
        <div style="margin-top:6px">Example: ${exDivi.a} among ${exDivi.b} → put 1 in each group, then another, until done</div>`,
       `<b>✨ Share step by step:</b><br>Put 1 ${currentEmoji} in each ${currentGroupEmoji}, then another in each, and so on.<br>How many rounds can you do with ${numA} ${currentEmoji} and ${numB} ${currentGroupEmoji}?`
+    ],
+    sumaFrac: [
+      `<b>💭 What is fraction addition?</b><br>Adding parts of a whole. But ${fracA.den} and ${fracB.den} are different sizes!<br>First you need the <em>Least Common Multiple (LCM)</em> so both fractions have the same denominator.`,
+      `<b>🎯 Find the LCM:</b><br>Multiples of ${fracA.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracA.den).join(', ')}...<br>Multiples of ${fracB.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracB.den).join(', ')}...<br>LCM = <b>${fracLCD}</b>! Now convert:<br>${renderFracInline(fracA.num,fracA.den)} = ${renderFracInline(fracA.num*(fracLCD/fracA.den),fracLCD)} and ${renderFracInline(fracB.num,fracB.den)} = ${renderFracInline(fracB.num*(fracLCD/fracB.den),fracLCD)}`,
+      `<b>✨ Now add the numerators:</b><br>${fracA.num*(fracLCD/fracA.den)} + ${fracB.num*(fracLCD/fracB.den)} = ${fracA.num*(fracLCD/fracA.den)+fracB.num*(fracLCD/fracB.den)} pieces of 1/${fracLCD}. Drag all ${fracA.num*(fracLCD/fracA.den)+fracB.num*(fracLCD/fracB.den)} pieces to the bar!`
+    ],
+    restaFrac: [
+      `<b>💭 What is fraction subtraction?</b><br>Removing parts of a whole. But ${fracA.den} and ${fracB.den} are different sizes!<br>First you need the <em>Least Common Multiple (LCM)</em> so both fractions have the same denominator.`,
+      `<b>🎯 Find the LCM:</b><br>Multiples of ${fracA.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracA.den).join(', ')}...<br>Multiples of ${fracB.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracB.den).join(', ')}...<br>LCM = <b>${fracLCD}</b>! Now convert:<br>${renderFracInline(fracA.num,fracA.den)} = ${renderFracInline(fracA.num*(fracLCD/fracA.den),fracLCD)} and ${renderFracInline(fracB.num,fracB.den)} = ${renderFracInline(fracB.num*(fracLCD/fracB.den),fracLCD)}`,
+      `<b>✨ Now subtract:</b><br>${fracA.num*(fracLCD/fracA.den)} − ${fracB.num*(fracLCD/fracB.den)} = ${fracA.num*(fracLCD/fracA.den)-fracB.num*(fracLCD/fracB.den)} pieces stay. Put ${fracB.num*(fracLCD/fracB.den)} in "Go away" and ${fracA.num*(fracLCD/fracA.den)-fracB.num*(fracLCD/fracB.den)} in "Stay"!`
     ]
   } : {
     suma: [
@@ -3581,6 +4768,16 @@ function getHints(){
       `<b>🎯 ¿Cómo lo hago?</b><br>Reparte los ${currentEmoji} entre los ${numB} ${currentGroupEmoji}. ¡Todos deben tener lo mismo!
        <div style="margin-top:6px">Ejemplo: ${exDivi.a} entre ${exDivi.b} → pon 1 en cada grupo, luego otro, hasta acabar</div>`,
       `<b>✨ Reparte paso a paso:</b><br>Pon 1 ${currentEmoji} en cada ${currentGroupEmoji}, luego otro en cada uno, y así.<br>¿Cuántas rondas puedes hacer con ${numA} ${currentEmoji} y ${numB} ${currentGroupEmoji}?`
+    ],
+    sumaFrac: [
+      `<b>💭 ¿Qué es sumar fraccionarios?</b><br>Es juntar partes de un entero. ¡Pero ${fracA.den} y ${fracB.den} son tamaños diferentes!<br>Primero necesitas el <em>Mínimo Común Múltiplo (MCM)</em> para que ambas fracciones tengan el mismo denominador.`,
+      `<b>🎯 Busca el MCM:</b><br>Múltiplos de ${fracA.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracA.den).join(', ')}...<br>Múltiplos de ${fracB.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracB.den).join(', ')}...<br>MCM = <b>${fracLCD}</b>! Ahora convierte:<br>${renderFracInline(fracA.num,fracA.den)} = ${renderFracInline(fracA.num*(fracLCD/fracA.den),fracLCD)} y ${renderFracInline(fracB.num,fracB.den)} = ${renderFracInline(fracB.num*(fracLCD/fracB.den),fracLCD)}`,
+      `<b>✨ Ahora suma los numeradores:</b><br>${fracA.num*(fracLCD/fracA.den)} + ${fracB.num*(fracLCD/fracB.den)} = ${fracA.num*(fracLCD/fracA.den)+fracB.num*(fracLCD/fracB.den)} piezas de 1/${fracLCD}. ¡Arrastra las ${fracA.num*(fracLCD/fracA.den)+fracB.num*(fracLCD/fracB.den)} piezas a la barra!`
+    ],
+    restaFrac: [
+      `<b>💭 ¿Qué es restar fraccionarios?</b><br>Es quitar partes de un entero. ¡Pero ${fracA.den} y ${fracB.den} son tamaños diferentes!<br>Primero necesitas el <em>Mínimo Común Múltiplo (MCM)</em> para que ambas fracciones tengan el mismo denominador.`,
+      `<b>🎯 Busca el MCM:</b><br>Múltiplos de ${fracA.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracA.den).join(', ')}...<br>Múltiplos de ${fracB.den}: ${Array.from({length:5},(_,i)=>(i+1)*fracB.den).join(', ')}...<br>MCM = <b>${fracLCD}</b>! Ahora convierte:<br>${renderFracInline(fracA.num,fracA.den)} = ${renderFracInline(fracA.num*(fracLCD/fracA.den),fracLCD)} y ${renderFracInline(fracB.num,fracB.den)} = ${renderFracInline(fracB.num*(fracLCD/fracB.den),fracLCD)}`,
+      `<b>✨ Ahora resta los numeradores:</b><br>${fracA.num*(fracLCD/fracA.den)} − ${fracB.num*(fracLCD/fracB.den)} = ${fracA.num*(fracLCD/fracA.den)-fracB.num*(fracLCD/fracB.den)} piezas quedan. ¡Pon ${fracB.num*(fracLCD/fracB.den)} en "Se van" y ${fracA.num*(fracLCD/fracA.den)-fracB.num*(fracLCD/fracB.den)} en "Quedan"!`
     ]
   };
   return hints[currentOp];
@@ -3629,18 +4826,30 @@ function renderStoryPanel(){
 
 function renderChallengeCard(){
   const o = getOPS()[currentOp];
-  document.getElementById('challengeCard').innerHTML = `
-    <div class="challenge-header">
-      <span class="challenge-title">📝 ${L('Operación','Operation')}</span>
-      <span class="challenge-op ${currentOp}">${o.label}</span>
-    </div>
-    <div class="challenge-equation">
+  let eqHTML;
+  if(isFracOp(currentOp)){
+    eqHTML = `
+      <span class="num a">${renderFracInline(fracA.num, fracA.den)}</span>
+      <span class="op-sym">${o.sym}</span>
+      <span class="num b">${renderFracInline(fracB.num, fracB.den)}</span>
+      <span class="eq">=</span>
+      <span class="result-box" id="resultBox">?</span>
+    `;
+  } else {
+    eqHTML = `
       <span class="num a">${numA}</span>
       <span class="op-sym">${o.sym}</span>
       <span class="num b">${numB}</span>
       <span class="eq">=</span>
       <span class="result-box" id="resultBox">?</span>
+    `;
+  }
+  document.getElementById('challengeCard').innerHTML = `
+    <div class="challenge-header">
+      <span class="challenge-title">📝 ${L('Operación','Operation')}</span>
+      <span class="challenge-op ${currentOp}">${o.label}</span>
     </div>
+    <div class="challenge-equation">${eqHTML}</div>
   `;
 }
 
@@ -3732,6 +4941,39 @@ function renderSourceArea(){
         ${tapHint}
       </div>
     `;
+  } else if(currentOp === 'sumaFrac'){
+    const piecesA = fracA.num * (fracLCD / fracA.den);
+    const piecesB = fracB.num * (fracLCD / fracB.den);
+    html = `
+      <div class="source-area">
+        <div class="source-title"><span class="icon">🧩</span> ${L('Partes de fracción para juntar','Fraction parts to put together')}</div>
+        <div class="source-groups">
+          <div class="source-group" style="border-color:var(--purple)">
+            <div class="source-group-label">${renderFracInline(fracA.num, fracA.den)} → ${piecesA} ${L('piezas','pieces')} (1/${fracLCD})</div>
+            <div class="source-items" id="source-A"></div>
+          </div>
+          <div class="source-group" style="border-color:var(--cyan)">
+            <div class="source-group-label">${renderFracInline(fracB.num, fracB.den)} → ${piecesB} ${L('piezas','pieces')} (1/${fracLCD})</div>
+            <div class="source-items" id="source-B"></div>
+          </div>
+        </div>
+        ${tapHint}
+      </div>
+    `;
+  } else if(currentOp === 'restaFrac'){
+    const piecesA = fracA.num * (fracLCD / fracA.den);
+    html = `
+      <div class="source-area">
+        <div class="source-title"><span class="icon">🧩</span> ${L('Tienes','You have')} ${renderFracInline(fracA.num, fracA.den)} = ${piecesA} ${L('piezas de','pieces of')} 1/${fracLCD}</div>
+        <div class="source-groups">
+          <div class="source-group" style="border-color:var(--green);min-width:200px">
+            <div class="source-group-label">${L('Separa las partes','Separate the parts')}</div>
+            <div class="source-items" id="source-main"></div>
+          </div>
+        </div>
+        ${tapHint}
+      </div>
+    `;
   }
 
   return html;
@@ -3792,6 +5034,51 @@ function renderWorkspace(){
       `;
     }
     zonesHtml = `<div class="drop-zones divi-zones">${groupsHtml}</div>`;
+  } else if(currentOp === 'sumaFrac'){
+    const totalSlots = fracLCD;
+    title = L(`¡Junta las partes para ver cuánto es ${renderFracInline(fracA.num,fracA.den)} + ${renderFracInline(fracB.num,fracB.den)}!`,
+              `Put the parts together to see how much is ${renderFracInline(fracA.num,fracA.den)} + ${renderFracInline(fracB.num,fracB.den)}!`);
+    // Build bar slots
+    let slotsHtml = '';
+    for(let i=0; i<totalSlots; i++){
+      slotsHtml += `<div class="frac-bar-slot" id="frac-slot-${i}"></div>`;
+    }
+    zonesHtml = `
+      <div class="frac-workspace">
+        <div class="frac-zone-container">
+          <div class="frac-zone-label">🎯 ${L('Barra de resultado','Result bar')} (${totalSlots} ${L('partes','parts')})</div>
+          <div class="frac-bar-drop" id="frac-bar-total" onclick="tapZone('total')" ondrop="dropToZone(event, 'total')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+            ${slotsHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  } else if(currentOp === 'restaFrac'){
+    const totalSlots = fracLCD;
+    const piecesB = fracB.num * (fracLCD / fracB.den);
+    title = L(`Separa: ¿cuánto QUEDA y cuánto SE VA de ${renderFracInline(fracA.num,fracA.den)} − ${renderFracInline(fracB.num,fracB.den)}?`,
+              `Separate: how much STAYS and how much GOES from ${renderFracInline(fracA.num,fracA.den)} − ${renderFracInline(fracB.num,fracB.den)}?`);
+    let keepSlots = '', removeSlots = '';
+    for(let i=0; i<totalSlots; i++){
+      keepSlots += `<div class="frac-bar-slot" id="frac-keep-${i}"></div>`;
+      removeSlots += `<div class="frac-bar-slot" id="frac-remove-${i}"></div>`;
+    }
+    zonesHtml = `
+      <div class="frac-workspace">
+        <div class="frac-zone-container">
+          <div class="frac-zone-label">✅ ${L('Quedan','Stay')}</div>
+          <div class="frac-bar-drop" id="frac-bar-keep" onclick="tapZone('keep')" ondrop="dropToZone(event, 'keep')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+            ${keepSlots}
+          </div>
+        </div>
+        <div class="frac-zone-container">
+          <div class="frac-zone-label">📤 ${L('Se van','Go away')} (${piecesB} ${L('piezas','pieces')})</div>
+          <div class="frac-bar-drop" id="frac-bar-remove" onclick="tapZone('remove')" ondrop="dropToZone(event, 'remove')" ondragover="allowDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+            ${removeSlots}
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   ws.innerHTML = `
@@ -3852,6 +5139,53 @@ function updateSourceDisplay(){
       `).join('');
       elB.closest('.source-group').classList.toggle('empty', groupB.length === 0);
     }
+  } else if(currentOp === 'sumaFrac'){
+    const groupA = sourceItems.filter(i => i.group === 'A');
+    const groupB = sourceItems.filter(i => i.group === 'B');
+    const elA = document.getElementById('source-A');
+    const elB = document.getElementById('source-B');
+    if(elA){
+      elA.innerHTML = groupA.map(item => `
+        <span class="frac-piece group-a ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
+              onclick="tapSourceItem(${item.id},'${item.emoji}')"
+              ondragstart="dragSourceItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, true, '🟪')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+      elA.closest('.source-group').classList.toggle('empty', groupA.length === 0);
+    }
+    if(elB){
+      elB.innerHTML = groupB.map(item => `
+        <span class="frac-piece group-b ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
+              onclick="tapSourceItem(${item.id},'${item.emoji}')"
+              ondragstart="dragSourceItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, true, '🟦')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+      elB.closest('.source-group').classList.toggle('empty', groupB.length === 0);
+    }
+  } else if(currentOp === 'restaFrac'){
+    const items = sourceItems.filter(i => i.group === 'main');
+    const el = document.getElementById('source-main');
+    if(el){
+      el.innerHTML = items.map(item => `
+        <span class="frac-piece group-main ${selectedItemId === item.id && selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
+              onclick="tapSourceItem(${item.id},'${item.emoji}')"
+              ondragstart="dragSourceItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, true, '🟩')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+      el.closest('.source-group').classList.toggle('empty', items.length === 0);
+    }
   } else {
     const items = sourceItems.filter(i => i.group === 'main');
     const el = document.getElementById('source-main');
@@ -3879,21 +5213,93 @@ function updateZoneDisplays(){
     byZone[item.zone].push(item);
   });
 
-  // Update each zone
-  document.querySelectorAll('.drop-zone-items').forEach(el => {
-    const zoneId = el.id.replace('zone-', '');
-    const items = byZone[zoneId] || [];
-    el.innerHTML = items.map(item => `
-      <span class="placed-emoji ${selectedItemId === item.id && !selectedFromSource ? 'selected' : ''}"
+  if(isFracOp(currentOp)){
+    // Fraction bar slot rendering
+    if(currentOp === 'sumaFrac'){
+      const items = byZone['total'] || [];
+      for(let i=0; i<fracLCD; i++){
+        const slot = document.getElementById(`frac-slot-${i}`);
+        if(!slot) continue;
+        if(i < items.length){
+          const item = items[i];
+          const cls = item.group === 'A' ? 'occupied-a' : 'occupied-b';
+          slot.className = `frac-bar-slot ${cls}`;
+          slot.innerHTML = `<span style="font-size:.6rem;font-weight:800;color:#fff;cursor:pointer"
+            onclick="tapPlacedItem(${item.id})"
             draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
             onmousedown="handleMouseDown()"
-            onclick="tapPlacedItem(${item.id})"
             ondragstart="dragPlacedItem(event, ${item.id})"
-            ontouchstart="handleTouchStart(event, ${item.id}, false, '${item.emoji}')"
+            ontouchstart="handleTouchStart(event, ${item.id}, false, '🟪')"
             ontouchmove="handleTouchMove(event)"
-            ontouchend="handleTouchEnd(event)">${item.emoji}</span>
-    `).join('');
-  });
+            ontouchend="handleTouchEnd(event)">1/${fracLCD}</span>`;
+        } else {
+          slot.className = 'frac-bar-slot';
+          slot.innerHTML = '';
+        }
+      }
+    } else if(currentOp === 'restaFrac'){
+      const keepItems = byZone['keep'] || [];
+      const removeItems = byZone['remove'] || [];
+      for(let i=0; i<fracLCD; i++){
+        const keepSlot = document.getElementById(`frac-keep-${i}`);
+        const removeSlot = document.getElementById(`frac-remove-${i}`);
+        if(keepSlot){
+          if(i < keepItems.length){
+            const item = keepItems[i];
+            keepSlot.className = 'frac-bar-slot occupied-main';
+            keepSlot.innerHTML = `<span style="font-size:.6rem;font-weight:800;color:#fff;cursor:pointer"
+              onclick="tapPlacedItem(${item.id})"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
+              ondragstart="dragPlacedItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, false, '🟩')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">1/${fracLCD}</span>`;
+          } else {
+            keepSlot.className = 'frac-bar-slot';
+            keepSlot.innerHTML = '';
+          }
+        }
+        if(removeSlot){
+          if(i < removeItems.length){
+            const item = removeItems[i];
+            removeSlot.className = 'frac-bar-slot occupied-remove';
+            removeSlot.innerHTML = `<span style="font-size:.6rem;font-weight:800;color:#fff;cursor:pointer"
+              onclick="tapPlacedItem(${item.id})"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
+              ondragstart="dragPlacedItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, false, '🟥')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">1/${fracLCD}</span>`;
+          } else {
+            removeSlot.className = 'frac-bar-slot';
+            removeSlot.innerHTML = '';
+          }
+        }
+      }
+    }
+    // Also make frac-bar-drop zones pulsate when item selected
+    document.querySelectorAll('.frac-bar-drop').forEach(z => {
+      z.classList.toggle('drag-over', selectedItemId !== null);
+    });
+  } else {
+    // Update each zone (standard ops)
+    document.querySelectorAll('.drop-zone-items').forEach(el => {
+      const zoneId = el.id.replace('zone-', '');
+      const items = byZone[zoneId] || [];
+      el.innerHTML = items.map(item => `
+        <span class="placed-emoji ${selectedItemId === item.id && !selectedFromSource ? 'selected' : ''}"
+              draggable="true" data-id="${item.id}" data-emoji="${item.emoji}"
+              onmousedown="handleMouseDown()"
+              onclick="tapPlacedItem(${item.id})"
+              ondragstart="dragPlacedItem(event, ${item.id})"
+              ontouchstart="handleTouchStart(event, ${item.id}, false, '${item.emoji}')"
+              ontouchmove="handleTouchMove(event)"
+              ontouchend="handleTouchEnd(event)">${item.emoji}</span>
+      `).join('');
+    });
+  }
 }
 
 
@@ -4037,19 +5443,40 @@ function handleTouchEnd(e){
   ghostEl = null;
 
   // Restaurar opacidad
-  document.querySelectorAll('.source-emoji, .placed-emoji').forEach(x => x.style.opacity = '1');
-  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('highlight'));
+  document.querySelectorAll('.source-emoji, .placed-emoji, .frac-piece').forEach(x => x.style.opacity = '1');
+  document.querySelectorAll('.drop-zone, .frac-bar-drop').forEach(z => z.classList.remove('highlight', 'drag-over'));
   const trashBin = document.getElementById('trashBin');
   if(trashBin) trashBin.classList.remove('drag-over');
 
   if(el){
-    // Verificar si soltó en una zona
+    // Verificar si soltó en una zona normal
     const zone = el.closest('.drop-zone');
     if(zone){
       const zoneId = zone.querySelector('.drop-zone-items')?.id?.replace('zone-','');
       if(zoneId !== undefined){
         dropItemToZone(zoneId);
         return;
+      }
+    }
+
+    // Verificar si soltó en una barra de fracción
+    const fracBar = el.closest('.frac-bar-drop');
+    if(fracBar){
+      const barId = fracBar.id || '';
+      if(barId.includes('total')){ dropItemToZone('total'); return; }
+      if(barId.includes('keep')){ dropItemToZone('keep'); return; }
+      if(barId.includes('remove')){ dropItemToZone('remove'); return; }
+    }
+
+    // Verificar si soltó en un slot de fracción
+    const fracSlot = el.closest('.frac-bar-slot');
+    if(fracSlot){
+      const slotBar = fracSlot.closest('.frac-bar-drop');
+      if(slotBar){
+        const barId = slotBar.id || '';
+        if(barId.includes('total')){ dropItemToZone('total'); return; }
+        if(barId.includes('keep')){ dropItemToZone('keep'); return; }
+        if(barId.includes('remove')){ dropItemToZone('remove'); return; }
       }
     }
 
@@ -4072,7 +5499,7 @@ function dropItemToZone(zone){
     const itemIndex = sourceItems.findIndex(i => i.id === touchDragId);
     if(itemIndex >= 0){
       const item = sourceItems.splice(itemIndex, 1)[0];
-      placedItems.push({id: item.id, emoji: item.emoji, zone: zone});
+      placedItems.push({id: item.id, emoji: item.emoji, zone: zone, group: item.group, isFracPiece: item.isFracPiece});
       sndDrop();
     }
   } else {
@@ -4218,7 +5645,7 @@ function tapZone(zone){
     const itemIndex = sourceItems.findIndex(i => i.id === selectedItemId);
     if(itemIndex >= 0){
       const item = sourceItems.splice(itemIndex, 1)[0];
-      placedItems.push({id: item.id, emoji: item.emoji, zone: zone});
+      placedItems.push({id: item.id, emoji: item.emoji, zone: zone, group: item.group, isFracPiece: item.isFracPiece});
       sndDrop();
     }
   } else {
@@ -4242,11 +5669,11 @@ function tapTrash(){
     const itemIndex = placedItems.findIndex(i => i.id === selectedItemId);
     if(itemIndex >= 0){
       const item = placedItems.splice(itemIndex, 1)[0];
-      let group = 'main';
-      if(currentOp === 'suma'){
+      let group = item.group || 'main';
+      if(currentOp === 'suma' && !isFracOp(currentOp)){
         group = item.emoji === currentEmoji ? 'A' : 'B';
       }
-      sourceItems.push({id: item.id, emoji: item.emoji, group: group});
+      sourceItems.push({id: item.id, emoji: item.emoji, group: group, isFracPiece: item.isFracPiece});
       sndTrash();
     }
   }
@@ -4295,7 +5722,7 @@ function dropToZone(e, zone){
     const itemIndex = sourceItems.findIndex(i => i.id === draggedItemId);
     if(itemIndex >= 0){
       const item = sourceItems.splice(itemIndex, 1)[0];
-      placedItems.push({id: item.id, emoji: item.emoji, zone: zone});
+      placedItems.push({id: item.id, emoji: item.emoji, zone: zone, group: item.group, isFracPiece: item.isFracPiece});
       sndDrop();
     }
   } else {
@@ -4347,11 +5774,11 @@ function trashDrop(e){
     const itemIndex = placedItems.findIndex(i => i.id === draggedItemId);
     if(itemIndex >= 0){
       const item = placedItems.splice(itemIndex, 1)[0];
-      let group = 'main';
-      if(currentOp === 'suma'){
+      let group = item.group || 'main';
+      if(currentOp === 'suma' && !isFracOp(currentOp)){
         group = item.emoji === currentEmoji ? 'A' : 'B';
       }
-      sourceItems.push({id: item.id, emoji: item.emoji, group: group});
+      sourceItems.push({id: item.id, emoji: item.emoji, group: group, isFracPiece: item.isFracPiece});
       sndTrash();
     }
   }
@@ -4495,6 +5922,40 @@ function checkAnswer(){
       }
     }
   }
+  else if(currentOp === 'sumaFrac'){
+    const total = byZone['total'] || 0;
+    const expectedPieces = fracAnswer.num * (fracLCD / fracAnswer.den);
+    if(total === expectedPieces && totalSource === 0){
+      correct = true;
+    } else {
+      if(totalSource > 0){
+        explanation = L('¡Aún te faltan piezas por colocar! Arrastra todas las piezas a la barra.','You still have pieces to place! Drag all pieces to the bar.');
+      } else if(total < expectedPieces){
+        explanation = L(`Te faltan piezas. Recuerda: ${speakFraction(fracA.num,fracA.den)} + ${speakFraction(fracB.num,fracB.den)}. ¡Coloca todas!`,`You need more pieces. Remember: ${speakFraction(fracA.num,fracA.den)} + ${speakFraction(fracB.num,fracB.den)}. Place them all!`);
+      } else {
+        explanation = L('Hay demasiadas piezas en la barra. ¡Devuelve las que sobran!','There are too many pieces on the bar. Return the extras!');
+      }
+    }
+  }
+  else if(currentOp === 'restaFrac'){
+    const keep = byZone['keep'] || 0;
+    const remove = byZone['remove'] || 0;
+    const expectedKeep = fracAnswer.num * (fracLCD / fracAnswer.den);
+    const expectedRemove = fracB.num * (fracLCD / fracB.den);
+    if(keep === expectedKeep && remove === expectedRemove && totalSource === 0){
+      correct = true;
+    } else {
+      if(totalSource > 0){
+        explanation = L(`¡Aún quedan ${totalSource} piezas sin separar! Decide: ¿se quedan o se van?`,`There are still ${totalSource} pieces not separated! Decide: do they stay or go?`);
+      } else if(keep === 0 || remove === 0){
+        explanation = L('Debes poner piezas en AMBAS barras: las que quedan Y las que se van.','You need to put pieces in BOTH bars: those that stay AND those that go.');
+      } else if(remove !== expectedRemove){
+        explanation = L(`Recuerda que se quitan ${speakFraction(fracB.num,fracB.den)}. Eso es ${expectedRemove} piezas de 1/${fracLCD}. ¡Cuenta bien!`,`Remember you remove ${speakFraction(fracB.num,fracB.den)}. That's ${expectedRemove} pieces of 1/${fracLCD}. Count carefully!`);
+      } else {
+        explanation = L(`Si tenías ${speakFraction(fracA.num,fracA.den)} y quitas ${speakFraction(fracB.num,fracB.den)}... ¿cuánto queda? ¡Piénsalo!`,`If you had ${speakFraction(fracA.num,fracA.den)} and remove ${speakFraction(fracB.num,fracB.den)}... how much is left? Think about it!`);
+      }
+    }
+  }
 
   // Auto-reveal hints progressively after each failed attempt
   if(!correct){
@@ -4540,49 +6001,52 @@ function checkAnswer(){
     moduleTracker.performance[currentOp].starsEarned += starsEarned;
     moduleTracker.performance[currentOp].stepCount++;
     moduleTracker.opsCompleted.add(currentOp);
+    saveProgressToStorage();
 
     const step = currentStory.steps[currentStep];
-    const successMsg = step.successMsg.replace('{ans}', answer);
+    const ansDisplay = isFracOp(currentOp) ? renderFracInline(fracAnswer.num, fracAnswer.den) : answer;
+    const successMsg = step.successMsg.replace('{ans}', ansDisplay);
     const starsText = '⭐'.repeat(starsEarned);
 
     renderResult({type:'correct', emoji:'🎉', text:`${L('¡Correcto!','Correct!')} <span class="star-earned">${starsText}</span>`, detail:successMsg});
 
     // Felicitación hablada personalizada según estrellas ganadas
+    const ansSpoken = isFracOp(currentOp) ? speakFraction(fracAnswer.num, fracAnswer.den) : answer;
     let puzzleMsg = '';
 
     if(starsEarned === 3){
       const msgs = LANG === 'en' ? [
-        `Amazing ${PLAYER.name}! ${answer} is correct! Three stars! On the first try!`,
-        `Wow ${PLAYER.nickname}! Perfect! ${answer}! You earned three stars!`,
-        `${PLAYER.fullName} is a genius! ${answer} correct on the first try! Three stars for you!`,
-        `Spectacular ${PLAYER.name}! No mistakes! ${answer} and three stars!`
+        `Amazing ${PLAYER.name}! ${ansSpoken} is correct! Three stars! On the first try!`,
+        `Wow ${PLAYER.nickname}! Perfect! ${ansSpoken}! You earned three stars!`,
+        `${PLAYER.fullName} is a genius! ${ansSpoken} correct on the first try! Three stars for you!`,
+        `Spectacular ${PLAYER.name}! No mistakes! ${ansSpoken} and three stars!`
       ] : [
-        `¡Increíble ${PLAYER.name}! ¡${answer} es correcto! ¡Tres estrellas! ¡A la primera!`,
-        `¡Guau ${PLAYER.nickname}! ¡Perfecto! ¡${answer}! ¡Te ganaste tres estrellas!`,
-        `¡${PLAYER.fullName} es un genio! ¡${answer} correcto a la primera! ¡Tres estrellas para ti!`,
-        `¡Espectacular ${PLAYER.name}! ¡Sin errores! ¡${answer} y tres estrellas!`
+        `¡Increíble ${PLAYER.name}! ¡${ansSpoken} es correcto! ¡Tres estrellas! ¡A la primera!`,
+        `¡Guau ${PLAYER.nickname}! ¡Perfecto! ¡${ansSpoken}! ¡Te ganaste tres estrellas!`,
+        `¡${PLAYER.fullName} es un genio! ¡${ansSpoken} correcto a la primera! ¡Tres estrellas para ti!`,
+        `¡Espectacular ${PLAYER.name}! ¡Sin errores! ¡${ansSpoken} y tres estrellas!`
       ];
       puzzleMsg = msgs[Math.floor(Math.random() * msgs.length)];
     } else if(starsEarned === 2){
       const msgs = LANG === 'en' ? [
-        `Great job ${PLAYER.name}! ${answer} is correct! Two stars!`,
-        `Excellent ${PLAYER.nickname}! You did it! ${answer}! Two stars!`,
-        `Well done ${PLAYER.name}! ${answer}! You earned two stars!`
+        `Great job ${PLAYER.name}! ${ansSpoken} is correct! Two stars!`,
+        `Excellent ${PLAYER.nickname}! You did it! ${ansSpoken}! Two stars!`,
+        `Well done ${PLAYER.name}! ${ansSpoken}! You earned two stars!`
       ] : [
-        `¡Muy bien ${PLAYER.name}! ¡${answer} es correcto! ¡Dos estrellas!`,
-        `¡Excelente ${PLAYER.nickname}! ¡Lo lograste! ¡${answer}! ¡Dos estrellas!`,
-        `¡Bien hecho ${PLAYER.name}! ¡${answer}! ¡Te ganaste dos estrellas!`
+        `¡Muy bien ${PLAYER.name}! ¡${ansSpoken} es correcto! ¡Dos estrellas!`,
+        `¡Excelente ${PLAYER.nickname}! ¡Lo lograste! ¡${ansSpoken}! ¡Dos estrellas!`,
+        `¡Bien hecho ${PLAYER.name}! ¡${ansSpoken}! ¡Te ganaste dos estrellas!`
       ];
       puzzleMsg = msgs[Math.floor(Math.random() * msgs.length)];
     } else {
       const msgs = LANG === 'en' ? [
-        `Good ${PLAYER.name}! ${answer} is correct! One star! Next time try with fewer mistakes.`,
-        `You did it ${PLAYER.nickname}! ${answer}! One star. Keep practicing!`,
-        `${PLAYER.name} made it! ${answer}! One star. You can do better!`
+        `Good ${PLAYER.name}! ${ansSpoken} is correct! One star! Next time try with fewer mistakes.`,
+        `You did it ${PLAYER.nickname}! ${ansSpoken}! One star. Keep practicing!`,
+        `${PLAYER.name} made it! ${ansSpoken}! One star. You can do better!`
       ] : [
-        `¡Bien ${PLAYER.name}! ¡${answer} es correcto! ¡Una estrella! La próxima intenta con menos errores.`,
-        `¡Lo lograste ${PLAYER.nickname}! ¡${answer}! Una estrella. ¡Sigue practicando!`,
-        `¡${PLAYER.name} lo hizo! ¡${answer}! Una estrella. ¡Tú puedes mejorar!`
+        `¡Bien ${PLAYER.name}! ¡${ansSpoken} es correcto! ¡Una estrella! La próxima intenta con menos errores.`,
+        `¡Lo lograste ${PLAYER.nickname}! ¡${ansSpoken}! Una estrella. ¡Sigue practicando!`,
+        `¡${PLAYER.name} lo hizo! ¡${ansSpoken}! Una estrella. ¡Tú puedes mejorar!`
       ];
       puzzleMsg = msgs[Math.floor(Math.random() * msgs.length)];
     }
@@ -4596,7 +6060,11 @@ function checkAnswer(){
 
     const rb = document.getElementById('resultBox');
     if(rb){
-      rb.textContent = answer;
+      if(isFracOp(currentOp)){
+        rb.innerHTML = renderFracInline(fracAnswer.num, fracAnswer.den);
+      } else {
+        rb.textContent = answer;
+      }
       rb.style.borderStyle = 'solid';
       rb.style.background = 'rgba(0,214,143,.2)';
       rb.style.color = '#00d68f';
@@ -5118,9 +6586,6 @@ function speakText(text, onEnd = null, options = {}){
     // Cancelar cualquier habla anterior
     stopSpeaking();
 
-    // Bug fix para Chrome: necesita un "resume" si está pausado
-    speechSynth.cancel();
-
     // Recargar voces si no están listas
     if(!selectedVoice || speechSynth.getVoices().length === 0){
       findSpanishVoice();
@@ -5167,6 +6632,14 @@ function speakText(text, onEnd = null, options = {}){
   currentUtterance.volume = options.volume || 1;
 
   isSpeaking = true;
+  let callbackCalled = false;
+  const safeCallback = () => {
+    if(callbackCalled) return;
+    callbackCalled = true;
+    isSpeaking = false;
+    currentUtterance = null;
+    if(onEnd) onEnd();
+  };
 
   currentUtterance.onstart = () => {
     console.log('Voz iniciada');
@@ -5174,16 +6647,12 @@ function speakText(text, onEnd = null, options = {}){
 
   currentUtterance.onend = () => {
     console.log('Voz terminada');
-    isSpeaking = false;
-    currentUtterance = null;
-    if(onEnd) onEnd();
+    safeCallback();
   };
 
   currentUtterance.onerror = (e) => {
     console.log('Error de voz:', e.error);
-    isSpeaking = false;
-    currentUtterance = null;
-    if(onEnd) onEnd();
+    safeCallback();
   };
 
   // Chrome bug fix: usar timeout y resume
@@ -5206,6 +6675,7 @@ function speakText(text, onEnd = null, options = {}){
       speechSynth.resume();
     }
   }, 10000);
+
   } catch(e) {
     console.error('Error en speakText:', e);
     isSpeaking = false;
@@ -5215,11 +6685,11 @@ function speakText(text, onEnd = null, options = {}){
 
 // Detener lectura
 function stopSpeaking(){
-  if(speechSynth){
-    speechSynth.cancel();
-  }
   isSpeaking = false;
   currentUtterance = null;
+  if(speechSynth){
+    try { speechSynth.cancel(); } catch(e){}
+  }
 }
 
 // Leer el cuento completo (problema + pregunta)
@@ -5311,6 +6781,7 @@ function showCountNumber(el, num){
 }
 
 function showVictory(){
+  currentPhase = 'victory'; saveProgressToStorage();
   sndVictory();
   score.adventures++;
   score.stars += 3;
@@ -5335,6 +6806,15 @@ function showVictory(){
   ];
   const victoryMsg = victoryMessages[Math.floor(Math.random() * victoryMessages.length)];
 
+  // Reveal the operation for this module
+  const revealInfo = currentModule ? MODULE_INFO[currentModule] : null;
+  const revealName = revealInfo ? (LANG === 'en' ? revealInfo.nameEn : revealInfo.nameEs) : '';
+  const revealEmoji = revealInfo ? revealInfo.emoji : '⭐';
+  const revealText = revealInfo
+    ? L(`¡Este módulo era: <b style="color:var(--cyan)">${revealName}</b>! ${revealEmoji}`,
+        `This module was: <b style="color:var(--cyan)">${revealName}</b>! ${revealEmoji}`)
+    : '';
+
   document.getElementById('celebration').style.display = 'flex';
   document.getElementById('celebration').innerHTML = `
     <div class="celebration-content">
@@ -5344,13 +6824,17 @@ function showVictory(){
         (currentStory.character.startsWith('el ') ? 'Ayudaste al' : 'Ayudaste a') + ` <b>${currentStory.character.replace(/^(el |la )/i, '')}</b>`,
         `You helped <b>${currentStory.character}</b>`
       )}</p>
+      ${revealText ? `<p style="font-size:1.1rem;margin:12px 0;padding:10px;background:rgba(34,211,238,.1);border-radius:12px;border:2px solid var(--cyan)">${revealText}</p>` : ''}
       <p style="color:#ffd43b;font-weight:800;animation:starSparkle 1s ease infinite">+3 ${L('estrellas bonus','bonus stars')}</p>
-      <button class="btn btn-new" onclick="closeCelebration()">🎲 ${L('Nueva Aventura','New Adventure')}</button>
+      <button class="btn btn-new" onclick="closeCelebration()">🎯 ${L('Siguiente Módulo','Next Module')}</button>
     </div>
   `;
 
-  // Leer la felicitación
-  speakText(`${victoryMsg} ${L(`¡Ganaste tres estrellas! ¡Eres súper inteligente, ${PLAYER.nickname}!`,`You won three stars! You're super smart, ${PLAYER.nickname}!`)}`, null, { rate: 0.88, pitch: 1.0 });
+  // Leer la felicitación con la revelación del módulo
+  const revealSpoken = revealInfo
+    ? L(` ¡Este módulo era ${revealName}!`, ` This module was ${revealName}!`)
+    : '';
+  speakText(`${victoryMsg}${revealSpoken} ${L(`¡Ganaste tres estrellas! ¡Eres súper inteligente, ${PLAYER.nickname}!`,`You won three stars! You're super smart, ${PLAYER.nickname}!`)}`, null, { rate: 0.88, pitch: 1.0 });
 
   // Más confetti después de un momento
   setTimeout(() => spawnConfetti(40), 800);
@@ -5361,10 +6845,17 @@ function closeCelebration(){
   stopSpeaking();
   sndWhoosh();
   document.getElementById('celebration').style.display = 'none';
-  if(moduleTracker.opsCompleted.size >= 4){
+  // Mark current module as completed
+  if(currentModule) completedModules.add(currentModule);
+  // Also mark in opsCompleted for the report
+  if(currentModule) moduleTracker.opsCompleted.add(currentModule);
+  // Save progress
+  saveProgressToStorage();
+
+  if(completedModules.size >= 6){
     showModuleResults();
   } else {
-    startNewAdventure();
+    showModuleSelector();
   }
 }
 
@@ -5959,6 +7450,7 @@ let triviaCorrectCount = 0;
 const TRIVIA_TOTAL_QUESTIONS = 3;
 
 function showTriviaGame(onComplete){
+  currentPhase = 'trivia'; saveProgressToStorage();
   triviaCallback = onComplete;
   triviaQuestions = [];
   triviaCurrentIndex = 0;
@@ -6033,10 +7525,13 @@ function showTriviaQuestion(){
   // Leer intro y pregunta primero (con tiempo mínimo para evitar skip en móviles)
   const introText = `${intro} . . ${currentTriviaQuestion.q} . . ${L('Las opciones son:','The options are:')}`;
   const introMinTime = Math.max(2000, introText.length * 70);
-  safeSpeakWithMinTime(introText, introMinTime, () => {
-    // Ahora leer cada opción iluminándola
-    readOptionsSequentially(shuffledOptions, 0, allBtns);
-  }, { rate: 0.88, pitch: 1.0 });
+  // Pequeño delay para que el cancel del desafío anterior complete
+  setTimeout(() => {
+    safeSpeakWithMinTime(introText, introMinTime, () => {
+      // Ahora leer cada opción iluminándola
+      readOptionsSequentially(shuffledOptions, 0, allBtns);
+    }, { rate: 0.88, pitch: 1.0 });
+  }, 200);
 }
 
 function readOptionsSequentially(options, index, btns){
@@ -6140,6 +7635,7 @@ function nextTriviaQuestion(){
 function showTriviaSummary(){
   moduleTracker.totalTriviaCorrect += triviaCorrectCount;
   moduleTracker.totalTriviaTotal += TRIVIA_TOTAL_QUESTIONS;
+  saveProgressToStorage();
   const stars = '⭐'.repeat(triviaCorrectCount);
   const message = triviaCorrectCount === 3
     ? L(`¡${PLAYER.fullName} es un genio! ¡Perfecto!`,`${PLAYER.fullName} is a genius! Perfect!`)
@@ -6189,13 +7685,22 @@ let desafioCallback = null;
 const DESAFIO_TOTAL = 20;
 
 const desafioUsedKeys = new Set();
-const desafioOpsPool = ['suma','suma','resta','resta','multi','multi','divi','suma','resta','multi'];
+const desafioOpsPool = ['suma','suma','resta','resta','multi','multi','divi','suma','resta','multi','sumaFrac','restaFrac'];
 let desafioShuffledOps = [];
 
 function generateDesafioProblems(){
   desafioProblems = [];
   desafioUsedKeys.clear();
-  desafioShuffledOps = shuffleArray([...desafioOpsPool]);
+  // Si estamos en un módulo, enfocar las preguntas en esa operación (70% del módulo, 30% variado)
+  if(currentModule){
+    const focused = [];
+    for(let i = 0; i < 14; i++) focused.push(currentModule); // 14 del módulo
+    const others = ['suma','resta','multi','divi','sumaFrac','restaFrac'].filter(o => o !== currentModule);
+    for(let i = 0; i < 6; i++) focused.push(others[i % others.length]); // 6 variados
+    desafioShuffledOps = focused.sort(() => Math.random() - 0.5);
+  } else {
+    desafioShuffledOps = shuffleArray([...desafioOpsPool]);
+  }
 
   for(let i = 0; i < DESAFIO_TOTAL; i++){
     desafioProblems.push(generateOneDesafioProblem(i, 0));
@@ -6233,6 +7738,46 @@ function generateOneDesafioProblem(index, nivel){
       else {                 a = rand(7,15); b = rand(7,13); }
       ans = a * b; sym = '×';
       readText = L(`${a} por ${b}`,`${a} times ${b}`);
+    } else if(op === 'sumaFrac' || op === 'restaFrac'){
+      const pares = [[2,3],[2,4],[3,4],[2,5],[3,5],[4,5],[2,6],[3,6]];
+      const par = pares[rand(0, pares.length-1)];
+      const dA = par[0], dB = par[1];
+      const nA = rand(1, dA-1), nB = rand(1, dB-1);
+      const _lcd = lcm(dA, dB);
+      let sNum, sDen;
+      if(op === 'sumaFrac'){
+        const resNum = nA*(_lcd/dA) + nB*(_lcd/dB);
+        const s = simplifyFrac(resNum, _lcd);
+        sNum = s.num; sDen = s.den;
+        a = nA; b = nB; sym = '+';
+        readText = L(`${nA}/${dA} más ${nB}/${dB}`,`${nA}/${dA} plus ${nB}/${dB}`);
+        key = `${nA}/${dA}+${nB}/${dB}`;
+      } else {
+        let resNum = nA*(_lcd/dA) - nB*(_lcd/dB);
+        let fnA = nA, fdA = dA, fnB = nB, fdB = dB;
+        if(resNum <= 0){ fnA = nB; fdA = dB; fnB = nA; fdB = dA; resNum = fnA*(_lcd/fdA) - fnB*(_lcd/fdB); }
+        if(resNum <= 0){ fnA = 3; fdA = 4; fnB = 1; fdB = 4; resNum = 2; }
+        const s = simplifyFrac(Math.abs(resNum), _lcd);
+        sNum = s.num; sDen = s.den;
+        a = fnA || nA; b = fnB || nB; sym = '−';
+        readText = L(`${fnA||nA}/${fdA||dA} menos ${fnB||nB}/${fdB||dB}`,`${fnA||nA}/${fdA||dA} minus ${fnB||nB}/${fdB||dB}`);
+        key = `${fnA||nA}/${fdA||dA}-${fnB||nB}/${fdB||dB}`;
+      }
+      // ans is a fraction string for display, answer stored as object
+      ans = `${sNum}/${sDen}`;
+      // Generate fraction distractors
+      const fracDistractors = new Set();
+      while(fracDistractors.size < 3){
+        const offsetN = rand(1,3) * (Math.random() > 0.5 ? 1 : -1);
+        let dNum = sNum + offsetN;
+        if(dNum <= 0) dNum = sNum + Math.abs(offsetN);
+        const ds = simplifyFrac(dNum, sDen);
+        const dStr = `${ds.num}/${ds.den}`;
+        if(dStr !== ans && !fracDistractors.has(dStr)) fracDistractors.add(dStr);
+      }
+      const fracOptions = [ans, ...fracDistractors].sort(() => Math.random() - 0.5);
+      desafioUsedKeys.add(key);
+      return { op, a, b, answer: ans, sym, options: fracOptions, readText, isFrac: true };
     } else {
       if(nivel === 0){       b = rand(2,4);  ans = rand(2,5); }
       else if(nivel === 1){  b = rand(3,6);  ans = rand(3,8); }
@@ -6275,6 +7820,7 @@ function generateDesafioDistractors(correct, nivel){
 }
 
 function showDesafioRelampago(onComplete){
+  currentPhase = 'desafio'; saveProgressToStorage();
   desafioCallback = onComplete;
   desafioCurrentIndex = 0;
   desafioCorrectCount = 0;
@@ -6290,7 +7836,7 @@ function showDesafioRelampago(onComplete){
   document.getElementById('desafioModal').innerHTML = `
     <div class="desafio-content">
       <div style="font-size:4rem;margin-bottom:16px">🚀</div>
-      <div class="desafio-title">⚡ ${L('¡Desafío Relámpago!','Lightning Challenge!')} ⚡</div>
+      <div class="desafio-title">🧠 ${L('¡Desafío Matemático!','Math Challenge!')} 🧠</div>
       <div class="desafio-subtitle" style="margin:12px 0;font-size:1rem;color:var(--text)">
         ${L('Responde rápido para llevar el cohete a las estrellas','Answer fast to fly the rocket to the stars')}
       </div>
@@ -6301,7 +7847,7 @@ function showDesafioRelampago(onComplete){
     </div>
   `;
 
-  speakText(L(`¡${PLAYER.nickname}, es hora del Desafío Relámpago! Responde rápido para llevar el cohete a las estrellas. Tienes ${DESAFIO_TOTAL} preguntas. ¡Vamos!`,`${PLAYER.nickname}, it's time for the Lightning Challenge! Answer fast to fly the rocket to the stars. You have ${DESAFIO_TOTAL} questions. Let's go!`), () => {
+  speakText(L(`¡${PLAYER.nickname}, es hora del Desafío Matemático! Resuelve las ${DESAFIO_TOTAL} preguntas y lleva el cohete a las estrellas. ¡Vamos!`,`${PLAYER.nickname}, it's time for the Math Challenge! Solve the ${DESAFIO_TOTAL} questions and fly the rocket to the stars. Let's go!`), () => {
     const btn = document.getElementById('desafioStartBtn');
     if(btn){ btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; }
   }, { rate: 0.92, pitch: 1.05 });
@@ -6331,9 +7877,13 @@ function showDesafioQuestion(){
     `<div class="desafio-checkpoint ${reachedPct >= cp.pct ? 'reached' : ''}" style="bottom:${cp.pos}">⭐</div>`
   ).join('');
 
-  const optionsHTML = problem.options.map(opt =>
-    `<button class="desafio-option" onclick="checkDesafioAnswer(${opt})">${opt}</button>`
-  ).join('');
+  const optionsHTML = problem.options.map(opt => {
+    const displayOpt = problem.isFrac && String(opt).includes('/')
+      ? opt.replace(/(\d+)\/(\d+)/g, (m,n,d) => `<span class="desafio-frac"><span class="df-num">${n}</span><span class="df-bar"></span><span class="df-den">${d}</span></span>`)
+      : opt;
+    const escaped = String(opt).replace(/'/g, "\\'");
+    return `<button class="desafio-option" onclick="checkDesafioAnswer('${escaped}')">${displayOpt}</button>`;
+  }).join('');
 
   const nivel = getDesafioDifficulty();
   const nivelLabels = LANG === 'en' ? ['🟢 Easy', '🟡 Medium', '🔴 Hard', '🟣 Extreme', '💀 Legendary'] : ['🟢 Fácil', '🟡 Medio', '🔴 Difícil', '🟣 Extremo', '💀 Legendario'];
@@ -6343,7 +7893,7 @@ function showDesafioQuestion(){
     <div class="desafio-content">
       <div class="desafio-header">
         <div class="desafio-progress">${progressDots}</div>
-        <div class="desafio-title">⚡ ${L('Pregunta','Question')} ${desafioCurrentIndex + 1} ${L('de','of')} ${DESAFIO_TOTAL}</div>
+        <div class="desafio-title">🧠 ${L('Pregunta','Question')} ${desafioCurrentIndex + 1} ${L('de','of')} ${DESAFIO_TOTAL}</div>
         <div class="desafio-subtitle">⭐ ${desafioCorrectCount} ${L('correctas','correct')} · ${nivelLabels[nivel]}</div>
       </div>
 
@@ -6354,7 +7904,8 @@ function showDesafioQuestion(){
 
       <div class="desafio-equation-box">
         <div class="desafio-equation">
-          ${problem.a} <span class="desafio-op">${problem.sym}</span> ${problem.b} <span class="desafio-op">=</span> <span class="desafio-q">?</span>
+          ${problem.readText.includes('/') ? problem.readText.replace(/(\d+)\/(\d+)/g, (m,n,d) => `<span class="desafio-frac"><span class="df-num">${n}</span><span class="df-bar"></span><span class="df-den">${d}</span></span>`).replace(/más|plus/i, '<span class="desafio-op">+</span>').replace(/menos|minus/i, '<span class="desafio-op">−</span>') + ' <span class="desafio-op">=</span> <span class="desafio-q">?</span>'
+          : `${problem.a} <span class="desafio-op">${problem.sym}</span> ${problem.b} <span class="desafio-op">=</span> <span class="desafio-q">?</span>`}
         </div>
       </div>
 
@@ -6387,13 +7938,16 @@ function checkDesafioAnswer(selected){
   const btns = document.querySelectorAll('.desafio-option');
   const correct = problem.answer;
   const elapsed = Date.now() - problem.questionStartTime;
+  const selectedStr = String(selected);
+  const correctStr = String(correct);
 
   btns.forEach(btn => {
     btn.classList.add('disabled');
-    if(parseInt(btn.textContent) === correct) btn.classList.add('correct');
+    const onc = btn.getAttribute('onclick') || '';
+    if(onc.includes(`'${correctStr}'`)) btn.classList.add('correct');
   });
 
-  if(selected === correct){
+  if(selectedStr === correctStr){
     problem.wasCorrect = true;
     desafioCorrectCount++;
     desafioCombo++;
@@ -6434,7 +7988,7 @@ function checkDesafioAnswer(selected){
     problem.wasCorrect = false;
     desafioCombo = 0;
 
-    const selectedBtn = Array.from(btns).find(b => parseInt(b.textContent) === selected);
+    const selectedBtn = Array.from(btns).find(b => (b.getAttribute('onclick')||'').includes(`'${selectedStr}'`));
     if(selectedBtn) selectedBtn.classList.add('wrong');
 
     sndWrong();
@@ -6470,13 +8024,14 @@ function nextDesafioQuestion(){
 function showDesafioSummary(){
   moduleTracker.totalDesafioCorrect += desafioCorrectCount;
   moduleTracker.totalDesafioTotal += DESAFIO_TOTAL;
+  saveProgressToStorage();
   const totalTime = Math.round((Date.now() - desafioStartTime) / 1000);
   const stars = '⭐'.repeat(desafioCorrectCount);
   const speedStars = desafioSpeedBonuses > 0 ? ` (+${desafioSpeedBonuses} ${L('bonus rapidez','speed bonus')} ⚡)` : '';
 
   let message, emoji;
   if(desafioCorrectCount === DESAFIO_TOTAL){
-    message = L(`¡${PLAYER.fullName} es un rayo matemático! ¡PERFECTO!`,`${PLAYER.fullName} is a math lightning bolt! PERFECT!`);
+    message = L(`¡${PLAYER.fullName} es un genio matemático! ¡PERFECTO!`,`${PLAYER.fullName} is a math genius! PERFECT!`);
     emoji = '🏆';
   } else if(desafioCorrectCount >= DESAFIO_TOTAL * 0.8){
     message = L(`¡Increíble ${PLAYER.nickname}! ¡${desafioCorrectCount} de ${DESAFIO_TOTAL}!`,`Amazing ${PLAYER.nickname}! ${desafioCorrectCount} out of ${DESAFIO_TOTAL}!`);
@@ -6530,9 +8085,9 @@ function closeDesafioRelampago(){
 // ========== MODULE RESULTS ==========
 
 function generateModuleAnalysis(){
-  const ops = ['suma', 'resta', 'multi', 'divi'];
-  const opNames = LANG === 'en' ? { suma: 'Addition', resta: 'Subtraction', multi: 'Multiplication', divi: 'Division' } : { suma: 'Suma', resta: 'Resta', multi: 'Multiplicación', divi: 'División' };
-  const opSymbols = { suma: '+', resta: '−', multi: '×', divi: '÷' };
+  const ops = ['suma', 'resta', 'multi', 'divi', 'sumaFrac', 'restaFrac'];
+  const opNames = LANG === 'en' ? { suma: 'Addition', resta: 'Subtraction', multi: 'Multiplication', divi: 'Division', sumaFrac: 'Fraction Addition', restaFrac: 'Fraction Subtraction' } : { suma: 'Suma', resta: 'Resta', multi: 'Multiplicación', divi: 'División', sumaFrac: 'Suma de Fraccionarios', restaFrac: 'Resta de Fraccionarios' };
+  const opSymbols = { suma: '+', resta: '−', multi: '×', divi: '÷', sumaFrac: '+🔢', restaFrac: '−🔢' };
 
   const analysis = { strong: [], needsPractice: [], weak: [] };
 
@@ -6785,7 +8340,7 @@ function showModuleResults(){
     <div class="module-content">
       <div style="font-size:3.5rem;margin-bottom:12px">📢</div>
       <div class="module-title">${L('¡Módulo Completado!','Module Complete!')}</div>
-      <div class="module-subtitle" style="margin-bottom:24px">${PLAYER.name}, ${L('completaste las 4 operaciones','you completed all 4 operations')}</div>
+      <div class="module-subtitle" style="margin-bottom:24px">${PLAYER.name}, ${L('completaste las 6 operaciones','you completed all 6 operations')}</div>
       <div style="font-size:1.1rem;color:var(--cyan);font-weight:700;line-height:1.6;margin-bottom:20px">
         ${L('¡Llama a mamá o papá para que escuchen juntos cómo te fue!','Call mom or dad so they can hear how you did!')}
       </div>
@@ -6826,9 +8381,9 @@ function showModuleReport(){
   }
 
   // Generar HTML detallado por cada operación
-  const ops = ['suma', 'resta', 'multi', 'divi'];
-  const opNames = LANG === 'en' ? { suma: 'Addition', resta: 'Subtraction', multi: 'Multiplication', divi: 'Division' } : { suma: 'Suma', resta: 'Resta', multi: 'Multiplicación', divi: 'División' };
-  const opSymbols = { suma: '+', resta: '−', multi: '×', divi: '÷' };
+  const ops = ['suma', 'resta', 'multi', 'divi', 'sumaFrac', 'restaFrac'];
+  const opNames = LANG === 'en' ? { suma: 'Addition', resta: 'Subtraction', multi: 'Multiplication', divi: 'Division', sumaFrac: 'Fraction Addition', restaFrac: 'Fraction Subtraction' } : { suma: 'Suma', resta: 'Resta', multi: 'Multiplicación', divi: 'División', sumaFrac: 'Suma de Fraccionarios', restaFrac: 'Resta de Fraccionarios' };
+  const opSymbols = { suma: '+', resta: '−', multi: '×', divi: '÷', sumaFrac: '+🔢', restaFrac: '−🔢' };
 
   let opsHTML = '';
   ops.forEach(op => {
@@ -6874,7 +8429,7 @@ function showModuleReport(){
   let overallMsg = '';
   let overallEmoji = '📊';
   if(allStrong){
-    overallMsg = L(`🏆 ¡${PLAYER.fullName} domina las 4 operaciones!`,`🏆 ${PLAYER.fullName} masters all 4 operations!`);
+    overallMsg = L(`🏆 ¡${PLAYER.fullName} domina las 6 operaciones!`,`🏆 ${PLAYER.fullName} masters all 6 operations!`);
     overallEmoji = '🏆';
   } else if(hasWeak){
     const weakNames = analysis.weak.map(e => e.name).join(L(' y ',' and '));
@@ -6910,7 +8465,7 @@ function showModuleReport(){
     <div class="module-content">
       <div style="font-size:3.5rem;margin-bottom:8px">${overallEmoji}</div>
       <div class="module-title">${L('Reporte del Módulo','Module Report')}</div>
-      <div class="module-subtitle">${L(`Papás, así le fue a ${PLAYER.name} en las 4 operaciones`,`Parents, here's how ${PLAYER.name} did in the 4 operations`)}</div>
+      <div class="module-subtitle">${L(`Papás, así le fue a ${PLAYER.name} en las 6 operaciones`,`Parents, here's how ${PLAYER.name} did in the 6 operations`)}</div>
 
       <!-- Score global -->
       <div style="background:rgba(167,139,250,.1);border-radius:14px;padding:14px;margin-bottom:16px;border:1px solid rgba(167,139,250,.2)">
@@ -6941,7 +8496,7 @@ function showModuleReport(){
         <div class="module-big-stat">
           <div class="module-big-stat-icon">🧠</div>
           <div class="module-big-stat-info">
-            <div class="module-big-stat-title">${L('Cálculo Mental','Mental Math')}</div>
+            <div class="module-big-stat-title">${L('Desafío Matemático','Math Challenge')}</div>
             <div class="module-big-stat-detail">${moduleTracker.totalDesafioCorrect} ${L('correctas de','correct out of')} ${moduleTracker.totalDesafioTotal}</div>
           </div>
           <div class="module-big-stat-pct" style="color:${desafioPct >= 70 ? 'var(--green)' : desafioPct >= 50 ? 'var(--yellow)' : 'var(--red)'}">${desafioPct}%</div>
@@ -6980,7 +8535,12 @@ function closeModuleResults(){
   sndModalClose();
   document.getElementById('moduleModal').style.display = 'none';
   resetModuleTracker();
-  startNewAdventure();
+  completedModules.clear();
+  currentModule = null;
+  moduleOrder = [];
+  currentModuleIndex = -1;
+  clearProgressStorage();
+  showModuleSelector();
 }
 
 // DEBUG: Ctrl+Shift+M para forzar reporte de módulo con escenarios variados
@@ -6990,7 +8550,7 @@ const DEBUG_SCENARIOS = [
     name: 'Mixto (bueno en suma/multi, mal en resta/divi)',
     setup(){
       resetModuleTracker();
-      ['suma','resta','multi','divi'].forEach(op => moduleTracker.opsCompleted.add(op));
+      ['suma','resta','multi','divi','sumaFrac','restaFrac'].forEach(op => moduleTracker.opsCompleted.add(op));
       // Suma: excelente
       Object.assign(moduleTracker.performance.suma, {
         stepCount:3, quizCorrect:3, quizErrors:0, dragAttempts:3, hintsUsed:0,
@@ -7020,7 +8580,7 @@ const DEBUG_SCENARIOS = [
     name: 'Todos excelente',
     setup(){
       resetModuleTracker();
-      ['suma','resta','multi','divi'].forEach(op => {
+      ['suma','resta','multi','divi','sumaFrac','restaFrac'].forEach(op => {
         moduleTracker.opsCompleted.add(op);
         Object.assign(moduleTracker.performance[op], {
           stepCount:2, quizCorrect:2, quizErrors:0, dragAttempts:2, hintsUsed:0,
@@ -7036,7 +8596,7 @@ const DEBUG_SCENARIOS = [
     name: 'Todos mal (necesita reforzar todo)',
     setup(){
       resetModuleTracker();
-      ['suma','resta','multi','divi'].forEach(op => {
+      ['suma','resta','multi','divi','sumaFrac','restaFrac'].forEach(op => {
         moduleTracker.opsCompleted.add(op);
         Object.assign(moduleTracker.performance[op], {
           stepCount:2, quizCorrect:0, quizErrors:3, dragAttempts:12, hintsUsed:5,
@@ -7073,7 +8633,7 @@ const DEBUG_SCENARIOS = [
     name: 'Vocabulario problema (bien en ejercicios, mal en términos)',
     setup(){
       resetModuleTracker();
-      ['suma','resta','multi','divi'].forEach(op => {
+      ['suma','resta','multi','divi','sumaFrac','restaFrac'].forEach(op => {
         moduleTracker.opsCompleted.add(op);
         Object.assign(moduleTracker.performance[op], {
           stepCount:2, quizCorrect:2, quizErrors:0, dragAttempts:3, hintsUsed:0,
